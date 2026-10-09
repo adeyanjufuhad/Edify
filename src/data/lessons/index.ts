@@ -5,6 +5,7 @@ import { week3 } from "./week-3";
 import { weeks45 } from "./weeks-4-5";
 import { weeks67 } from "./weeks-6-7";
 import { week8 } from "./week-8";
+import { week9 } from "./week-9";
 
 // To publish a lesson: create its data file, then register it here under
 // "<term>/<subject>/<week slug>" (the slugs used in src/data/curriculum.ts).
@@ -15,6 +16,7 @@ export const lessons: Record<string, Lesson> = {
   "first-term/chemistry/weeks-4-5": weeks45,
   "first-term/chemistry/weeks-6-7": weeks67,
   "first-term/chemistry/week-8": week8,
+  "first-term/chemistry/week-9": week9,
 };
 
 export const lessonIds: ReadonlySet<string> = new Set(Object.values(lessons).map((lesson) => lesson.id));
