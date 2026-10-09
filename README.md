@@ -15,6 +15,10 @@ For the existing Edify Neon project, Taiwo and Kehinde's users have been created
 
 ## Add lessons
 
-The class, term, subject and week map lives in `src/data/curriculum.ts`. Lesson 1's objectives, notes, exam tips and 30 questions live in `src/data/lessons/week-1.ts`. To add a lesson, create another data file, mark its week available in the curriculum, and add a route in `src/app/study/ss1/first-term/chemistry`. The authenticated `/api/progress` route currently accepts Week 1 only; add the new lesson ID there when publishing another week.
+1. **Map** — `src/data/curriculum.ts` lists every term, subject and week (each week has a URL `slug`). Add new subjects or terms there.
+2. **Write** — create the lesson data file (copy `src/data/lessons/week-1.ts`; it must satisfy the `Lesson` type in `src/data/lessons/types.ts`, with a unique `id`).
+3. **Register** — add it to `src/data/lessons/index.ts` under `"<term>/<subject>/<week slug>"`, e.g. `"first-term/chemistry/week-2"`.
+
+That's all: the dashboard, the `/study/ss1/<term>/<subject>/<week>` page, the "up next" link and the `/api/progress` allow-list all read from the registry, so no route or API changes are needed. Pages under `/study` are protected on the server and redirect to `/login` when signed out.
 
 The lesson text is original teaching material based on *Hidden Facts in SSCE Chemistry*, pp. 1–3 (PDF pages 3–5). The source PDF is not redistributed in this repository.

@@ -1,7 +1,6 @@
-export type LessonSection = { heading: string; paragraphs: string[]; points?: string[]; diagram?: string };
-export type PracticeQuestion = { number: number; kind: "Objective" | "Theory"; prompt: string; options?: string[]; answer: string; explanation?: string };
+import type { Lesson, LessonSection, PracticeQuestion } from "./types";
 
-export const week1 = {
+export const week1: Lesson = {
   id: "ss1-first-chemistry-week-1",
   week: "Week 01",
   title: "Introduction to Chemistry",

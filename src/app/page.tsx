@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { firstTermChemistry } from "@/data/curriculum";
+import { getLesson } from "@/data/lessons";
 
 export default function Home() {
   return <main>
@@ -35,7 +36,7 @@ export default function Home() {
     <section className="curriculum-section shell" id="curriculum"><div className="section-heading"><div><span className="section-kicker">YOUR STUDY PATH</span><h2>A little progress,<br /><em>every week.</em></h2></div><p>Everything is arranged the same way you learn it at school: class, term, subject, then week.</p></div>
       <div className="path-strip"><span>SS1</span><b>→</b><span>First Term</span><b>→</b><span>Chemistry</span><b>→</b><span>Weekly topics</span></div>
       <div className="curriculum-card"><div className="curriculum-card-head"><div className="subject-symbol">C</div><div><span>SS1 · FIRST TERM</span><h3>Chemistry</h3></div><div className="curriculum-count">{firstTermChemistry.weeks.length} topic blocks</div></div>
-        <div className="topic-list">{firstTermChemistry.weeks.slice(0, 5).map((week) => <div className="topic-row" key={week.number}><span className="topic-number">{week.label}</span><span>{week.topic}</span><span className={week.available ? "status-ready" : "status-soon"}>{week.available ? "Ready to read ↗" : "Coming soon"}</span></div>)}</div>
+        <div className="topic-list">{firstTermChemistry.weeks.slice(0, 5).map((week) => { const ready = !!getLesson("first-term", "chemistry", week.slug); return <div className="topic-row" key={week.slug}><span className="topic-number">{week.label}</span><span>{week.topic}</span><span className={ready ? "status-ready" : "status-soon"}>{ready ? "Ready to read ↗" : "Coming soon"}</span></div>; })}</div>
         <div className="curriculum-card-foot"><span>More weeks and subjects will be added as lessons are ready.</span><Link href="/login">Open my study space <span aria-hidden="true">→</span></Link></div>
       </div>
     </section>
