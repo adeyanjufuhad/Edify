@@ -22,6 +22,8 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
   const [saveStatus, setSaveStatus] = useState(loadFailed ? "Your saved notes could not be loaded. Please refresh before writing." : "");
   const [picks, setPicks] = useState<Record<number, string>>({});
   const [shownTheory, setShownTheory] = useState<Set<number>>(new Set());
+  const [view, setView] = useState<"quick" | "full">(lesson.quick ? "quick" : "full");
+  const [shownQuick, setShownQuick] = useState<Set<number>>(new Set());
 
   const completeRef = useRef(initialCompleted);
   const noteRef = useRef(initialNote);
@@ -33,6 +35,8 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
   const theory = lesson.questions.filter((q) => q.kind === "Theory");
   const answered = objective.filter((q) => picks[q.number]).length;
   const score = objective.filter((q) => picks[q.number] === q.answer).length;
+  const quick = lesson.quick;
+  const showQuick = view === "quick" && !!quick;
   const allTheoryShown = theory.every((q) => shownTheory.has(q.number));
 
   function request(nextComplete: boolean, text: string, keepalive = false) {
@@ -93,15 +97,46 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
         <span className="section-kicker">{crumbs}</span>
         <h1>{lesson.title}<span>.</span></h1>
         <p>{lesson.subtitle}</p>
-        <div className="lesson-head-actions"><a href="#notes" className="button button-red">Read the lesson ↓</a><a href="#practice" className="text-link">Jump to practice →</a></div>
+        <div className="lesson-head-actions">
+          {quick && <div className="view-toggle" role="group" aria-label="Choose how much to read"><button type="button" aria-pressed={showQuick} className={showQuick ? "active" : ""} onClick={() => setView("quick")}>⚡ Quick exam notes</button><button type="button" aria-pressed={!showQuick} className={!showQuick ? "active" : ""} onClick={() => setView("full")}>Full notes</button></div>}
+          <a href="#practice" className="text-link">Jump to practice →</a>
+        </div>
       </div>
       <div className="lesson-columns">
         <aside className="lesson-toc">
           <strong>IN THIS LESSON</strong>
-          <a href="#objectives">Learning objectives</a><a href="#notes">Full notes</a><a href="#hidden-facts">Exam tips</a><a href="#summary">Key summary</a>
+          {showQuick ? <><a href="#quick">Must-know notes</a><a href="#likely">Likely questions</a><a href="#hidden-facts">Exam tips</a></> : <><a href="#objectives">Learning objectives</a><a href="#notes">Full notes</a><a href="#hidden-facts">Exam tips</a><a href="#summary">Key summary</a></>}
           <a href="#practice">{lesson.questions.length} practice questions</a><a href="#my-notes">My notes</a>
         </aside>
         <div className="lesson-content">
+          {showQuick && quick && (
+            <>
+              <section id="quick" className="lesson-section">
+                <span className="section-kicker">01 / LEARN THIS FIRST</span><h2>Quick exam notes</h2>
+                <p className="quick-intro">{quick.intro}</p>
+                {quick.blocks.map((block) => (
+                  <article className="quick-block" key={block.heading}>
+                    <h3>{block.heading}</h3>
+                    <ul>{block.points.map((point) => <li key={point}>{point}</li>)}</ul>
+                    {block.memory && <p className="memory-aid"><b>Memory aid</b>{block.memory}</p>}
+                    {block.warning && <p className="watch-out"><b>Watch out</b>{block.warning}</p>}
+                  </article>
+                ))}
+              </section>
+              <section id="likely" className="lesson-section">
+                <span className="section-kicker">02 / COVER THE ANSWER, THEN CHECK</span><h2>Likely exam questions</h2>
+                <div className="likely-list">{quick.likely.map((item, index) => (
+                  <div className="likely-item" key={item.question}>
+                    <p><b>{index + 1}.</b> {item.question}</p>
+                    <button type="button" className="text-button" aria-expanded={shownQuick.has(index)} onClick={() => setShownQuick((current) => { const copy = new Set(current); if (!copy.delete(index)) copy.add(index); return copy; })}>{shownQuick.has(index) ? "Hide answer" : "Show answer"}</button>
+                    {shownQuick.has(index) && <div className="answer"><p>{item.answer}</p></div>}
+                  </div>
+                ))}</div>
+              </section>
+            </>
+          )}
+
+          {!showQuick && (<>
           <section id="objectives" className="lesson-section">
             <span className="section-kicker">01 / WHAT YOU&apos;LL LEARN</span><h2>Learning objectives</h2>
             <ul className="check-list">{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul>
@@ -119,14 +154,18 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
             ))}
           </section>
 
+          </>)}
+
           <section id="hidden-facts" className="lesson-section">
             <span className="section-kicker">03 / EXAM SMARTS</span><h2>Hidden facts &amp; exam tips</h2>
             <ol className="tips-list">{lesson.hiddenFacts.map((tip) => <li key={tip}>{tip}</li>)}</ol>
           </section>
 
-          <section id="summary" className="lesson-section summary-box">
-            <span className="section-kicker">04 / KEEP THIS IN MIND</span><h2>One-minute recap</h2><p>{lesson.summary}</p>
-          </section>
+          {!showQuick && (
+            <section id="summary" className="lesson-section summary-box">
+              <span className="section-kicker">04 / KEEP THIS IN MIND</span><h2>One-minute recap</h2><p>{lesson.summary}</p>
+            </section>
+          )}
 
           <section id="practice" className="lesson-section">
             <span className="section-kicker">05 / TEST YOURSELF</span><h2>{lesson.questions.length} WAEC-style questions</h2>

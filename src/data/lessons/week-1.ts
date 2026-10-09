@@ -94,6 +94,94 @@ export const week1: Lesson = {
     "Use ‘chemist’ for the person and ‘chemistry’ for the field. State the job done, not only the career title.",
   ],
   summary: "Chemistry studies matter, its composition, properties, changes and uses. We see it in cooking, rusting, medicines, cleaning and materials. Its branches ask different but overlapping questions. Scientific work uses observations, testable hypotheses, fair experiments and evidence. Chemistry helps society but must be used responsibly to reduce corrosion, pollution and drug misuse.",
+  quick: {
+    intro: "Everything here comes from the book's own definitions and lists. Questions are built from exactly these, so learn the wording and the counts (3 branches, 4 other branches, 7 uses, 5 ways to stop rust, 3 adverse effects).",
+    blocks: [
+      {
+        heading: "1. Definition of chemistry",
+        points: [
+          "Chemistry is a branch of pure science which deals with the composition, properties and uses of matter and the forces that hold the structures together.",
+          "Its main focus is the chemical reaction.",
+          "Matter = anything that has mass and occupies space (air, water, a spoon). Light, sound and heat are energy, not matter.",
+        ],
+      },
+      {
+        heading: "2. Branches of chemistry",
+        points: [
+          "3 main branches: Physical, Inorganic, Organic.",
+          "Biochemistry: the effect of chemicals on living cells.",
+          "Medicinal chemistry: physiologically active compounds, e.g. aspirin, chloroquine.",
+          "Industrial chemistry: the application of chemistry in industries.",
+          "Environmental chemistry: the possible adverse effects of chemistry on the environment.",
+        ],
+        memory: "3 main = PIO (Physical, Inorganic, Organic). 4 others = BMIE (Bio, Medicinal, Industrial, Environmental).",
+      },
+      {
+        heading: "3. Chemical changes and products around us",
+        points: [
+          "Chemical changes: burning firewood, cooking, drug making, lighting a match, production of palm wine, rusting of nails, rotting leaves.",
+          "Chemical products: soap and detergents, hair cream and perfume, oil and margarine, plastics.",
+          "Chemical change = a NEW substance forms (burning paper). Melting ice is physical: it is still water.",
+        ],
+      },
+      {
+        heading: "4. Scientific method",
+        points: [
+          "Order: Observation (problem found) → Hypothesis → Experiment → Theory → Law/Principle.",
+          "Hypothesis: a reasonable explanation or guess put forward BEFORE an experiment.",
+          "Experiment: used to test the hypothesis. If it supports it, further investigation is carried out.",
+          "Theory: a hypothesis thoroughly tested and found correct within the limit of available evidence.",
+          "Law (principle): a theory extensively tested and proven true without any exception.",
+        ],
+        memory: "O-H-E-T-L: Observe, Hypothesis, Experiment, Theory, Law.",
+      },
+      {
+        heading: "5. Uses of chemistry (7)",
+        points: [
+          "Food: increased food production, preservation, long storage.",
+          "Clothing: man-made textile fibres, bought cheaply.",
+          "Military: explosives and gunpowder.",
+          "Space science: space rockets sent up to study space.",
+          "Housing: cement, steel, bricks, tiles.",
+          "Medicine: drugs produced by pharmaceutical industries.",
+          "Transportation: fuels, and light, strong, heat-resistant alloys.",
+        ],
+        memory: "Food, Clothing, Military, Space, Housing, Medicine, Transport.",
+      },
+      {
+        heading: "6. Adverse effects (3)",
+        points: [
+          "Corrosion of iron: iron + water + air (oxygen) gives rust (iron(III) oxide).",
+          "Prevent rusting (5): protective coating (paint), sacrificial metal, cathodic protection, galvanizing (zinc coat), oiling and greasing.",
+          "Pollution: factory and refinery waste, radioactive waste, oil spills, pesticides, fertilizers, acid rain. Toxic gases: carbon(II) oxide (CO) and sulphur(IV) oxide (SO2).",
+          "Drug abuse: heroin, cocaine and morphine are abused. The most effective control is education.",
+        ],
+        memory: "Rust prevention: Paint, Sacrificial metal, Cathodic, Galvanize, Oil/grease.",
+        warning: "The book calls rusting a 'slow reduction process', but iron LOSES electrons (Fe → Fe²⁺ + 2e⁻), which is oxidation. Follow your teacher's wording in class; chemically, rusting is oxidation of iron.",
+      },
+      {
+        heading: "7. Careers",
+        points: [
+          "Chemistry is called the 'central science' because it lies between biology and physics.",
+          "Careers: chemist, chemical engineer, biochemist, pharmacist, doctor, food scientist, forensic scientist, geologist, metallurgist, brewer, laboratory technician, science lecturer.",
+        ],
+      },
+    ],
+    likely: [
+      { question: "Define chemistry.", answer: "A branch of pure science which deals with the composition, properties and uses of matter and the forces that hold the structures together." },
+      { question: "Name the three main branches of chemistry.", answer: "Physical, inorganic and organic chemistry." },
+      { question: "What is biochemistry? What is medicinal chemistry?", answer: "Biochemistry is the effect of chemicals on living cells. Medicinal chemistry deals with physiologically active compounds such as aspirin and chloroquine." },
+      { question: "What does environmental chemistry deal with?", answer: "The possible adverse effects of chemistry on the environment." },
+      { question: "Give three examples of chemical changes.", answer: "Burning firewood, cooking, rusting of nails (also: lighting a match, production of palm wine, rotting leaves, drug making)." },
+      { question: "Define hypothesis, theory and law.", answer: "Hypothesis: a reasonable guess put forward before an experiment. Theory: a hypothesis thoroughly tested and found correct within the limit of available evidence. Law: a theory extensively tested and proven true without exception." },
+      { question: "State four uses of chemistry.", answer: "Any four of: food production and preservation; man-made fibres for clothing; explosives for the military; space rockets; cement, steel, bricks for housing; drugs for medicine; fuels and alloys for transport." },
+      { question: "Name the three adverse effects of chemistry.", answer: "Corrosion of iron, pollution and drug abuse." },
+      { question: "What do iron objects need in order to rust?", answer: "Water and air (oxygen)." },
+      { question: "List five ways of preventing rusting.", answer: "Protective coating, sacrificial metal, cathodic protection, galvanizing, oiling and greasing." },
+      { question: "Name two toxic gases that cause air pollution.", answer: "Carbon(II) oxide and sulphur(IV) oxide." },
+      { question: "Why is chemistry called the central science? What is the best control of drug abuse?", answer: "It lies between biology and physics. The most effective control of drug abuse is education." },
+    ],
+  },
   questions: [
     { number: 1, kind: "Objective", prompt: "Chemistry is best described as the study of", options: ["stars and planets only", "matter, its properties, composition and changes", "living things only", "numbers and shapes"], answer: "B", explanation: "Chemistry studies matter and how it behaves and changes." },
     { number: 2, kind: "Objective", prompt: "Which of the following is matter?", options: ["Sound", "Light", "Air", "Heat"], answer: "C", explanation: "Air has mass and occupies space." },
