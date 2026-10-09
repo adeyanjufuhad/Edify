@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { curriculum, lessonPath } from "@/data/curriculum";
 import { getLesson } from "@/data/lessons";
-import { requireLearner } from "@/lib/auth/session";
+import { requireLearner } from "@/lib/session";
 import { getCompletedLessons } from "@/lib/progress";
 
 export const metadata = { title: "My study space — Edify" };

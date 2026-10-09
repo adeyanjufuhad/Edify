@@ -1,5 +1,5 @@
--- Run in the Neon SQL editor after enabling Neon Auth for the branch.
--- Create separate Taiwo and Kehinde users in the Neon Auth console.
+-- Run once in the Neon SQL editor.
+-- user_id is the learner's profile slug ("taiwo" or "kehinde"; see src/lib/learners.ts).
 create table if not exists public.lesson_progress (
   user_id text not null,
   lesson_id text not null,
@@ -9,5 +9,5 @@ create table if not exists public.lesson_progress (
   primary key (user_id, lesson_id)
 );
 
--- Only the server uses the database credential; client browsers call the
--- authenticated /api/progress route, which scopes every query by session user.
+-- Only the server uses the database credential; browsers call /api/progress,
+-- which scopes every query to the profile chosen on the home page.

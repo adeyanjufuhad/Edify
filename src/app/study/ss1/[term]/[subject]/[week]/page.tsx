@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import LessonView from "@/components/lesson-view";
 import { curriculum, lessonPath } from "@/data/curriculum";
 import { getLesson } from "@/data/lessons";
-import { requireLearner } from "@/lib/auth/session";
+import { requireLearner } from "@/lib/session";
 import { getProgress } from "@/lib/progress";
 
 type Params = { term: string; subject: string; week: string };

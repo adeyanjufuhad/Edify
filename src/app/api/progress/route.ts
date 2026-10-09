@@ -1,4 +1,4 @@
-import { getLearner } from "@/lib/auth/session";
+import { getLearner } from "@/lib/session";
 import { lessonIds } from "@/data/lessons";
 import { getCompletedLessons, getProgress, saveProgress } from "@/lib/progress";
 
