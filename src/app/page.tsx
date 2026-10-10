@@ -154,6 +154,15 @@ export default function Home() {
       </section>
     </main>
 
-    <footer className="site-footer shell"><Brand /><p>Made with care for the next generation of thinkers.</p><span>© 2026 Edify</span></footer>
+    <footer className="site-footer">
+      <div className="shell footer-inner">
+        <div className="footer-brand"><Brand /><p>Clear notes and WAEC-style practice for every SS1 subject, one week at a time.</p></div>
+        <nav className="footer-links" aria-label="Footer">
+          <div><strong>Study</strong><a href="#features">Features</a><a href="#curriculum">Curriculum</a></div>
+          <div><strong>Account</strong><a href="/signup">Create a family account</a><a href="/profiles">Log in</a><a href="/forgot-password">Reset password</a></div>
+        </nav>
+      </div>
+      <div className="shell footer-base"><span>© 2026 Edify</span><span>Made with care for the next generation of thinkers.</span></div>
+    </footer>
   </>;
 }
