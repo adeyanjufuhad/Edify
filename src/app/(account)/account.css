@@ -78,11 +78,6 @@
 .add-form .field { display: grid; gap: 6px; align-content: start; }
 .add-form .full { grid-column: 1 / -1; }
 .field-help { font-size: 13px; color: var(--ink-3); }
-.school-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px; font-size: 13px; color: var(--ink-2); }
-.school-chips span { flex-basis: 100%; }
-.school-chip { min-height: 36px; padding: 6px 14px; border: 2px solid var(--line); border-radius: 999px; background: var(--mist); color: var(--ink); font-size: 14px; font-weight: 700; transition: border-color 0.15s, background-color 0.15s, color 0.15s; }
-.school-chip:hover { border-color: var(--navy); }
-.school-chip.is-on { background: var(--navy); border-color: var(--navy); color: var(--white); }
 .profile-school { overflow-wrap: anywhere; }
 
 @media (max-width: 900px) {

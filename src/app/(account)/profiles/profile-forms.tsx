@@ -99,20 +99,14 @@ export function AddProfileForm() {
   );
 }
 
-// A free-text school field: the suggestions fill it in one tap, and any other school can be typed.
-function SchoolField({ initial = "" }: { initial?: string }) {
-  const [school, setSchool] = useState(initial);
+// A free-text school field for any school; partner schools appear as autocomplete suggestions.
+function SchoolField({ initial }: { initial?: string }) {
   return (
     <div className="field full">
       <label htmlFor="learner-school">School</label>
-      <input id="learner-school" name="school" list="school-suggestions" autoComplete="off" required minLength={2} maxLength={80} value={school} onChange={(event) => setSchool(event.target.value)} placeholder="Start typing your child’s school…" aria-describedby="learner-school-help" />
+      <input id="learner-school" name="school" list="school-suggestions" autoComplete="off" required minLength={2} maxLength={80} defaultValue={initial} placeholder="e.g. Queen’s College, Yaba…" aria-describedby="learner-school-help" />
       <datalist id="school-suggestions">{SUGGESTED_SCHOOLS.map((name) => <option key={name} value={name} />)}</datalist>
-      <div className="school-chips" id="learner-school-help">
-        <span>Pick one, or type any other school:</span>
-        {SUGGESTED_SCHOOLS.map((name) => (
-          <button key={name} type="button" className={`school-chip ${school === name ? "is-on" : ""}`} aria-pressed={school === name} onClick={() => setSchool(name)}>{name}</button>
-        ))}
-      </div>
+      <span className="field-help" id="learner-school-help">Type the full name of your child’s school.</span>
     </div>
   );
 }
