@@ -1,14 +1,26 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
+const description = "Clear weekly notes, quick exam summaries and WAEC-style practice for every SS1 subject.";
+
 export const metadata: Metadata = {
   title: "Edify — Study smart. Ace your exams.",
-  description: "Clear weekly notes, quick exam summaries and WAEC-style practice for SS1 learners.",
+  description,
+  openGraph: { title: "Edify — Study smart. Ace your exams.", description, siteName: "Edify", type: "website", locale: "en_NG" },
 };
 
+export const viewport: Viewport = { themeColor: "#fffdf9", colorScheme: "light" };
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={geist.variable}><body>{children}</body></html>;
+  return (
+    <html lang="en" className={geist.variable}>
+      <body>
+        <a href="#main" className="skip-link">Skip to content</a>
+        {children}
+      </body>
+    </html>
+  );
 }

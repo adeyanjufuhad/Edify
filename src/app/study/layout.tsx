@@ -6,14 +6,14 @@ export const dynamic = "force-dynamic";
 export default async function StudyLayout({ children }: { children: React.ReactNode }) {
   const learner = await requireLearner();
   return (
-    <main className="dashboard-page">
+    <div className="dashboard-page">
       <header className="site-header">
         <div className="shell header-inner">
           <Brand />
           <div className="dashboard-nav"><span className="avatar small" aria-hidden="true">{learner.name[0]}</span><span>{learner.name}</span><a href="/leave" className="switch-link">Not you? Switch</a></div>
         </div>
       </header>
-      {children}
-    </main>
+      <main id="main">{children}</main>
+    </div>
   );
 }

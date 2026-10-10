@@ -24,8 +24,6 @@ export const curriculum: Term[] = [
   { slug: "third-term", name: "Third Term", subjects: [] },
 ];
 
-export const firstTermChemistry = curriculum[0].subjects[0];
-
 export function lessonPath(term: Term, subject: Subject, week: Week) {
   return `/study/ss1/${term.slug}/${subject.slug}/${week.slug}`;
 }

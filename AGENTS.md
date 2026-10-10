@@ -1,5 +1,7 @@
 Always commit and push project changes to GitHub after making them.
 
+For UI work, follow DESIGN.md and the skills in .claude/skills (web-design-guidelines, design-taste-frontend, redesign-existing-projects).
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

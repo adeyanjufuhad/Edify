@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { Lesson } from "@/data/lessons/types";
+import { ArrowLeft, ArrowRight, Bolt, Check } from "@/components/icons";
 
 type Props = {
   lesson: Lesson;
@@ -10,19 +11,20 @@ type Props = {
   initialCompleted: boolean;
   initialNote: string;
   loadFailed: boolean;
+  initialView: "quick" | "full";
   next: { href: string; label: string } | null;
 };
 
 const LETTERS = ["A", "B", "C", "D", "E"];
 const AUTOSAVE_DELAY_MS = 1500;
 
-export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, next }: Props) {
+export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, initialView, next }: Props) {
   const [complete, setComplete] = useState(initialCompleted);
   const [note, setNote] = useState(initialNote);
   const [saveStatus, setSaveStatus] = useState(loadFailed ? "Your saved notes could not be loaded. Please refresh before writing." : "");
   const [picks, setPicks] = useState<Record<number, string>>({});
   const [shownTheory, setShownTheory] = useState<Set<number>>(new Set());
-  const [view, setView] = useState<"quick" | "full">(lesson.quick ? "quick" : "full");
+  const [view, setView] = useState<"quick" | "full">(lesson.quick && initialView !== "full" ? "quick" : "full");
   const [shownQuick, setShownQuick] = useState<Set<number>>(new Set());
 
   const completeRef = useRef(initialCompleted);
@@ -73,14 +75,32 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
     timer.current = setTimeout(() => persist(completeRef.current, noteRef.current), AUTOSAVE_DELAY_MS);
   }
 
-  // If the learner leaves the page with an unsaved note, send it before unmounting.
+  // If the learner leaves the page or closes the tab with an unsaved note, send it first.
   useEffect(() => {
     flushRef.current = () => {
       clearTimeout(timer.current);
-      if (dirty.current) request(completeRef.current, noteRef.current, true).catch(() => {});
+      if (!dirty.current) return;
+      dirty.current = false;
+      request(completeRef.current, noteRef.current, true).catch(() => {});
     };
   });
-  useEffect(() => () => flushRef.current(), []);
+  useEffect(() => {
+    const onPageHide = () => flushRef.current();
+    window.addEventListener("pagehide", onPageHide);
+    return () => {
+      window.removeEventListener("pagehide", onPageHide);
+      flushRef.current();
+    };
+  }, []);
+
+  // Keep the chosen view in the URL so a refresh or shared link opens the same view.
+  function chooseView(nextView: "quick" | "full") {
+    setView(nextView);
+    const url = new URL(window.location.href);
+    if (nextView === "full") url.searchParams.set("view", "full");
+    else url.searchParams.delete("view");
+    window.history.replaceState(window.history.state, "", url);
+  }
 
   function toggleTheory(number: number) {
     setShownTheory((current) => {
@@ -92,14 +112,14 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
 
   return (
     <div className="shell lesson-shell">
-      <Link href="/study" className="back-link">← Back to study space</Link>
+      <Link href="/study" className="back-link"><ArrowLeft size={15} /> Back to study space</Link>
       <div className="lesson-head">
         <span className="kicker">{crumbs}</span>
         <h1>{lesson.title}<span className="dot">.</span></h1>
         <p>{lesson.subtitle}</p>
         <div className="lesson-head-actions">
-          {quick && <div className="view-toggle" role="group" aria-label="Choose how much to read"><button type="button" aria-pressed={showQuick} className={showQuick ? "active" : ""} onClick={() => setView("quick")}>⚡ Quick exam notes</button><button type="button" aria-pressed={!showQuick} className={!showQuick ? "active" : ""} onClick={() => setView("full")}>Full notes</button></div>}
-          <a href="#practice" className="text-link">Jump to practice →</a>
+          {quick && <div className="view-toggle" role="group" aria-label="Choose how much to read"><button type="button" aria-pressed={showQuick} className={showQuick ? "active" : ""} onClick={() => chooseView("quick")}><Bolt size={14} /> Quick exam notes</button><button type="button" aria-pressed={!showQuick} className={!showQuick ? "active" : ""} onClick={() => chooseView("full")}>Full notes</button></div>}
+          <a href="#practice" className="text-link">Jump to practice <ArrowRight size={14} /></a>
         </div>
       </div>
       <div className="lesson-columns">
@@ -215,15 +235,15 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
           <section id="my-notes" className="lesson-section">
             <span className="kicker">06 / YOUR SPACE</span><h2>My notes</h2>
             <p>Write down a question, example, or idea you want to remember. Notes save automatically to your private account, so they are on your other devices too.</p>
-            <textarea aria-label="My lesson notes" maxLength={10000} value={note} onChange={onNoteChange} placeholder="What stood out to you?" />
+            <textarea aria-label="My lesson notes" name="notes" autoComplete="off" maxLength={10000} value={note} onChange={onNoteChange} placeholder="e.g. A question for my teacher, or a trick to remember…" />
             <div className="note-actions">
               <button type="button" className="answer-toggle" onClick={() => persist(completeRef.current, noteRef.current)}>Save now</button>
-              <button type="button" className={`complete-button ${complete ? "completed" : ""}`} onClick={() => persist(!complete, noteRef.current)}>{complete ? "✓ Lesson completed" : "Mark lesson complete"}</button>
+              <button type="button" className={`complete-button ${complete ? "completed" : ""}`} onClick={() => persist(!complete, noteRef.current)}>{complete ? <><Check size={15} /> Lesson completed</> : "Mark lesson complete"}</button>
             </div>
             <p role="status" className="save-status">{saveStatus}</p>
           </section>
 
-          {next && <Link href={next.href} className="continue-card next-lesson"><span>UP NEXT</span><strong>{next.label}</strong><b aria-hidden="true">→</b></Link>}
+          {next && <Link href={next.href} className="continue-card next-lesson"><span>UP NEXT</span><strong>{next.label}</strong><b aria-hidden="true"><ArrowRight size={20} /></b></Link>}
           <p className="source-note">{lesson.source}</p>
         </div>
       </div>

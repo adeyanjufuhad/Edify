@@ -13,8 +13,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
   return { title: lesson ? `${lesson.title} — Edify` : "Edify" };
 }
 
-export default async function LessonPage({ params }: { params: Promise<Params> }) {
+export default async function LessonPage({ params, searchParams }: { params: Promise<Params>; searchParams: Promise<{ view?: string | string[] }> }) {
   const { term, subject, week } = await params;
+  const { view } = await searchParams;
   const lesson = getLesson(term, subject, week);
   if (!lesson) notFound();
   const learner = await requireLearner();
@@ -36,6 +37,7 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
       initialCompleted={record?.completed ?? false}
       initialNote={record?.notes ?? ""}
       loadFailed={loadFailed}
+      initialView={view === "full" ? "full" : "quick"}
       next={nextWeek ? { href: lessonPath(termData, subjectData, nextWeek), label: nextWeek.topic } : null}
     />
   );
