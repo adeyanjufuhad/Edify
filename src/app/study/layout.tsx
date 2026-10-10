@@ -1,6 +1,7 @@
 import AppSidebar from "@/components/app-sidebar";
 import { requireLearner } from "@/lib/session";
 import "./app.css";
+import "./motion.css";
 
 export const dynamic = "force-dynamic";
 

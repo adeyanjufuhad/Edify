@@ -110,7 +110,7 @@ svg { flex: none; }
 .plain-header { padding-block: 20px; }
 
 @media (max-width: 600px) { .shell { width: calc(100% - 32px); } }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
 @media (max-width: 380px) { .pill-button, .pill-outline, .btn-navy { white-space: normal; text-align: center; padding-block: 10px; } }
 
 /* Mascot and doodles */

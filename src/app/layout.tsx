@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
+import "./motion.css";
 
 const nunito = Nunito({ subsets: ["latin"], variable: "--font-body" });
 const fredoka = Fredoka({ subsets: ["latin", "latin-ext"], variable: "--font-display" });

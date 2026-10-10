@@ -1,0 +1,97 @@
+/* Motion layer shared by every page. Flat rules still apply: only transform and opacity move
+   (plus tiny one-off colour changes), no blur, glow or gradient.
+
+   - Individual transform properties (translate, rotate, scale) are used in keyframes so they
+     compose with the static `transform: rotate(...)` that several components already have.
+   - Nothing is hidden without JavaScript: scroll-reveal hiding only starts once ScrollMotion adds
+     `.motion-ok` to <html>, and it never does that for people who prefer reduced motion. */
+
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-soft: cubic-bezier(0.45, 0, 0.25, 1);
+}
+
+@keyframes rise-in { from { opacity: 0; translate: 0 22px; } }
+@keyframes slide-in-left { from { opacity: 0; translate: -34px 0; } }
+@keyframes slide-in-right { from { opacity: 0; translate: 34px 0; } }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes pop-in { 0% { opacity: 0; scale: 0.4; rotate: -14deg; } 100% { opacity: 1; } }
+@keyframes stamp-in { 0% { opacity: 0; scale: 1.7; rotate: -10deg; } 55% { opacity: 1; } 100% { scale: 1; } }
+@keyframes line-grow { from { scale: 0 1; } }
+@keyframes meter-grow { from { transform: scaleX(0); } }
+@keyframes bob { 50% { translate: 0 -8px; } }
+@keyframes sway { 0%, 100% { rotate: -5deg; } 50% { rotate: 5deg; } }
+@keyframes twinkle { 0%, 100% { scale: 1; rotate: 0deg; } 50% { scale: 0.7; rotate: 18deg; } }
+@keyframes spin { to { rotate: 360deg; } }
+@keyframes nudge { 0%, 55%, 100% { translate: 0 0; } 70% { translate: 5px 0; } 85% { translate: 1px 0; } }
+@keyframes ring-pulse { from { opacity: 0.7; scale: 1; } to { opacity: 0; scale: 2.1; } }
+@keyframes shake { 0%, 100% { translate: 0 0; } 20% { translate: -6px 0; } 40% { translate: 6px 0; } 60% { translate: -4px 0; } 80% { translate: 3px 0; } }
+@keyframes pop-sm { 0% { scale: 1; } 45% { scale: 1.035; } 100% { scale: 1; } }
+@keyframes wipe-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- Buttons and links: a lifted, springy press ---- */
+  .pill-button, .pill-outline, .btn-navy { transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.25s var(--ease-spring), box-shadow 0.25s var(--ease-spring); }
+  .pill-button svg:last-child:not(:first-child), .pill-outline svg:last-child:not(:first-child), .btn-navy svg:last-child:not(:first-child),
+  .btn-light svg:last-child:not(:first-child), .text-link svg:last-child:not(:first-child) { transition: translate 0.3s var(--ease-out); }
+  .btn-light, .btn-line { transition: background-color 0.15s, color 0.15s, transform 0.25s var(--ease-spring); }
+  .text-link { transition: color 0.15s; }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .pill-button:hover:not(:disabled):not(:active) { transform: translateY(-2px); box-shadow: 0 6px 0 var(--red-deep); }
+  .pill-outline:hover:not(:disabled):not(:active) { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
+  .btn-navy:hover:not(:active) { transform: translateY(-2px); box-shadow: 0 6px 0 #001826; }
+  .btn-light:hover:not(:active), .btn-line:hover:not(:active) { transform: translateY(-2px); }
+  .pill-button:hover svg:last-child:not(:first-child), .pill-outline:hover svg:last-child:not(:first-child), .btn-navy:hover svg:last-child:not(:first-child),
+  .btn-light:hover svg:last-child:not(:first-child), .text-link:hover svg:last-child:not(:first-child) { translate: 4px 0; }
+}
+
+/* ---- Scroll reveal. ScrollMotion marks below-the-fold groups `.is-pending`, then swaps to `.is-in` when they scroll into view.
+   Anything already on screen is left alone, so nothing flashes. ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .motion-ok [data-reveal].is-pending, .motion-ok [data-stagger].is-pending > * { opacity: 0; }
+
+  .motion-ok [data-stagger] { --step: 80ms; }
+  .motion-ok [data-stagger="fast"] { --step: 45ms; }
+
+  .motion-ok [data-reveal].is-in { animation: rise-in 0.8s var(--ease-out) calc(var(--i, 0) * var(--step, 80ms)) backwards; }
+  .motion-ok [data-reveal="left"].is-in { animation-name: slide-in-left; }
+  .motion-ok [data-reveal="right"].is-in { animation-name: slide-in-right; }
+  .motion-ok [data-reveal="fade"].is-in { animation-name: fade-in; }
+  .motion-ok [data-reveal="stamp"].is-in { animation: stamp-in 0.7s var(--ease-spring) calc(var(--i, 0) * var(--step, 80ms)) backwards; }
+
+  .motion-ok [data-stagger].is-in > * { animation: rise-in 0.75s var(--ease-out) calc(var(--i, 0) * var(--step)) backwards; }
+  .motion-ok [data-stagger="stairs"].is-in > * { animation-name: slide-in-left; animation-duration: 0.9s; }
+  .motion-ok [data-stagger="pop"].is-in > * { animation-name: pop-in; animation-duration: 0.6s; animation-timing-function: var(--ease-spring); }
+}
+
+/* ---- Account pages: forms and cards settle in ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .auth-body > *, .profiles-page > * { animation: rise-in 0.65s var(--ease-out) backwards; }
+  .profiles-page > :nth-child(2) { animation-delay: 0.08s; }
+  .profiles-page > :nth-child(3) { animation-delay: 0.16s; }
+  .profiles-page > :nth-child(4) { animation-delay: 0.24s; }
+  .auth-side-copy h2 { animation: slide-in-left 0.8s var(--ease-out) 0.1s backwards; }
+  .auth-side-copy li { animation: slide-in-left 0.7s var(--ease-out) backwards; }
+  .auth-side-copy li:nth-child(1) { animation-delay: 0.25s; }
+  .auth-side-copy li:nth-child(2) { animation-delay: 0.35s; }
+  .auth-side-copy li:nth-child(3) { animation-delay: 0.45s; }
+  .auth-speech { animation: pop-in 0.6s var(--ease-spring) 0.7s backwards; transform-origin: 20% 100%; }
+  .profile-card { animation: rise-in 0.6s var(--ease-out) backwards; transition: border-color 0.15s, transform 0.25s var(--ease-spring); }
+  .profile-card:nth-child(2) { animation-delay: 0.06s; }
+  .profile-card:nth-child(3) { animation-delay: 0.12s; }
+  .profile-card:nth-child(4) { animation-delay: 0.18s; }
+  .profile-card:nth-child(5) { animation-delay: 0.24s; }
+  .profile-card:nth-child(6) { animation-delay: 0.3s; }
+  .account-form input, .account-form select, .pin-row input { transition: border-color 0.15s, translate 0.2s var(--ease-out); }
+  .account-form input:focus-visible, .account-form select:focus-visible, .pin-row input:focus-visible { translate: 0 -1px; }
+  .form-error { animation: shake 0.45s var(--ease-soft); }
+  .form-success { animation: rise-in 0.4s var(--ease-out); }
+  .nf-mascot { animation: bob 4.5s ease-in-out infinite; }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .profile-card:hover { transform: translateY(-3px); }
+  .profile-card:hover .avatar { animation: sway 0.7s ease-in-out; }
+}

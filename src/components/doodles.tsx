@@ -38,8 +38,14 @@ export function Pencil({ className }: DoodleProps) {
 }
 
 // Wavy edge for the top of a coloured section. `fill` is the colour of the section it sits on.
+// The path covers two full periods in a box twice as wide as the wrapper, so sliding it by -50% loops seamlessly
+// (the drift itself is a reduced-motion-aware animation in src/app/home-motion.css).
 export function Wave({ className, fill }: { className?: string; fill: string }) {
-  return <svg viewBox="0 0 1440 48" className={`wave ${className ?? ""}`} aria-hidden="true" preserveAspectRatio="none"><path d="M0 48V24c120-22 240-22 360 0s240 22 360 0 240-22 360 0 240 22 360 0v24z" fill={fill} /></svg>;
+  return (
+    <div className={`wave-wrap ${className ?? ""}`} aria-hidden="true">
+      <svg viewBox="0 0 2880 48" className="wave" preserveAspectRatio="none"><path d="M0 48V24c120-22 240-22 360 0s240 22 360 0 240-22 360 0 240 22 360 0 240-22 360 0 240 22 360 0 240-22 360 0 240 22 360 0v24z" fill={fill} /></svg>
+    </div>
+  );
 }
 
 export function SpeechBubble({ children, className }: { children: React.ReactNode; className?: string }) {
