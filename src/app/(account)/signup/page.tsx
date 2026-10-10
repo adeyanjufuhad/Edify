@@ -23,6 +23,8 @@ export default function SignupPage() {
     try {
       const { error: signUpError } = await authClient.signUp.email({ name: name.trim(), email: email.trim(), password });
       if (signUpError) { setError(authErrorMessage(signUpError, "Could not create your account. Try again in a moment.")); return; }
+      // Neon Auth requires a verified email but doesn't email a code on sign-up by itself, so ask for one.
+      await authClient.emailOtp.sendVerificationOtp({ email: email.trim(), type: "email-verification" }).catch(() => {});
       sessionStorage.setItem(VERIFY_EMAIL_KEY, email.trim());
       router.push("/verify");
     } catch {
