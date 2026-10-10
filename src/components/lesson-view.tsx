@@ -94,8 +94,8 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
     <div className="shell lesson-shell">
       <Link href="/study" className="back-link">← Back to study space</Link>
       <div className="lesson-head">
-        <span className="section-kicker">{crumbs}</span>
-        <h1>{lesson.title}<span>.</span></h1>
+        <span className="kicker">{crumbs}</span>
+        <h1>{lesson.title}<span className="dot">.</span></h1>
         <p>{lesson.subtitle}</p>
         <div className="lesson-head-actions">
           {quick && <div className="view-toggle" role="group" aria-label="Choose how much to read"><button type="button" aria-pressed={showQuick} className={showQuick ? "active" : ""} onClick={() => setView("quick")}>⚡ Quick exam notes</button><button type="button" aria-pressed={!showQuick} className={!showQuick ? "active" : ""} onClick={() => setView("full")}>Full notes</button></div>}
@@ -112,7 +112,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
           {showQuick && quick && (
             <>
               <section id="quick" className="lesson-section">
-                <span className="section-kicker">01 / LEARN THIS FIRST</span><h2>Quick exam notes</h2>
+                <span className="kicker">01 / LEARN THIS FIRST</span><h2>Quick exam notes</h2>
                 <p className="quick-intro">{quick.intro}</p>
                 {quick.blocks.map((block) => (
                   <article className="quick-block" key={block.heading}>
@@ -124,7 +124,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
                 ))}
               </section>
               <section id="likely" className="lesson-section">
-                <span className="section-kicker">02 / COVER THE ANSWER, THEN CHECK</span><h2>Likely exam questions</h2>
+                <span className="kicker">02 / COVER THE ANSWER, THEN CHECK</span><h2>Likely exam questions</h2>
                 <div className="likely-list">{quick.likely.map((item, index) => (
                   <div className="likely-item" key={item.question}>
                     <p><b>{index + 1}.</b> {item.question}</p>
@@ -138,12 +138,12 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
 
           {!showQuick && (<>
           <section id="objectives" className="lesson-section">
-            <span className="section-kicker">01 / WHAT YOU&apos;LL LEARN</span><h2>Learning objectives</h2>
+            <span className="kicker">01 / WHAT YOU&apos;LL LEARN</span><h2>Learning objectives</h2>
             <ul className="check-list">{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul>
           </section>
 
           <section id="notes" className="lesson-section">
-            <span className="section-kicker">02 / THE FULL LESSON</span><h2>Let&apos;s understand it</h2>
+            <span className="kicker">02 / THE FULL LESSON</span><h2>Let&apos;s understand it</h2>
             {lesson.sections.map((section) => (
               <article className="note-section" key={section.heading}>
                 <h3>{section.heading}</h3>
@@ -157,18 +157,18 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
           </>)}
 
           <section id="hidden-facts" className="lesson-section">
-            <span className="section-kicker">03 / EXAM SMARTS</span><h2>Hidden facts &amp; exam tips</h2>
+            <span className="kicker">03 / EXAM SMARTS</span><h2>Hidden facts &amp; exam tips</h2>
             <ol className="tips-list">{lesson.hiddenFacts.map((tip) => <li key={tip}>{tip}</li>)}</ol>
           </section>
 
           {!showQuick && (
             <section id="summary" className="lesson-section summary-box">
-              <span className="section-kicker">04 / KEEP THIS IN MIND</span><h2>One-minute recap</h2><p>{lesson.summary}</p>
+              <span className="kicker">04 / KEEP THIS IN MIND</span><h2>One-minute recap</h2><p>{lesson.summary}</p>
             </section>
           )}
 
           <section id="practice" className="lesson-section">
-            <span className="section-kicker">05 / TEST YOURSELF</span><h2>{lesson.questions.length} WAEC-style questions</h2>
+            <span className="kicker">05 / TEST YOURSELF</span><h2>{lesson.questions.length} WAEC-style questions</h2>
             <p className="practice-intro">Tap an option to check your answer straight away. For the theory questions, write your own answer first, then reveal the model answer.</p>
             <div className="quiz-score" role="status" aria-live="polite">
               <strong>{score} / {objective.length}</strong><span>objective score · {answered} answered</span>
@@ -213,7 +213,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
           </section>
 
           <section id="my-notes" className="lesson-section">
-            <span className="section-kicker">06 / YOUR SPACE</span><h2>My notes</h2>
+            <span className="kicker">06 / YOUR SPACE</span><h2>My notes</h2>
             <p>Write down a question, example, or idea you want to remember. Notes save automatically to your private account, so they are on your other devices too.</p>
             <textarea aria-label="My lesson notes" maxLength={10000} value={note} onChange={onNoteChange} placeholder="What stood out to you?" />
             <div className="note-actions">
