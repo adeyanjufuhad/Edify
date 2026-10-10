@@ -153,9 +153,9 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
   }
 
   return (
-    <div className="shell lesson-shell">
+    <div className="page lesson-shell">
       <div className="read-progress" aria-hidden="true" />
-      <Link href="/study" className="back-link"><ArrowLeft size={15} /> Back to study space</Link>
+      <Link href="/study/subjects" className="back-link"><ArrowLeft size={15} /> All lessons</Link>
       <div className="lesson-head">
         <span className="kicker">{crumbs}</span>
         <h1>{lesson.title}<span className="dot">.</span></h1>

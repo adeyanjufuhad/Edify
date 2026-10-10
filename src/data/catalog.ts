@@ -21,3 +21,10 @@ export const totals = {
 export function plural(count: number, word: string) {
   return `${count} ${word}${count === 1 ? "" : "s"}`;
 }
+
+export type LessonEntry = CatalogWeek & { term: Term; subject: Subject; lesson: Lesson };
+
+// Look up where a published lesson lives (term, subject, week, link) from its id.
+export const lessonIndex: ReadonlyMap<string, LessonEntry> = new Map(
+  catalog.flatMap(({ term, subject, weeks }) => weeks.flatMap((entry) => (entry.lesson ? [[entry.lesson.id, { ...entry, term, subject, lesson: entry.lesson }] as const] : []))),
+);

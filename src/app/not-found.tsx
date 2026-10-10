@@ -5,13 +5,15 @@ import { ArrowLeft } from "@/components/icons";
 export const metadata = { title: "Page not found — Edify" };
 
 export default function NotFound() {
-  return <>
-    <header className="site-header"><div className="shell header-inner"><Brand /></div></header>
-    <main id="main" className="shell not-found">
-      <span className="kicker">ERROR 404</span>
-      <h1>This page is <span className="hl">not here.</span></h1>
-      <p>The link may be old, or the lesson has not been published yet. Go back home and pick up from your study space.</p>
-      <Link href="/" className="pill-button"><ArrowLeft /> Back to Edify</Link>
-    </main>
-  </>;
+  return (
+    <div className="not-found-page">
+      <header className="shell plain-header"><Brand /></header>
+      <main id="main" className="shell not-found">
+        <span className="kicker">Error 404</span>
+        <h1>This page isn’t here.</h1>
+        <p>The link may be old, or the lesson hasn’t been published yet. Go back home and pick up from your study space.</p>
+        <Link href="/" className="pill-button"><ArrowLeft /> Back to Edify</Link>
+      </main>
+    </div>
+  );
 }

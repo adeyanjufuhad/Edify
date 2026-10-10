@@ -1,93 +1,105 @@
 import Link from "next/link";
-import { ArrowRight, Check } from "@/components/icons";
-import { curriculum } from "@/data/curriculum";
-import { catalog, plural } from "@/data/catalog";
+import { ArrowRight, Note } from "@/components/icons";
+import { lessonIndex, plural, totals } from "@/data/catalog";
 import { requireLearner } from "@/lib/session";
-import { getCompletedLessons } from "@/lib/progress";
+import { loadStudy, percent } from "@/lib/study";
 
-export const metadata = { title: "My study space — Edify" };
+export const metadata = { title: "Dashboard — Edify" };
 
-const RING_RADIUS = 52;
-const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
+function greeting() {
+  const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: "Africa/Lagos" }).format(new Date()));
+  return hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+}
 
-export default async function StudyPage() {
+export default async function DashboardPage() {
   const learner = await requireLearner();
-  let done: string[] = [];
-  let loadFailed = false;
-  try { done = await getCompletedLessons(learner.id); } catch { loadFailed = true; }
-
-  // Show the first term that has subjects; every subject in it gets its own learning path.
-  const term = curriculum.find((t) => t.subjects.length) ?? curriculum[0];
-  const subjects = catalog.filter((entry) => entry.term.slug === term.slug).map((entry) => {
-    const weeks = entry.weeks.map((row) => ({ ...row, completed: !!row.lesson && done.includes(row.lesson.id) }));
-    return { ...entry, weeks, completed: weeks.filter((row) => row.completed).length };
-  });
-  const rows = subjects.flatMap((entry) => entry.weeks.map((row) => ({ ...row, subject: entry.subject })));
-  const completedCount = rows.filter((row) => row.completed).length;
-  const next = rows.find((row) => row.lesson && !row.completed);
-  const percent = rows.length ? Math.round((completedCount / rows.length) * 100) : 0;
+  const { records, loadFailed, term, subjects, rows, upcoming, next, completedCount } = await loadStudy(learner.id);
+  const notes = records.filter((record) => record.notes.trim() && lessonIndex.has(record.lessonId));
   const firstName = learner.name.split(" ")[0];
+  const readyQuestions = rows.reduce((sum, row) => sum + (row.lesson?.questions.length ?? 0), 0);
 
   return (
-    <div className="shell dashboard-content">
+    <div className="page">
+      <header className="page-head">
+        <div>
+          <span className="kicker">SS1 · {term.name}</span>
+          <h1>{greeting()}, {firstName}.</h1>
+          <p>{next ? <>Your next lesson is <strong>{next.week.topic}</strong> in {next.subject.name}.</> : "You’ve finished every lesson that’s ready. New lessons are on the way."}</p>
+        </div>
+        {next && <Link href={next.href} className="pill-button">Continue learning <ArrowRight /></Link>}
+      </header>
+
       {loadFailed && <p role="alert" className="form-error">Your progress could not be loaded. Refresh the page to try again.</p>}
 
-      <section className="dash-hero">
-        <div className="dash-greeting">
-          <span className="kicker">SS1 · {term.name.toUpperCase()}</span>
-          <h1>Keep going, <span className="hl">{firstName}.</span></h1>
-          {next ? (
-            <>
-              <p>Your next step is <strong>{next.week.topic}</strong> in {next.subject.name}.</p>
-              <Link href={next.href} className="pill-button">Continue {next.week.label} <ArrowRight /></Link>
-            </>
-          ) : (
-            <p>You’ve finished every lesson that’s ready. New lessons are on the way, so use the time to retry a quiz.</p>
-          )}
+      <section className="stat-grid" aria-label="Your progress">
+        <div className="stat-tile is-navy">
+          <span>Lessons completed</span>
+          <strong>{completedCount}<small> / {rows.length}</small></strong>
+          <span className="meter" aria-hidden="true"><span style={{ transform: `scaleX(${rows.length ? completedCount / rows.length : 0})` }} /></span>
         </div>
-        <div className="dash-ring" role="img" aria-label={`${completedCount} of ${rows.length} topics done, ${percent}%`}>
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <circle cx="60" cy="60" r={RING_RADIUS} className="ring-track" />
-            <circle cx="60" cy="60" r={RING_RADIUS} className="ring-fill" strokeDasharray={RING_LENGTH} strokeDashoffset={RING_LENGTH * (1 - percent / 100)} />
-          </svg>
-          <div className="ring-label"><strong>{percent}%</strong><span>{completedCount} of {plural(rows.length, "topic")}</span></div>
-        </div>
+        <div className="stat-tile"><span>Term progress</span><strong>{percent(completedCount, rows.length)}%</strong><small>of {term.name.toLowerCase()} lessons</small></div>
+        <div className="stat-tile"><span>Notes written</span><strong>{notes.length}</strong><small>{notes.length ? "saved to your account" : "add one in any lesson"}</small></div>
+        <div className="stat-tile"><span>Practice questions</span><strong>{readyQuestions}</strong><small>across {plural(totals.readyTopics, "ready lesson")}</small></div>
       </section>
 
-      <nav className="term-tabs" aria-label="Terms">
-        {curriculum.map((t) => {
-          const active = t.slug === term.slug;
-          return <span key={t.slug} className={`term-tab ${active ? "active" : ""}`} aria-current={active ? "true" : undefined}>{t.name}<small>{t.subjects.length ? plural(t.subjects.length, "subject") : "Soon"}</small></span>;
-        })}
-      </nav>
+      <div className="overview-grid">
+        <div className="overview-col">
+          {next && (
+            <section className="next-card" aria-labelledby="next-title">
+              <span className="next-meta">Up next · {next.subject.name} · {next.week.label}</span>
+              <h2 id="next-title">{next.week.topic}</h2>
+              <p>{next.lesson?.subtitle}</p>
+              <div className="next-actions">
+                <Link href={next.href} className="btn-navy">Start lesson <ArrowRight /></Link>
+                <span>{next.lesson?.questions.length} practice questions</span>
+              </div>
+            </section>
+          )}
 
-      <div className="path-grid">
-        {subjects.map(({ subject, weeks, completed }) => (
-          <section className="path-card" key={subject.slug} aria-labelledby={`subject-${subject.slug}`}>
-            <header className="path-head">
-              <div className="subject-symbol" aria-hidden="true">{subject.name[0]}</div>
-              <div className="path-title"><h2 id={`subject-${subject.slug}`}>{subject.name}</h2><span>{completed} of {plural(weeks.length, "topic")} done</span></div>
-              <span className="path-meter" aria-hidden="true"><span style={{ transform: `scaleX(${weeks.length ? completed / weeks.length : 0})` }} /></span>
-            </header>
-            <ol className="path">
-              {weeks.map(({ week, lesson, completed: isDone, href }) => {
-                const isNext = next?.week.slug === week.slug && next.subject.slug === subject.slug;
-                const state = isDone ? "done" : isNext ? "next" : lesson ? "ready" : "soon";
-                const body = <><span className="path-node" aria-hidden="true">{isDone && <Check size={13} />}</span><span className="path-week">{week.label}</span><span className="path-topic">{week.topic}</span><span className="path-action">{isDone ? "Review" : isNext ? "Up next" : lesson ? "Start" : "Coming soon"}{lesson && <ArrowRight size={13} />}</span></>;
-                return (
-                  <li key={week.slug} className={`path-step is-${state}`}>
-                    {lesson ? <Link href={href} aria-label={`${isDone ? "Review" : "Start"} ${week.label}: ${week.topic}`}>{body}</Link> : <div>{body}</div>}
-                  </li>
-                );
-              })}
-            </ol>
+          <section className="panel" aria-labelledby="subjects-title">
+            <header className="panel-head"><h2 id="subjects-title">Your subjects</h2><Link href="/study/subjects" className="text-link small">All lessons <ArrowRight size={14} /></Link></header>
+            <ul className="subject-list">
+              {subjects.map(({ subject, weeks, completed, ready }) => (
+                <li key={subject.slug}>
+                  <span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span>
+                  <div className="subject-info">
+                    <div className="subject-line"><strong>{subject.name}</strong><span>{percent(completed, weeks.length)}%</span></div>
+                    <span className="meter" aria-hidden="true"><span style={{ transform: `scaleX(${weeks.length ? completed / weeks.length : 0})` }} /></span>
+                    <small>{completed} of {plural(weeks.length, "lesson")} done · {ready} ready</small>
+                  </div>
+                </li>
+              ))}
+              <li className="subject-soon"><span className="subject-symbol" aria-hidden="true">+</span><div className="subject-info"><strong>More subjects</strong><small>Appear here as soon as their first lessons are ready.</small></div></li>
+            </ul>
           </section>
-        ))}
-        <aside className="path-card path-more">
-          <span className="kicker">MORE ON THE WAY</span>
-          <h2>New subjects appear here.</h2>
-          <p>As soon as the first lessons of another subject are ready, it gets its own path on this page.</p>
-        </aside>
+        </div>
+
+        <div className="overview-col">
+          <section className="panel" aria-labelledby="upcoming-title">
+            <header className="panel-head"><h2 id="upcoming-title">Coming up</h2></header>
+            {upcoming.length ? (
+              <ol className="upcoming-list">
+                {upcoming.slice(0, 5).map((row) => (
+                  <li key={row.href}><Link href={row.href}><span className="week-tag">{row.week.label.replace("Week", "Wk").replace("Weeks", "Wks")}</span><span className="upcoming-topic"><strong>{row.week.topic}</strong><small>{row.subject.name}</small></span><ArrowRight size={16} /></Link></li>
+                ))}
+              </ol>
+            ) : <p className="empty">Nothing left to start. Revisit a lesson and retry its quiz.</p>}
+          </section>
+
+          <section className="panel" aria-labelledby="notes-title">
+            <header className="panel-head"><h2 id="notes-title">Recent notes</h2>{notes.length > 0 && <Link href="/study/notes" className="text-link small">All notes <ArrowRight size={14} /></Link>}</header>
+            {notes.length ? (
+              <ul className="note-previews">
+                {notes.slice(0, 3).map((record) => {
+                  const entry = lessonIndex.get(record.lessonId)!;
+                  return <li key={record.lessonId}><Link href={entry.href}><small>{entry.subject.name} · {entry.week.label}</small><strong>{entry.week.topic}</strong><p>{record.notes}</p></Link></li>;
+                })}
+              </ul>
+            ) : (
+              <div className="empty"><Note size={22} /><p>Notes you write at the bottom of a lesson appear here, so you can revise them in one place.</p></div>
+            )}
+          </section>
+        </div>
       </div>
     </div>
   );

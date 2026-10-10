@@ -17,3 +17,11 @@ export async function saveProgress(userId: string, lessonId: string, completed: 
     values (${userId}, ${lessonId}, ${completed}, ${notes})
     on conflict (user_id, lesson_id) do update set completed = excluded.completed, notes = excluded.notes, updated_at = now()`;
 }
+
+export type LessonRecord = { lessonId: string; completed: boolean; notes: string; updatedAt: string };
+
+// Every lesson this learner has opened, most recently touched first.
+export async function getLearnerRecords(userId: string): Promise<LessonRecord[]> {
+  const rows = await database()`select lesson_id, completed, notes, updated_at from public.lesson_progress where user_id = ${userId} order by updated_at desc`;
+  return rows.map((row) => ({ lessonId: row.lesson_id as string, completed: row.completed as boolean, notes: (row.notes as string) ?? "", updatedAt: new Date(row.updated_at as string).toISOString() }));
+}

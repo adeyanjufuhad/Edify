@@ -1,61 +1,36 @@
+import Link from "next/link";
 import Brand from "@/components/brand";
-import { ArrowRight, Bolt, Check, Pencil, Spark } from "@/components/icons";
-import { catalog, plural, totals } from "@/data/catalog";
+import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Note, Pencil, Shield, Target, Users } from "@/components/icons";
+import { catalog, totals } from "@/data/catalog";
+import "./home.css";
 
-const FEATURES = [
-  {
-    kicker: "QUICK EXAM NOTES",
-    title: <>Learn it in <span className="hl">10 minutes.</span></>,
-    text: "Every week opens with the must-know points, memory aids and “Watch out” boxes for the traps examiners set. Switch to the full notes whenever you want the whole story.",
-    mock: "notes",
-  },
-  {
-    kicker: "PRACTICE QUESTIONS",
-    title: <>Tap. Check. <span className="hl">Learn.</span></>,
-    text: "WAEC-style objective questions that mark themselves the moment you tap, plus theory questions with model answers you can reveal after you try.",
-    mock: "quiz",
-  },
-  {
-    kicker: "HIDDEN FACTS",
-    title: <>The book is wrong <span className="hl">sometimes.</span></>,
-    text: "Each lesson flags the mistakes in the textbook and past-question answers, so you write the right answer in the exam hall.",
-    mock: "facts",
-  },
-  {
-    kicker: "YOUR PROGRESS",
-    title: <>Pick up where you <span className="hl">left off.</span></>,
-    text: "Your notes save automatically and every finished lesson is ticked off, on any phone or computer you open Edify on.",
-    mock: "progress",
-  },
-  {
-    kicker: "REVISION & MOCK EXAMS",
-    title: <>Finish the term with a <span className="hl">real grade.</span></>,
-    text: "Each term ends with a revision week and a long mixed mock. Finish the objective questions and Edify grades you on WAEC’s A1–F9 scale, then lets you retry only the ones you missed.",
-    mock: "grade",
-  },
-  {
-    kicker: "FAMILY ACCOUNTS",
-    title: <>One account, <span className="hl">every child.</span></>,
-    text: "A parent or guardian signs up once and adds each child with their own 4-digit PIN. Brothers and sisters keep separate progress and notes on the same phone.",
-    mock: "family",
-  },
-] as const;
+const NAV = [
+  { href: "#features", label: "Features" },
+  { href: "#how", label: "How it works" },
+  { href: "#subjects", label: "Subjects" },
+  { href: "#parents", label: "For parents" },
+  { href: "#faq", label: "FAQ" },
+];
 
-const GOALS = [
-  { grade: "A1", subject: "Chemistry", habit: "Learn the valency table first. After that, formulas write themselves.", week: "Week 4" },
-  { grade: "A1", subject: "Mathematics", habit: "Ten questions every evening. Check each one before moving on.", week: "Daily" },
-  { grade: "B2", subject: "English", habit: "Read one comprehension passage a day and summarise it in five lines.", week: "Daily" },
-  { grade: "A1", subject: "Biology", habit: "Draw every diagram twice: once copying, once from memory.", week: "Weekly" },
-  { grade: "B3", subject: "Physics", habit: "Write the formula, then the units, then the numbers. In that order.", week: "Every sum" },
-  { grade: "A1", subject: "Chemistry", habit: "Redo every wrong practice question until the list is empty.", week: "Weekends" },
-  { grade: "B2", subject: "Economics", habit: "Explain one graph out loud to a sibling before bed.", week: "Daily" },
-  { grade: "A1", subject: "Further Maths", habit: "Cover the worked example, solve it, then compare line by line.", week: "Weekly" },
+const LESSON_PARTS = [
+  { title: "Quick exam notes", text: "The must-know points for the week on one screen, with memory aids and “Watch out” boxes for common traps.", icon: Bolt },
+  { title: "Full notes", text: "The whole topic explained in plain English, with worked examples and diagrams to draw.", icon: Layers },
+  { title: "Hidden facts & book checks", text: "Exam tips, and the places where the textbook or past-question answers are wrong.", icon: Flag },
+  { title: "WAEC-style practice", text: "Objective questions that mark themselves when you tap, and theory questions with model answers.", icon: Target },
+  { title: "My notes", text: "A box at the end of every lesson for your own notes. They save to your account automatically.", icon: Note },
 ];
 
 const STEPS = [
   { title: "A parent signs up", text: "Create a free family account with an email address and confirm it with a 6-digit code." },
   { title: "Add each child", text: "Give every learner a first name and their own 4-digit PIN. Up to six per family." },
   { title: "Study one week at a time", text: "Read the quick notes, practise the questions and tick the lesson off. Progress saves automatically." },
+];
+
+const PARENT_POINTS = [
+  { title: "One account, every child", text: "Brothers and sisters each get their own profile, progress and notes on the same phone.", icon: Users },
+  { title: "A PIN for each learner", text: "Each child opens their own space with a 4-digit PIN, so nobody ticks off someone else’s lessons.", icon: Shield },
+  { title: "Progress you can see", text: "Every finished lesson is ticked off, so you can see how far through the term each child is.", icon: Check },
+  { title: "Only what’s needed", text: "We store your email, each child’s first name and their study progress. PINs are stored scrambled.", icon: Note },
 ];
 
 const PLAYBOOK = [
@@ -70,186 +45,227 @@ const FAQS = [
   { q: "Which subjects are covered?", a: "Edify is built for every SS1 subject. Chemistry is ready first; more subjects are added as their lessons are written and checked." },
   { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the SS1 scheme of work, term by term and week by week, so what you read matches what was taught in class." },
   { q: "Who creates the account?", a: "A parent or guardian. They add each child as a learner, so one family account covers brothers and sisters." },
-  { q: "What do you store about my child?", a: "Only their first name, class, study progress and the notes they write. Each child’s PIN is stored scrambled, never as the number itself." },
+  { q: "Does it work on a phone?", a: "Yes. Edify is a website that works in any phone or computer browser. There’s nothing to install." },
   { q: "What if a PIN is forgotten?", a: "A parent can remove that learner and add them again with a new PIN. Ask for help first, because removing a learner also clears their progress." },
 ];
 
-function Mock({ kind }: { kind: (typeof FEATURES)[number]["mock"] }) {
-  if (kind === "notes") return (
-    <div className="mock-body">
-      <span className="mock-pill"><Bolt size={13} /> Quick exam notes</span>
-      <strong className="mock-title">2. The three rules for filling orbitals</strong>
-      <ul className="mock-list"><li>Aufbau: lowest energy orbital first</li><li>Pauli: max 2 electrons, opposite spins</li><li>Hund: singles first, then pair</li></ul>
-      <p className="mock-memory"><b>MEMORY AID</b>Aufbau = build up · Pauli = pair · Hund = singles first</p>
-    </div>
-  );
-  if (kind === "quiz") return (
-    <div className="mock-body">
-      <span className="mock-meta">QUESTION 09 · OBJECTIVE</span>
-      <strong className="mock-title">The electronic configuration of nitrogen is</strong>
-      <div className="mock-options"><span className="ok"><b>A</b>1s² 2s² 2p³</span><span><b>B</b>1s² 2s² 2p⁵</span><span><b>C</b>1s² 2s³ 2p²</span><span><b>D</b>1s² 2s² 2p⁴</span></div>
-      <p className="mock-correct"><Check size={15} /> Correct — A</p>
-    </div>
-  );
-  if (kind === "facts") return (
-    <div className="mock-body">
-      <span className="mock-meta">EXAM TIPS</span>
-      <p className="mock-warn"><b>BOOK CHECK</b>For C₂H₂ + yH₂ → C₂H₆ the book gives y = 3. Count the hydrogens: 2 + 2y = 6, so y = 2.</p>
-      <p className="mock-warn"><b>BOOK CHECK</b>A Geiger–Müller counter does not identify isotopes. Use the mass spectrometer.</p>
-    </div>
-  );
-  if (kind === "grade") return (
-    <div className="mock-body mock-grade">
-      <div className="grade-badge" data-grade="B"><strong>B2</strong><span>72%</span></div>
-      <div><span className="mock-meta">WEEK 13 · REVISION MOCK</span><strong className="mock-title">You scored 29 out of 40.</strong><p className="mock-note">Very good. Review the few you missed.</p><span className="mock-button">Retry the 11 I missed</span></div>
-    </div>
-  );
-  if (kind === "family") return (
-    <div className="mock-body">
-      <span className="mock-meta">WHO’S STUDYING TODAY?</span>
-      <div className="mock-profiles"><span className="is-selected"><b>T</b>Tolu<small>SS1</small></span><span><b>A</b>Amaka<small>SS1</small></span><span className="add"><b>+</b>Add learner</span></div>
-      <div className="mock-pin"><span>Tolu’s PIN</span><i /><i /><i /><i /></div>
-    </div>
-  );
+function HeroArt() {
   return (
-    <div className="mock-body">
-      <span className="mock-meta">CHEMISTRY · FIRST TERM</span>
-      <div className="mock-bar"><span /></div>
-      <div className="mock-weeks"><span className="done"><Check size={14} /> Week 10 · Constituents of the atom</span><span className="done"><Check size={14} /> Week 11 · Electronic structure</span><span className="next"><ArrowRight size={14} /> Week 12 · Electronic configuration</span></div>
-    </div>
+    <svg className="hero-svg" viewBox="0 0 520 460" role="img" aria-label="Illustration of an Edify lesson on a tablet, beside a stack of textbooks and a pencil">
+      <circle cx="300" cy="230" r="190" fill="#8d99ae" opacity=".22" />
+      <rect x="360" y="40" width="96" height="96" rx="16" fill="#ef233c" />
+      <path d="M392 88l14 14 26-30" stroke="#fff" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <rect x="110" y="70" width="300" height="340" rx="26" fill="#2b2d42" />
+      <rect x="128" y="92" width="264" height="296" rx="12" fill="#edf2f4" />
+      <rect x="128" y="92" width="264" height="58" rx="12" fill="#fff" />
+      <rect x="146" y="108" width="34" height="26" rx="6" fill="#ef233c" />
+      <rect x="192" y="110" width="120" height="9" rx="4.5" fill="#2b2d42" />
+      <rect x="192" y="126" width="78" height="7" rx="3.5" fill="#8d99ae" />
+      <rect x="146" y="166" width="228" height="64" rx="10" fill="#fff" />
+      <rect x="160" y="180" width="128" height="8" rx="4" fill="#2b2d42" />
+      <rect x="160" y="196" width="196" height="6" rx="3" fill="#8d99ae" />
+      <rect x="160" y="208" width="160" height="6" rx="3" fill="#8d99ae" />
+      <rect x="146" y="242" width="108" height="40" rx="8" fill="#2b2d42" />
+      <rect x="160" y="257" width="18" height="10" rx="3" fill="#fff" />
+      <rect x="184" y="258" width="56" height="8" rx="4" fill="#fff" opacity=".7" />
+      <rect x="266" y="242" width="108" height="40" rx="8" fill="#fff" stroke="#8d99ae" strokeOpacity=".5" />
+      <rect x="146" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#8d99ae" strokeOpacity=".5" />
+      <rect x="266" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#ef233c" strokeWidth="2" />
+      <rect x="146" y="346" width="228" height="10" rx="5" fill="#8d99ae" opacity=".35" />
+      <rect x="146" y="346" width="150" height="10" rx="5" fill="#ef233c" />
+      <rect x="30" y="330" width="150" height="26" rx="5" fill="#d90429" />
+      <rect x="44" y="304" width="132" height="26" rx="5" fill="#8d99ae" />
+      <rect x="22" y="356" width="168" height="28" rx="5" fill="#2b2d42" />
+      <rect x="40" y="364" width="80" height="6" rx="3" fill="#edf2f4" opacity=".6" />
+      <g transform="rotate(-38 440 360)">
+        <rect x="380" y="350" width="130" height="18" rx="3" fill="#ef233c" />
+        <rect x="380" y="350" width="22" height="18" rx="3" fill="#8d99ae" />
+        <path d="M510 350l22 9-22 9z" fill="#2b2d42" />
+      </g>
+    </svg>
   );
 }
 
 export default function Home() {
   return <>
-    <div className="announce"><Spark size={14} /> SS1 · {plural(totals.readyTopics, "topic")} ready to study · more subjects on the way</div>
-    <header className="site-header">
-      <div className="shell header-inner">
+    <header className="home-header">
+      <div className="shell home-header-inner">
         <Brand />
-        <nav aria-label="Main navigation"><a href="#features">Features</a><a href="#how">How it works</a><a href="#curriculum">Curriculum</a><a href="#faq">FAQ</a><a href="/profiles">Log in</a><a href="/signup" className="pill-button small">Sign up free</a></nav>
+        <nav className="home-nav" aria-label="Main navigation">{NAV.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
+        <div className="home-header-actions"><Link href="/profiles" className="home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up free</Link></div>
       </div>
     </header>
 
     <main id="main" className="home">
-      <section className="hero shell">
-        <div className="hero-copy">
-          <span className="badge"><b>SS1</b> The study space built for senior secondary learners</span>
-          <h1>Study smart.<br />Ace your <span className="hl">exams.</span></h1>
-          <p className="hero-intro">Clear weekly notes, quick exam summaries and <strong>WAEC-style practice</strong> with answers for every SS1 subject, one week at a time.</p>
-          <div className="hero-actions"><a className="pill-button" href="/signup">Create a free account <ArrowRight /></a><a className="pill-outline" href="#curriculum">See the curriculum <ArrowRight /></a></div>
-          <p className="hero-proof"><strong>{totals.questions}+</strong> practice questions across <strong>{plural(totals.readyTopics, "topic")}</strong>. Free to explore.</p>
-        </div>
-        <div className="hero-art" aria-hidden="true">
-          <div className="hero-glow" />
-          <div className="hero-card">
-            <div className="window-dots"><i /><i /><i /></div>
-            <span className="mock-meta">WEEK 12 · ELECTRONIC CONFIGURATION</span>
-            <strong className="hero-card-title">Which rule says orbitals fill singly before pairing?</strong>
-            <div className="mock-options"><span><b>A</b>Aufbau principle</span><span className="ok"><b>B</b>Hund’s rule</span><span><b>C</b>Pauli exclusion</span><span><b>D</b>Octet rule</span></div>
-            <div className="hero-score"><strong>18 / 20</strong><span>objective score</span></div>
-          </div>
-          <div className="float-chip chip-one"><Check size={14} /> Lesson completed</div>
-          <div className="float-chip chip-two"><Bolt size={14} /> Quick exam notes</div>
-          <div className="float-chip chip-three"><b>A1</b> here I come</div>
-          <div className="atom"><i /><i /><i /><span /></div>
-        </div>
-      </section>
-
-      <section className="shell why">
-        <div className="why-card">
-          <div className="why-copy">
-            <span className="kicker">WHY SS1 MATTERS</span>
-            <h2>Your WAEC result starts <span className="hl">in SS1.</span></h2>
-            <p>Universities and JAMB ask for credits (C6 or better) in five subjects, including English and Mathematics. Much of what WAEC tests is first taught in SS1, so a strong foundation now saves a scramble in SS3.</p>
-            <p className="why-note">Edify follows the SS1 scheme of work week by week, so what you read here matches what was taught in class.</p>
-            <a href="#curriculum" className="text-link">See the curriculum <ArrowRight size={14} /></a>
-          </div>
-          <div className="why-stats">
-            <div className="stat stat-green"><strong>{totals.readyTopics} / {totals.topics}</strong><span>listed topics ready to study</span></div>
-            <div className="stat"><span className="stat-icon"><Pencil /></span><strong>{totals.questions}</strong><span>WAEC-style questions with answers</span></div>
-            <div className="stat"><span className="stat-icon"><Bolt /></span><strong>12</strong><span>likely exam questions every week</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section className="goals" aria-labelledby="goals-title">
-        <div className="shell section-title"><h2 id="goals-title">From SS1 <span className="muted-word">to</span> <span className="hl">A1.</span></h2><p>Sample study goals and habits, not real results.</p></div>
-        <div className="goal-track">
-          {[0, 1].map((copy) => (
-            <ul className="goal-row" key={copy} aria-hidden={copy === 1 ? true : undefined}>
-              {GOALS.map((goal, index) => (
-                <li className={`goal-card ${index % 3 === 0 ? "is-brand" : ""}`} key={`${copy}-${index}`}>
-                  <div className="goal-top"><strong>{goal.grade}</strong><span>TARGET<br />{goal.subject.toUpperCase()}</span></div>
-                  <p>“{goal.habit}”</p>
-                  <small>{goal.week}</small>
-                </li>
-              ))}
+      <section className="hero">
+        <div className="shell hero-inner">
+          <div className="hero-copy">
+            <span className="kicker">For SS1 students in Nigeria</span>
+            <h1>Study smarter for <span className="hl">WAEC</span>, one week at a time.</h1>
+            <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for every SS1 subject, following the same scheme of work as your school.</p>
+            <div className="hero-actions">
+              <Link href="/signup" className="pill-button">Create a free account <ArrowRight /></Link>
+              <a href="#how" className="pill-outline">See how it works</a>
+            </div>
+            <ul className="hero-facts">
+              <li><Check size={16} /> Free for families</li>
+              <li><Check size={16} /> Follows the SS1 scheme</li>
+              <li><Check size={16} /> Works on any phone</li>
             </ul>
-          ))}
-        </div>
-      </section>
-
-      <section className="who-section shell" id="who">
-        <div><span className="kicker">GET STARTED</span><h2>One account for the <span className="hl">whole family.</span></h2><p>A parent or guardian signs up, adds each child with their own 4-digit PIN, and every child gets their own progress and notes.</p></div>
-        <div className="who-grid">
-          <a href="/signup" className="who-card"><span className="avatar" aria-hidden="true"><Spark /></span><strong>New to Edify</strong><small>Create a family account <ArrowRight size={14} /></small></a>
-          <a href="/profiles" className="who-card"><span className="avatar" aria-hidden="true"><Check /></span><strong>Already joined</strong><small>Log in and pick a learner <ArrowRight size={14} /></small></a>
-        </div>
-      </section>
-
-      <section className="features shell" id="features">
-        <div className="section-title"><span className="kicker">FEATURES</span><h2>All the tools you need,<br /><span className="hl">in one spot.</span></h2></div>
-        {FEATURES.map((feature, index) => (
-          <div className={`feature-row ${index % 2 ? "flip" : ""}`} key={feature.kicker}>
-            <div className="feature-copy"><span className="kicker">{feature.kicker}</span><h3>{feature.title}</h3><p>{feature.text}</p></div>
-            <div className="mock-window" aria-hidden="true"><div className="window-dots"><i /><i /><i /></div><Mock kind={feature.mock} /></div>
           </div>
-        ))}
+          <div className="hero-art"><HeroArt /></div>
+        </div>
       </section>
 
-      <section className="how shell" id="how">
-        <div className="section-title"><span className="kicker">HOW IT WORKS</span><h2>Set up in <span className="hl">two minutes.</span></h2></div>
+      <section className="stat-band" aria-label="Edify in numbers">
+        <div className="shell stat-band-inner">
+          <div><strong>{totals.questions}+</strong><span>practice questions with answers</span></div>
+          <div><strong>{totals.readyTopics}</strong><span>lessons ready to study</span></div>
+          <div><strong>12</strong><span>likely exam questions per lesson</span></div>
+          <div><strong>A1–F9</strong><span>WAEC-style grade on every quiz</span></div>
+        </div>
+      </section>
+
+      <section className="shell compare" aria-labelledby="compare-title">
+        <div className="compare-copy">
+          <span className="kicker">Why Edify</span>
+          <h2 id="compare-title">Textbooks are long. <span className="hl">The exam is short.</span></h2>
+          <p>Universities and JAMB ask for credits in five subjects, including English and Mathematics, and much of what WAEC tests is first taught in SS1. Edify turns each week of the scheme into something you can revise in one sitting.</p>
+        </div>
+        <div className="compare-table">
+          <div className="compare-col is-before">
+            <h3>Studying from the textbook alone</h3>
+            <ul><li>Dozens of pages for one topic</li><li>No way to check your answers</li><li>Errors in the book go unnoticed</li><li>Notes lost in exercise books</li></ul>
+          </div>
+          <div className="compare-col is-after">
+            <h3>Studying with Edify</h3>
+            <ul><li>One-screen quick notes per week</li><li>Questions that mark themselves</li><li>Book mistakes flagged and fixed</li><li>Notes saved to your account</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="shell features" id="features" aria-labelledby="features-title">
+        <div className="section-head"><span className="kicker">Features</span><h2 id="features-title">Everything you need for the term, <span className="hl">in one place.</span></h2></div>
+        <div className="bento">
+          <article className="tile tile-wide">
+            <div className="tile-icon"><Bolt size={20} /></div>
+            <h3>Quick exam notes</h3>
+            <p>Every lesson opens with the must-know points for the week, so you can revise a whole topic in about ten minutes.</p>
+            <div className="tile-demo notes-demo">
+              <strong>The three rules for filling orbitals</strong>
+              <ul><li><b>Aufbau</b> lowest energy orbital first</li><li><b>Pauli</b> two electrons per orbital, opposite spins</li><li><b>Hund</b> fill singly, then pair</li></ul>
+            </div>
+          </article>
+          <article className="tile tile-red">
+            <div className="tile-icon"><Target size={20} /></div>
+            <h3>Practice that marks itself</h3>
+            <p>Tap an option and see straight away if you’re right, with the answer explained.</p>
+            <div className="tile-demo quiz-demo"><span className="ok">B · Hund’s rule</span><span>Correct</span></div>
+          </article>
+          <article className="tile tile-navy">
+            <div className="tile-icon"><Flag size={20} /></div>
+            <h3>Hidden facts</h3>
+            <p>Exam tips, plus the places where the textbook gets it wrong, corrected.</p>
+          </article>
+          <article className="tile">
+            <div className="tile-icon"><Pencil size={20} /></div>
+            <h3>A real WAEC grade</h3>
+            <p>Finish a quiz and get graded A1–F9, then retry only the ones you missed.</p>
+            <div className="tile-demo grade-demo"><strong>B2</strong><span>29 of 40 · 72%</span></div>
+          </article>
+          <article className="tile tile-slate">
+            <div className="tile-icon"><Note size={20} /></div>
+            <h3>Your own notes</h3>
+            <p>Write notes in any lesson and find them all on one revision page.</p>
+          </article>
+          <article className="tile tile-half">
+            <div className="tile-icon"><Users size={20} /></div>
+            <h3>Family accounts</h3>
+            <p>One parent account for every child, each with their own PIN, progress and notes.</p>
+          </article>
+          <article className="tile tile-half tile-navy">
+            <div className="tile-icon"><Clock size={20} /></div>
+            <h3>Pick up where you stopped</h3>
+            <p>Your dashboard shows the next lesson, what’s coming up and how far through the term you are.</p>
+            <div className="tile-demo progress-demo"><span /></div>
+          </article>
+        </div>
+      </section>
+
+      <section className="lesson-anatomy" aria-labelledby="anatomy-title">
+        <div className="shell anatomy-inner">
+          <div>
+            <div className="section-head left"><span className="kicker">Inside every lesson</span><h2 id="anatomy-title">Five parts, <span className="hl">one week’s topic.</span></h2></div>
+            <ol className="anatomy-list">
+              {LESSON_PARTS.map(({ title, text, icon: Icon }, index) => (
+                <li key={title}><span className="anatomy-num">{index + 1}</span><div><h3><Icon size={17} /> {title}</h3><p>{text}</p></div></li>
+              ))}
+            </ol>
+          </div>
+          <div className="anatomy-demo" aria-hidden="true">
+            <div className="demo-head"><span>Chemistry · Week 12</span><strong>Electronic configuration</strong><div className="demo-toggle"><b>Quick notes</b><i>Full notes</i></div></div>
+            <div className="demo-block"><strong>1. Sub-shells and orbitals</strong><span /><span /><span className="short" /></div>
+            <div className="demo-block watch"><strong>Watch out</strong><span /><span className="short" /></div>
+            <div className="demo-question"><strong>Q09 · Objective</strong><div><i className="ok">A · 1s² 2s² 2p³</i><i>B · 1s² 2s² 2p⁵</i></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="shell how" id="how" aria-labelledby="how-title">
+        <div className="section-head"><span className="kicker">How it works</span><h2 id="how-title">Set up in <span className="hl">two minutes.</span></h2></div>
         <ol className="how-steps">
           {STEPS.map((step, index) => <li key={step.title}><span className="how-num">{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}
         </ol>
-        <div className="hero-actions center"><a href="/signup" className="pill-button">Create a free account <ArrowRight /></a></div>
+        <div className="center-cta"><Link href="/signup" className="pill-button">Create a free account <ArrowRight /></Link></div>
       </section>
 
-      <section className="playbook shell" aria-labelledby="playbook-title">
-        <div className="playbook-card">
-          <div className="playbook-intro">
-            <span className="kicker">EXAM-HALL PLAYBOOK</span>
-            <h2 id="playbook-title">Know the topic. <span className="hl">Then know the exam.</span></h2>
-            <blockquote>“Most lost marks aren’t from not knowing. They’re from misreading, skipping steps and leaving blanks.”</blockquote>
-          </div>
-          <ul className="playbook-list">{PLAYBOOK.map((tip, index) => <li key={tip.title}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{tip.title}</strong><p>{tip.text}</p></div></li>)}</ul>
-        </div>
-      </section>
-
-      <section className="curriculum-section shell" id="curriculum">
-        <div className="section-title"><span className="kicker">YOUR STUDY PATH</span><h2>A little progress, <span className="hl">every week.</span></h2><p>Arranged the way you learn it at school: class, term, subject, then week.</p></div>
-        <div className="curriculum-list">
+      <section className="shell subjects" id="subjects" aria-labelledby="subjects-title">
+        <div className="section-head"><span className="kicker">Subjects</span><h2 id="subjects-title">Follow the term, <span className="hl">week by week.</span></h2><p>Arranged the way you learn it at school: class, term, subject, then week.</p></div>
+        <div className="subject-cards">
           {catalog.map(({ term, subject, weeks, ready }) => (
-            <div className="curriculum-card" key={`${term.slug}/${subject.slug}`}>
-              <div className="curriculum-card-head"><div className="subject-symbol" aria-hidden="true">{subject.name[0]}</div><div><span>SS1 · {term.name.toUpperCase()}</span><h3>{subject.name}</h3></div><div className="curriculum-count">{ready} of {weeks.length} ready</div></div>
-              <div className="topic-list">{weeks.map(({ week, lesson }) => <div className="topic-row" key={week.slug}><span className="topic-number">{week.label}</span><span>{week.topic}</span><span className={lesson ? "status-pill ready" : "status-pill"}>{lesson ? "Ready" : "Coming soon"}</span></div>)}</div>
-            </div>
+            <article className="subject-card" key={`${term.slug}/${subject.slug}`}>
+              <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}</small><h3>{subject.name}</h3></div><span className="status-pill ready">{ready} of {weeks.length} ready</span></header>
+              <ol>{weeks.map(({ week, lesson }) => <li key={week.slug} className={lesson ? "" : "soon"}><span>{week.label}</span><span>{week.topic}</span>{lesson ? <Check size={16} /> : <small>Soon</small>}</li>)}</ol>
+            </article>
           ))}
-          <div className="more-subjects"><span className="subject-symbol muted" aria-hidden="true"><Spark /></span><div><strong>More subjects are on the way</strong><p>Each new subject appears here as soon as its first lessons are ready.</p></div><a href="/signup" className="text-link">Create a free account <ArrowRight size={14} /></a></div>
+          <article className="subject-card more">
+            <span className="more-mark" aria-hidden="true">+</span>
+            <h3>More SS1 subjects are on the way</h3>
+            <p>Each new subject appears here as soon as its first lessons are written and checked. One account covers them all.</p>
+            <Link href="/signup" className="pill-outline small">Create a free account</Link>
+          </article>
         </div>
       </section>
 
-      <section className="faq shell" id="faq">
-        <div className="faq-intro"><span className="kicker">QUESTIONS</span><h2>Things parents <span className="hl">often ask.</span></h2><p>Something else on your mind? Create an account and look around. It’s free.</p></div>
+      <section className="parents" id="parents" aria-labelledby="parents-title">
+        <div className="shell parents-inner">
+          <div className="parents-copy">
+            <span className="kicker">For parents &amp; guardians</span>
+            <h2 id="parents-title">Built for the whole family.</h2>
+            <p>You create the account and add your children. They study; you can see how far each one has got.</p>
+            <Link href="/signup" className="pill-button">Create a family account <ArrowRight /></Link>
+          </div>
+          <ul className="parents-grid">
+            {PARENT_POINTS.map(({ title, text, icon: Icon }) => <li key={title}><span className="parent-icon"><Icon size={20} /></span><h3>{title}</h3><p>{text}</p></li>)}
+          </ul>
+        </div>
+      </section>
+
+      <section className="shell playbook" aria-labelledby="playbook-title">
+        <div className="section-head left"><span className="kicker">Exam-hall playbook</span><h2 id="playbook-title">Know the topic. <span className="hl">Then know the exam.</span></h2></div>
+        <ol className="playbook-list">{PLAYBOOK.map((tip, index) => <li key={tip.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{tip.title}</h3><p>{tip.text}</p></li>)}</ol>
+      </section>
+
+      <section className="shell faq" id="faq" aria-labelledby="faq-title">
+        <div className="faq-intro"><span className="kicker">Questions</span><h2 id="faq-title">Things parents often ask.</h2><p>Something else on your mind? Create an account and look around. It’s free.</p></div>
         <dl className="faq-list">{FAQS.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
       </section>
 
-      <section className="closing-cta">
-        <div className="shell closing-inner">
-          <span className="kicker">ONE WEEK AT A TIME</span>
-          <h2>Your A1 <span className="hl">starts here.</span></h2>
-          <p>Create a free family account and start with the first lesson today.</p>
-          <div className="hero-actions center"><a href="/signup" className="pill-button">Create a free account <ArrowRight /></a><a href="/profiles" className="pill-outline">Log in</a></div>
+      <section className="final-cta">
+        <div className="shell final-inner">
+          <h2>Your A1 starts this week.</h2>
+          <p>Create a free family account and open the first lesson in minutes.</p>
+          <div className="final-actions"><Link href="/signup" className="btn-light">Create a free account <ArrowRight /></Link><Link href="/profiles" className="btn-line">Log in</Link></div>
         </div>
       </section>
     </main>
@@ -258,8 +274,9 @@ export default function Home() {
       <div className="shell footer-inner">
         <div className="footer-brand"><Brand /><p>Clear notes and WAEC-style practice for every SS1 subject, one week at a time.</p></div>
         <nav className="footer-links" aria-label="Footer">
-          <div><strong>Study</strong><a href="#features">Features</a><a href="#how">How it works</a><a href="#curriculum">Curriculum</a><a href="#faq">FAQ</a></div>
-          <div><strong>Account</strong><a href="/signup">Create a family account</a><a href="/profiles">Log in</a><a href="/forgot-password">Reset password</a></div>
+          <div><strong>Study</strong><a href="#features">Features</a><a href="#how">How it works</a><a href="#subjects">Subjects</a></div>
+          <div><strong>Parents</strong><a href="#parents">For parents</a><a href="#faq">FAQ</a></div>
+          <div><strong>Account</strong><Link href="/signup">Create an account</Link><Link href="/profiles">Log in</Link><Link href="/forgot-password">Reset password</Link></div>
         </nav>
       </div>
       <div className="shell footer-base"><span>© 2026 Edify</span><span>Made with care for the next generation of thinkers.</span></div>
