@@ -1,0 +1,165 @@
+/* Landing page motion. Rules for the reveal system itself live in motion.css and the movement is driven by
+   ScrollMotion (src/components/scroll-motion.tsx). Everything here is inside `no-preference`, so people who ask
+   for reduced motion get the same page, still. Flat style: only transform and opacity move. */
+
+@keyframes header-drop { from { translate: 0 -100%; } }
+@keyframes word-in { from { opacity: 0; translate: 0 0.6em; rotate: 4deg; } }
+@keyframes ha-rise { from { opacity: 0; translate: 0 46px; } }
+@keyframes ha-drop { from { opacity: 0; translate: 0 -90px; } }
+@keyframes ha-in-scale { from { opacity: 0; scale: 0.6; } }
+@keyframes ha-float { 50% { transform: translateY(-9px); } }
+@keyframes ha-float-alt { 50% { transform: translateY(8px); } }
+@keyframes ha-breathe { 50% { transform: scale(1.05); } }
+@keyframes ha-pulse { 50% { scale: 1.06; } }
+@keyframes ha-write { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(5deg) translate(3px, -2px); } }
+@keyframes ticker-scroll { to { transform: translateX(-50%); } }
+@keyframes wave-drift { to { transform: translateX(-50%); } }
+@keyframes progress-grow { to { transform: scaleX(1); } }
+@keyframes toggle-on { 0%, 40% { background: var(--navy); color: var(--white); } 50%, 90% { background: var(--mist); color: var(--ink-2); } 100% { background: var(--navy); color: var(--white); } }
+@keyframes toggle-off { 0%, 40% { background: var(--mist); color: var(--ink-2); } 50%, 90% { background: var(--navy); color: var(--white); } 100% { background: var(--mist); color: var(--ink-2); } }
+@keyframes pick-in { from { background: var(--white); color: var(--ink); border-color: var(--line); scale: 0.94; } }
+@keyframes medal-in { from { opacity: 0; scale: 0.3; rotate: -40deg; } }
+@keyframes star-pulse { 0%, 100% { scale: 1; } 50% { scale: 1.3; } }
+@keyframes sticker-wiggle { 0%, 60%, 100% { rotate: 0deg; } 66% { rotate: -6deg; } 72% { rotate: 5deg; } 78% { rotate: -3deg; } 84% { rotate: 2deg; } }
+@keyframes confetti-pop { from { opacity: 0; scale: 0; translate: 0 60px; } }
+@keyframes confetti-drift { 50% { translate: 0 -12px; rotate: calc(var(--rot) + 28deg); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- Header ---- */
+  .home-header { animation: header-drop 0.7s var(--ease-out) backwards; transition: border-color 0.3s; }
+  .home-header.is-scrolled { border-bottom-color: var(--navy); }
+  .home-header .brand-mark { animation: pop-in 0.8s var(--ease-spring) 0.3s backwards; transition: scale 0.3s var(--ease-out); }
+  .home-header.is-scrolled .brand-mark { scale: 0.9; }
+  .home-nav a { position: relative; padding-block: 4px; transition: color 0.15s; }
+  .home-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; border-radius: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease-out); }
+  .home-nav a:hover::after, .home-nav a.is-active::after { transform: scaleX(1); }
+  .home-nav a.is-active { color: var(--ink); font-weight: 600; }
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress { animation: progress-grow linear both; animation-timeline: scroll(root block); }
+  }
+
+  /* ---- Hero: copy ---- */
+  .hero-copy > .kicker { animation: rise-in 0.7s var(--ease-out) 0.05s backwards; }
+  .hero .hw { display: inline-block; animation: word-in 0.85s var(--ease-out) calc(0.12s + var(--w, 0) * 70ms) backwards; }
+  .hero-intro { animation: rise-in 0.8s var(--ease-out) 0.55s backwards; }
+  .hero-actions { animation: rise-in 0.8s var(--ease-out) 0.68s backwards; }
+  .hero-facts li { animation: rise-in 0.7s var(--ease-out) backwards; }
+  .hero-facts li:nth-child(1) { animation-delay: 0.85s; }
+  .hero-facts li:nth-child(2) { animation-delay: 0.95s; }
+  .hero-facts li:nth-child(3) { animation-delay: 1.05s; }
+  .hero-actions .pill-button svg { animation: nudge 3.4s ease-in-out 2.6s infinite; }
+  .hero-actions .pill-button:hover svg { animation: none; }
+
+  /* ---- Hero: illustration ---- */
+  .hero-svg .ha-blob, .hero-svg .ha-badge, .hero-svg .ha-tablet, .hero-svg .ha-pick, .hero-svg .ha-book, .hero-svg .ha-pencil { transform-box: fill-box; transform-origin: center; }
+  .hero-svg .ha-line, .hero-svg .ha-bar { transform-box: fill-box; transform-origin: 0% 50%; }
+  .hero-svg .ha-pencil { transform-origin: 92% 70%; }
+  .ha-blob { animation: ha-in-scale 1s var(--ease-out) backwards, ha-breathe 9s ease-in-out 1s infinite; }
+  .ha-tablet { animation: ha-rise 0.95s var(--ease-out) 0.15s backwards, ha-float 7s ease-in-out 1.2s infinite; }
+  .ha-badge { animation: pop-in 0.7s var(--ease-spring) 0.8s backwards, ha-float-alt 6s ease-in-out 1.6s infinite; }
+  .ha-line { animation: line-grow 0.7s var(--ease-out) backwards; }
+  .ha-line.l1 { animation-delay: 0.7s; }
+  .ha-line.l2 { animation-delay: 0.82s; }
+  .ha-line.l3 { animation-delay: 0.94s; }
+  .ha-line.l4 { animation-delay: 1.06s; }
+  .ha-line.l5 { animation-delay: 1.18s; }
+  .ha-bar { animation: line-grow 1.5s var(--ease-out) 1.2s backwards; }
+  .ha-pick { animation: ha-pulse 2.4s ease-in-out 2.2s infinite; }
+  .ha-book { animation: ha-drop 0.95s var(--ease-spring) backwards; }
+  .ha-book.b3 { animation-delay: 0.3s; }
+  .ha-book.b1 { animation-delay: 0.45s; }
+  .ha-book.b2 { animation-delay: 0.6s; }
+  .ha-pencil { animation: ha-in-scale 0.7s var(--ease-out) 1s backwards, ha-write 2.6s ease-in-out 1.8s infinite alternate; }
+  .hero-mascot { animation: ha-rise 0.9s var(--ease-out) 0.9s backwards, bob 6s ease-in-out 1.9s infinite; }
+  .hero-speech { transform-origin: 20% 100%; animation: pop-in 0.7s var(--ease-spring) 1.3s backwards, bob 6.5s ease-in-out 2.2s infinite; }
+  .hero-star { animation: pop-in 0.6s var(--ease-spring) 1.5s backwards, wiggle 5s ease-in-out 2.2s infinite; }
+  .hero-sparkle { animation: pop-in 0.6s var(--ease-spring) 1.6s backwards, twinkle 3.2s ease-in-out 2.2s infinite; }
+  .hero-atom { animation: pop-in 0.6s var(--ease-spring) 1.4s backwards, spin 26s linear 2.2s infinite; }
+
+  /* ---- Stat band ---- */
+  .motion-ok .stat-band-inner.is-in > div { animation-name: pop-in; animation-timing-function: var(--ease-spring); animation-duration: 0.65s; }
+
+  /* ---- Ticker ---- */
+  .ticker-track { display: flex; width: max-content; animation: ticker-scroll 52s linear infinite; }
+  .ticker-group { flex: none; flex-wrap: nowrap; justify-content: flex-start; padding: 14px 0; }
+  .ticker-group + .ticker-group { display: flex; }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  .ticker-star { animation: twinkle 4s ease-in-out infinite; }
+  .ticker-group li:nth-child(even) .ticker-star { animation-delay: -2s; }
+
+  /* ---- Wave dividers drift sideways, one against the other ---- */
+  .wave-wrap .wave { animation: wave-drift 30s linear infinite; }
+  .wave-wrap:has(+ .final-cta) .wave { animation-direction: reverse; animation-duration: 36s; }
+
+  /* ---- Why Edify: the ticks and crosses pop in one by one ---- */
+  .compare-col ul.is-in li::before { animation: pop-in 0.5s var(--ease-spring) calc(var(--i, 0) * var(--step) + 0.25s) backwards; }
+
+  /* ---- Feature tiles: small demos play once the grid is on screen ---- */
+  .tile-icon { transition: rotate 0.4s var(--ease-spring), scale 0.4s var(--ease-spring); }
+  .bento.is-in .notes-demo li { animation: slide-in-left 0.6s var(--ease-out) backwards; }
+  .bento.is-in .notes-demo li:nth-child(1) { animation-delay: 0.6s; }
+  .bento.is-in .notes-demo li:nth-child(2) { animation-delay: 0.75s; }
+  .bento.is-in .notes-demo li:nth-child(3) { animation-delay: 0.9s; }
+  .bento.is-in .quiz-demo span:last-child { animation: stamp-in 0.5s var(--ease-spring) 1.2s backwards; }
+  .bento.is-in .grade-demo strong { animation: stamp-in 0.6s var(--ease-spring) 1.5s backwards; }
+  .bento.is-in .progress-demo span { transform-origin: left; animation: meter-grow 1.5s var(--ease-out) 1.2s backwards; }
+
+  /* ---- Inside every lesson: the sample page builds itself ---- */
+  .demo-stack.is-in .demo-block span { transform-origin: left; animation: line-grow 0.8s var(--ease-out) calc(var(--i, 0) * var(--step) + 0.35s) backwards; }
+  .demo-stack.is-in .demo-question i.ok { animation: pick-in 0.5s var(--ease-spring) 1.5s backwards; }
+  .demo-stack.is-in .demo-toggle b { animation: toggle-on 6s ease-in-out 2.4s infinite; }
+  .demo-stack.is-in .demo-toggle i { animation: toggle-off 6s ease-in-out 2.4s infinite; }
+  .anatomy-mascot { transform-origin: 50% 100%; animation: sway 5s ease-in-out infinite; }
+  .anatomy-num { transition: scale 0.3s var(--ease-spring), rotate 0.3s var(--ease-spring); }
+
+  /* ---- Section headings: doodles pop in, then keep gently moving ---- */
+  .section-head.is-in .head-doodle { animation: pop-in 0.7s var(--ease-spring) 0.3s backwards, twinkle 4.5s ease-in-out 1.3s infinite; }
+  .section-head.is-in .head-doodle.pencil { animation: pop-in 0.7s var(--ease-spring) 0.3s backwards, sway 3.2s ease-in-out 1.3s infinite; }
+
+  /* ---- How it works ---- */
+  .how-steps.is-in .how-num { animation: pop-in 0.6s var(--ease-spring) calc(var(--i, 0) * var(--step) + 0.3s) backwards; }
+  .how-steps.is-in .how-arrow { animation: wipe-in 0.8s var(--ease-out) calc(var(--i, 0) * var(--step) + 0.65s) backwards; }
+  .how-num { transition: scale 0.3s var(--ease-spring); }
+
+  /* ---- Subjects ---- */
+  .subject-card ol.is-in li svg { animation: pop-in 0.4s var(--ease-spring) calc(var(--i, 0) * var(--step) + 0.3s) backwards; }
+  .more-mark { transition: rotate 0.45s var(--ease-spring); }
+  .subject-symbol { transition: rotate 0.3s var(--ease-spring), scale 0.3s var(--ease-spring); }
+
+  /* ---- For parents ---- */
+  .parents-grid.is-in .parent-icon { animation: pop-in 0.6s var(--ease-spring) calc(var(--i, 0) * var(--step) + 0.3s) backwards; }
+  .parents-grid li { transition: transform 0.3s var(--ease-spring); }
+
+  /* ---- Playbook: the rule draws across, then the numbers drop in ---- */
+  .motion-ok .playbook-list { position: relative; border-top-color: transparent; }
+  .motion-ok .playbook-list::before { content: ""; position: absolute; left: 0; right: 0; top: -2px; height: 2px; background: var(--navy); transform-origin: left; }
+  .motion-ok .playbook-list.is-pending::before { transform: scaleX(0); }
+  .motion-ok .playbook-list.is-in::before { animation: meter-grow 1.2s var(--ease-out) backwards; }
+  .playbook-list.is-in li > span { display: inline-block; animation: pop-in 0.5s var(--ease-spring) calc(var(--i, 0) * var(--step) + 0.3s) backwards; }
+
+  /* ---- Plans ---- */
+  .medal-star { transform-box: fill-box; transform-origin: center; }
+  .plan-steps.is-in .plan-medal { animation: medal-in 0.9s var(--ease-spring) calc(var(--i, 0) * var(--step) + 0.35s) backwards; }
+  .plan-steps.is-in .medal-star { animation: star-pulse 3.2s ease-in-out calc(var(--i, 0) * 0.4s + var(--s, 0) * 0.25s + 1.5s) infinite; }
+  .plan-sticker { animation: sticker-wiggle 4.5s ease-in-out 1.5s infinite; }
+  .plan-medal { transition: rotate 0.4s var(--ease-spring), scale 0.4s var(--ease-spring); }
+  .plans-intro.is-in .beta-stamp { animation: stamp-in 0.8s var(--ease-spring) 0.6s backwards; }
+  .beta-mascot { animation: bob 3.6s ease-in-out infinite; }
+
+  /* ---- Closing banner ---- */
+  .final-inner.is-in .confetti i { animation: confetti-pop 0.9s var(--ease-spring) var(--delay, 0s) backwards, confetti-drift 5.5s ease-in-out calc(var(--delay, 0s) + 1.2s) infinite; }
+  .final-cta .btn-light svg { animation: nudge 2.6s ease-in-out 1s infinite; }
+  .final-cta .btn-light:hover svg { animation: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .tile:hover .tile-icon { rotate: -8deg; scale: 1.1; }
+  .anatomy-list li:hover .anatomy-num { rotate: -8deg; scale: 1.1; }
+  .how-steps li:hover .how-num { scale: 1.12; }
+  .subject-card:hover .subject-symbol { rotate: 6deg; scale: 1.08; }
+  .subject-card.more:hover .more-mark { rotate: 90deg; }
+  .parents-grid li:hover { transform: translateY(-4px); }
+  .parents-grid li:hover .parent-icon { animation: sway 0.6s ease-in-out; }
+  .plan:hover .plan-medal { rotate: -8deg; scale: 1.1; }
+  .home-nav a:hover { color: var(--ink); }
+}

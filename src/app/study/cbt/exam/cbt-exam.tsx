@@ -166,6 +166,7 @@ function ExamRunner({ title, subject, questions, minutes, params, storageKey }: 
 
       <div className="cbt-body">
         <section className="cbt-question" aria-labelledby="cbt-prompt">
+          <div key={question.key} className="cbt-q-swap">
           <div className="cbt-q-meta">
             <span>Question <strong>{current + 1}</strong> of {questions.length}</span>
             {flagged.has(question.key) && <span className="cbt-flag-tag"><Flag size={14} /> Flagged</span>}
@@ -180,6 +181,7 @@ function ExamRunner({ title, subject, questions, minutes, params, storageKey }: 
                 </button>
               );
             })}
+          </div>
           </div>
           <nav className="cbt-nav" aria-label="Question navigation">
             <button type="button" className="pill-outline small" disabled={current === 0} onClick={() => go(current - 1)}><ArrowLeft /> <span>Previous</span></button>

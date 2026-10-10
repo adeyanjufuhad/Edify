@@ -36,6 +36,9 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 ## Files
 - `src/app/globals.css`: tokens, base, buttons, status pills, forms, skeletons, 404.
 - `src/app/home.css`: landing page (imported by `src/app/page.tsx`).
+- `src/app/motion.css`: motion tokens (easing), shared keyframes, the scroll-reveal system, button hover lift and the account-page entrances (imported by the root layout).
+- `src/app/home-motion.css`: everything that moves on the landing page (imported by `src/app/page.tsx`).
+- `src/app/study/motion.css`: dashboard, learning path, quiz and CBT motion (imported by `src/app/study/layout.tsx`).
 - `src/app/study/app.css`: study app shell, dashboard, subjects, notes, lesson pages (imported by `src/app/study/layout.tsx`).
 - `src/app/study/cbt/cbt.css`: CBT setup, the exam screen, results and the recent-attempts list (imported by the CBT pages and the dashboard).
 - `src/app/(account)/account.css`: sign-up, log-in, verify, reset and learner profiles.
@@ -68,7 +71,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - **Sidebar link**: icon + label; active is solid red.
 - **Quiz**: options are 2px-bordered; correct turns solid navy, wrong turns red-tinted with a red border. Result card shows an A1–F9 grade badge (navy for A/B, red for C, slate for D–F); the bands live in `src/lib/grades.ts`.
 - **CBT exam**: sticky navy bar with the countdown (turns red in the last minute) and Submit; one question at a time with big A–D option buttons (picked = solid navy with a red letter); a numbered grid (answered = navy, flagged = red border and dot, current = red ring). On phones the grid folds behind "Show all numbers" and Previous / Flag / Next stick to the bottom.
-- **Plans** (landing page): a staircase of wide rows, Bronze → Silver → Gold, each with a flat medal (red-deep, steel blue, red) and its features as chips; Gold is the navy row, Silver carries a tilted "Most popular" sticker, and a dashed red "Free while we’re in beta" stamp sits beside them. **Plan badge**: a small pill on profile cards and in the sidebar ("Gold · sponsored").
+- **Plans** (landing page): a staircase of wide rows, Bronze → Silver → Gold, each with a flat medal (red-deep, steel blue, red) and its features as chips; Gold is the navy row, Silver carries a tilted "Most popular" sticker, and a dashed red "Pay securely with Paystack" stamp (Edi cheering) sits beside them. **Plan badge**: a small pill on profile cards and in the sidebar ("Gold · sponsored").
 - Icons are inline SVGs from `src/components/icons.tsx` (2px stroke, `aria-hidden`). No emoji.
 
 ## Fun layer
@@ -77,12 +80,25 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - Buttons are pills with a solid darker 4px bottom edge that presses down on click. Cards use 2px borders and 24–32px corners; a few accents tilt slightly (logo badge, step numbers, grade badge).
 - Gentle `float` and `wiggle` animations only run when the user hasn't asked for reduced motion.
 
+## Motion
+Movement is part of the playful feel, but it stays flat: only `transform` and `opacity` animate (plus tiny one-off colour swaps). No blur, glow or gradient, and nothing animates `width`, `height`, `top` or `left`.
+
+- **Tokens** (`src/app/motion.css`): `--ease-out` (settles softly, for entrances), `--ease-spring` (small overshoot, for pops and presses), `--ease-soft` (shakes).
+- **Individual transform properties.** Keyframes use `translate`, `rotate` and `scale`, never `transform`, so they compose with the static `transform: rotate(...)` many pieces already have (step numbers, grade badge, plan cards). The exception is SVG groups that carry a `transform` attribute: scale a child path or a wrapping `<g>`, never the element with the attribute.
+- **Scroll reveal.** Mark one element `data-reveal` (variants `left`, `right`, `fade`, `stamp`, `none`) or a group `data-stagger` (`fast`, `stairs`); its direct children rise in one after another. `src/components/scroll-motion.tsx` (mounted once on the landing page) adds `.is-pending` only to groups that start below the fold, then swaps to `.is-in` when they scroll into view, using `IntersectionObserver` only (no scroll listeners). Anything already on screen is never hidden, and without JavaScript nothing is hidden at all. Chain extra effects off `.is-in` in CSS (for example `.bento.is-in .progress-demo span`).
+- **Count-ups** use `data-count` (optional `data-prefix`, `data-suffix`); the real number is always in the HTML and is restored when the count ends. They only run for numbers that start below the fold, so nothing flashes.
+- **Ambient loops** (float, bob, sway, twinkle, spin, ticker, drifting waves) are slow and limited to decorations. Keep them out of reading areas such as lesson text.
+- **Landing page:** staggered hero entrance, tablet illustration that assembles and drifts, a ticker band, drifting wave dividers, count-up numbers, a scroll-progress line and active-section nav link in the header.
+- **Study app:** CSS only. Each page's blocks enter in a short cascade; meters fill from empty; the next lesson's path node pulses; correct answers pop and wrong ones shake; CBT questions slide in and the timer pulses in the last minute.
+- **Reduced motion.** Every animation lives inside `@media (prefers-reduced-motion: no-preference)` and `ScrollMotion` does nothing for people who prefer reduced motion, so they get the finished, static page. The global reduce rule also forces one iteration so no loop can strobe.
+- Hover lifts sit behind `(hover: hover)` so touch screens don't get stuck hover states.
+
 ## Do's and Don'ts
 ### Do
 - Keep copy subject-neutral; Chemistry is only the first subject with content.
 - Compute counts from `src/data/catalog.ts`; never hard-code them.
 - Give every interactive element a visible focus ring (red, white on dark/red backgrounds).
-- Honour `prefers-reduced-motion`.
+- Honour `prefers-reduced-motion`: new animation goes inside `@media (prefers-reduced-motion: no-preference)`.
 
 ### Don't
 - Add blurred shadows, gradients, glows, glass effects or grain.

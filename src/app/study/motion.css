@@ -1,0 +1,95 @@
+/* Study app motion: dashboard, subjects, notes, lessons, quizzes and CBT. CSS only, so nothing extra is sent to the browser.
+   The layout stays mounted between pages, so each page's content enters with a short cascade every time you navigate.
+   Shared keyframes and easing tokens come from src/app/motion.css. Only transform and opacity move. */
+
+@keyframes low-pulse { 50% { scale: 1.07; } }
+
+/* Position of each child in a list, so rows can enter one after another. */
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(1) { --i: 0; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(2) { --i: 1; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(3) { --i: 2; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(4) { --i: 3; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(5) { --i: 4; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(6) { --i: 5; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(7) { --i: 6; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(8) { --i: 7; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(9) { --i: 8; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(10) { --i: 9; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(11) { --i: 10; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(12) { --i: 11; }
+:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(n + 13) { --i: 12; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- Page entrance: header first, then each block. Grids below animate their own children instead. ---- */
+  .page > :nth-child(2) { --pd: 0.06s; }
+  .page > :nth-child(3) { --pd: 0.12s; }
+  .page > :nth-child(4) { --pd: 0.18s; }
+  .page > :nth-child(n + 5) { --pd: 0.24s; }
+  .page > :not(.read-progress):not(.cbt-exam):not(.stat-grid):not(.overview-grid) { animation: rise-in 0.6s var(--ease-out) var(--pd, 0s) backwards; }
+
+  .stat-grid > * { animation: rise-in 0.6s var(--ease-out) calc(0.12s + var(--i) * 70ms) backwards; }
+  .overview-col > * { animation: rise-in 0.65s var(--ease-out) calc(0.3s + var(--i) * 90ms) backwards; }
+  .path-step, .notes-grid > li, .upcoming-list > li, .subject-list > li, .attempt-list > li, .note-previews > li, .cbt-week-scores > li {
+    animation: rise-in 0.55s var(--ease-out) calc(0.2s + var(--i) * 45ms) backwards;
+  }
+  .cbt-modes > * { animation: rise-in 0.55s var(--ease-out) calc(0.15s + var(--i) * 70ms) backwards; }
+
+  /* Progress meters fill from empty. The real width is the inline transform, so the end state never changes. */
+  .meter > span { animation: meter-grow 1.1s var(--ease-out) 0.45s backwards; }
+
+  /* ---- Sidebar ---- */
+  .sidebar-nav > .sidebar-link { animation: slide-in-left 0.5s var(--ease-out) calc(0.1s + var(--i) * 50ms) backwards; }
+  .sidebar-link { transition: background-color 0.15s, color 0.15s, translate 0.25s var(--ease-out); }
+  .sidebar-link svg { transition: scale 0.25s var(--ease-spring); }
+
+  /* ---- Dashboard ---- */
+  .hello-mascot { transform-origin: 50% 100%; animation: bob 5s ease-in-out infinite; }
+  .hello-star { animation: twinkle 3.2s ease-in-out infinite; }
+  .hello-head .pill-button svg { animation: nudge 3.4s ease-in-out 1.6s infinite; }
+  .hello-head .pill-button:hover svg { animation: none; }
+  .next-sparkle { animation: twinkle 3.5s ease-in-out infinite; }
+  .next-actions .btn-navy svg { animation: nudge 3.4s ease-in-out 2s infinite; }
+  .next-actions .btn-navy:hover svg { animation: none; }
+  .coming-mascot, .empty-mascot { animation: bob 5s ease-in-out infinite; }
+  .upcoming-list svg, .path-action svg, .continue-card b { transition: translate 0.25s var(--ease-out); }
+  .note-previews a, .attempt-list a { transition: background-color 0.15s, translate 0.25s var(--ease-out); }
+
+  /* ---- Learning path: the next lesson pulses ---- */
+  .is-next .path-node { position: relative; }
+  .is-next .path-node::after { content: ""; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid var(--red); pointer-events: none; animation: ring-pulse 2.2s ease-out infinite; }
+
+  /* ---- Lessons and quizzes ---- */
+  .view-toggle button, .lesson-toc a { transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+  .option-btn { transition: border-color 0.15s, background-color 0.15s, color 0.15s, translate 0.2s var(--ease-spring); }
+  .option-btn.is-correct { animation: pop-sm 0.5s var(--ease-spring); }
+  .option-btn.is-wrong { animation: shake 0.45s ease-in-out; }
+  .answer { animation: rise-in 0.35s var(--ease-out); }
+  .quiz-result { animation: rise-in 0.5s var(--ease-out); }
+  .grade-badge { animation: stamp-in 0.75s var(--ease-spring) 0.15s backwards; }
+  .result-mascot { animation: bob 3s ease-in-out infinite; }
+  .complete-button.completed { animation: pop-sm 0.5s var(--ease-spring); }
+
+  /* ---- CBT ---- */
+  .cbt-mode { transition: border-color 0.15s, background-color 0.15s, translate 0.25s var(--ease-spring); }
+  .cbt-mode.is-on .cbt-mode-icon { animation: pop-sm 0.45s var(--ease-spring); }
+  .cbt-option { transition: border-color 0.15s, background-color 0.15s, color 0.15s, translate 0.2s var(--ease-spring); }
+  .cbt-option.is-picked { animation: pop-sm 0.4s var(--ease-spring); }
+  .cbt-q-swap { animation: rise-in 0.35s var(--ease-out) backwards; }
+  .cbt-cell { transition: background-color 0.15s, border-color 0.15s, scale 0.2s var(--ease-spring); }
+  .cbt-cell.is-current { scale: 1.1; }
+  .cbt-timer.is-low { animation: low-pulse 1s ease-in-out infinite; }
+  .cbt-banner { animation: rise-in 0.4s var(--ease-out); }
+  .attempt-grade { transition: rotate 0.3s var(--ease-spring), scale 0.3s var(--ease-spring); }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .sidebar-link:hover { translate: 3px 0; }
+  .sidebar-link:hover svg { scale: 1.12; }
+  .upcoming-list a:hover svg, .path-step > a:hover .path-action svg { translate: 3px 0; }
+  .continue-card:hover b { translate: 4px 0; }
+  .note-previews a:hover, .attempt-list a:hover { translate: 0 -2px; }
+  .option-btn:not(:disabled):hover, .cbt-option:not(:disabled):hover { translate: 0 -2px; }
+  .cbt-mode:hover { translate: 0 -2px; }
+  .cbt-cell:hover:not(.is-current) { scale: 1.07; }
+  .attempt-list a:hover .attempt-grade { rotate: -6deg; scale: 1.08; }
+}

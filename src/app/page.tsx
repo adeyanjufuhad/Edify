@@ -1,11 +1,14 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import Brand from "@/components/brand";
 import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Note, Pencil, Shield, Target, Users } from "@/components/icons";
 import { catalog, totals } from "@/data/catalog";
 import { PLANS, naira, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
+import ScrollMotion from "@/components/scroll-motion";
 import { Arrow, Atom, Pencil as PencilDoodle, Sparkle, SpeechBubble, Squiggle, Star, Wave } from "@/components/doodles";
 import "./home.css";
+import "./home-motion.css";
 
 const NAV = [
   { href: "#features", label: "Features" },
@@ -14,6 +17,17 @@ const NAV = [
   { href: "#parents", label: "For parents" },
   { href: "#plans", label: "Plans" },
   { href: "#faq", label: "FAQ" },
+];
+
+// A slow, endless strip of what Edify covers. Purely decorative, so the whole band is hidden from screen readers.
+const TICKER: { text: string; kind: "class" | "feature" }[] = [
+  { text: "JSS1", kind: "class" }, { text: "Quick exam notes", kind: "feature" },
+  { text: "JSS2", kind: "class" }, { text: "Self-marking practice", kind: "feature" },
+  { text: "JSS3", kind: "class" }, { text: "Timed CBT tests", kind: "feature" },
+  { text: "SS1", kind: "class" }, { text: "A1–F9 grades", kind: "feature" },
+  { text: "SS2", kind: "class" }, { text: "Hidden facts", kind: "feature" },
+  { text: "SS3", kind: "class" }, { text: "Your own notes", kind: "feature" },
+  { text: "Family accounts", kind: "feature" }, { text: "Works on any phone", kind: "feature" },
 ];
 
 const LESSON_PARTS = [
@@ -54,6 +68,22 @@ const FAQS = [
   { q: "What if a PIN is forgotten?", a: "A parent can remove that learner and add them again with a new PIN. Ask for help first, because removing a learner also clears their progress." },
 ];
 
+// Confetti around Edi in the closing banner: [left %, top %, width px, height px, colour, rotation deg, delay s].
+const CONFETTI: [number, number, number, number, string, number, number][] = [
+  [14, 30, 14, 14, "#fdf0d5", 0, 0.1], [22, 62, 10, 22, "#ffffff", 28, 0.25], [30, 18, 12, 12, "#003049", 0, 0.4],
+  [38, 74, 18, 8, "#fdf0d5", -24, 0.15], [62, 20, 10, 20, "#ffffff", -30, 0.3], [70, 70, 14, 14, "#003049", 0, 0.5],
+  [79, 34, 18, 8, "#fdf0d5", 20, 0.2], [86, 64, 12, 12, "#ffffff", 0, 0.35], [8, 70, 16, 8, "#669bbc", 35, 0.45],
+  [92, 22, 10, 10, "#fdf0d5", 0, 0.55], [48, 88, 12, 12, "#669bbc", 0, 0.6], [55, 10, 16, 8, "#ffffff", -18, 0.05],
+];
+
+const vars = (values: Record<string, string | number>) => values as React.CSSProperties;
+
+// Splits a heading into words that rise in one after another (the animation is in home-motion.css).
+function Words({ text, start = 0 }: { text: string; start?: number }) {
+  const words = text.split(" ");
+  return <>{words.map((word, index) => <Fragment key={`${word}-${index}`}><span className="hw" style={vars({ "--w": start + index })}>{word}</span>{index < words.length - 1 ? " " : null}</Fragment>)}</>;
+}
+
 // A flat medal for each plan: one, two or three stars on a palette-coloured disc.
 function Medal({ plan, tier }: { plan: Plan; tier: number }) {
   const stars = [[50], [38, 62], [30, 50, 70]][tier];
@@ -62,43 +92,52 @@ function Medal({ plan, tier }: { plan: Plan; tier: number }) {
       <path d="M30 4h18l8 30H38zM52 4h18l-8 30H44z" className="medal-ribbon" />
       <circle cx="50" cy="70" r="38" className="medal-disc" />
       <circle cx="50" cy="70" r="29" className="medal-ring" fill="none" strokeWidth="3" />
-      {stars.map((x) => <path key={x} transform={`translate(${x - 9} 61)`} d="M9 0l2.6 5.6 6.1.7-4.5 4.2 1.2 6L9 13.6 3.6 16.5l1.2-6L.3 6.3l6.1-.7z" className="medal-star" />)}
+      {stars.map((x, index) => <g key={x} transform={`translate(${x - 9} 61)`}><path style={vars({ "--s": index })} d="M9 0l2.6 5.6 6.1.7-4.5 4.2 1.2 6L9 13.6 3.6 16.5l1.2-6L.3 6.3l6.1-.7z" className="medal-star" /></g>)}
     </svg>
   );
 }
 
+// The tablet illustration is split into groups so its pieces can drop in and drift (see .ha-* in home-motion.css).
 function HeroArt() {
   return (
     <svg className="hero-svg" viewBox="0 0 520 460" role="img" aria-label="Illustration of an Edify lesson on a tablet, beside a stack of textbooks and a pencil">
-      <circle cx="300" cy="230" r="190" fill="#669bbc" opacity=".22" />
-      <rect x="360" y="40" width="96" height="96" rx="16" fill="#c1121f" />
-      <path d="M392 88l14 14 26-30" stroke="#fff" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <rect x="110" y="70" width="300" height="340" rx="26" fill="#003049" />
-      <rect x="128" y="92" width="264" height="296" rx="12" fill="#fdf0d5" />
-      <rect x="128" y="92" width="264" height="58" rx="12" fill="#fff" />
-      <rect x="146" y="108" width="34" height="26" rx="6" fill="#c1121f" />
-      <rect x="192" y="110" width="120" height="9" rx="4.5" fill="#003049" />
-      <rect x="192" y="126" width="78" height="7" rx="3.5" fill="#669bbc" />
-      <rect x="146" y="166" width="228" height="64" rx="10" fill="#fff" />
-      <rect x="160" y="180" width="128" height="8" rx="4" fill="#003049" />
-      <rect x="160" y="196" width="196" height="6" rx="3" fill="#669bbc" />
-      <rect x="160" y="208" width="160" height="6" rx="3" fill="#669bbc" />
-      <rect x="146" y="242" width="108" height="40" rx="8" fill="#003049" />
-      <rect x="160" y="257" width="18" height="10" rx="3" fill="#fff" />
-      <rect x="184" y="258" width="56" height="8" rx="4" fill="#fff" opacity=".7" />
-      <rect x="266" y="242" width="108" height="40" rx="8" fill="#fff" stroke="#669bbc" strokeOpacity=".5" />
-      <rect x="146" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#669bbc" strokeOpacity=".5" />
-      <rect x="266" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#c1121f" strokeWidth="2" />
-      <rect x="146" y="346" width="228" height="10" rx="5" fill="#669bbc" opacity=".35" />
-      <rect x="146" y="346" width="150" height="10" rx="5" fill="#c1121f" />
-      <rect x="30" y="330" width="150" height="26" rx="5" fill="#780000" />
-      <rect x="44" y="304" width="132" height="26" rx="5" fill="#669bbc" />
-      <rect x="22" y="356" width="168" height="28" rx="5" fill="#003049" />
-      <rect x="40" y="364" width="80" height="6" rx="3" fill="#fdf0d5" opacity=".6" />
-      <g transform="rotate(-38 440 360)">
-        <rect x="380" y="350" width="130" height="18" rx="3" fill="#c1121f" />
-        <rect x="380" y="350" width="22" height="18" rx="3" fill="#669bbc" />
-        <path d="M510 350l22 9-22 9z" fill="#003049" />
+      <circle className="ha-blob" cx="300" cy="230" r="190" fill="#669bbc" opacity=".22" />
+      <g className="ha-badge">
+        <rect x="360" y="40" width="96" height="96" rx="16" fill="#c1121f" />
+        <path d="M392 88l14 14 26-30" stroke="#fff" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </g>
+      <g className="ha-tablet">
+        <rect x="110" y="70" width="300" height="340" rx="26" fill="#003049" />
+        <rect x="128" y="92" width="264" height="296" rx="12" fill="#fdf0d5" />
+        <rect x="128" y="92" width="264" height="58" rx="12" fill="#fff" />
+        <rect x="146" y="108" width="34" height="26" rx="6" fill="#c1121f" />
+        <rect className="ha-line l1" x="192" y="110" width="120" height="9" rx="4.5" fill="#003049" />
+        <rect className="ha-line l2" x="192" y="126" width="78" height="7" rx="3.5" fill="#669bbc" />
+        <rect x="146" y="166" width="228" height="64" rx="10" fill="#fff" />
+        <rect className="ha-line l3" x="160" y="180" width="128" height="8" rx="4" fill="#003049" />
+        <rect className="ha-line l4" x="160" y="196" width="196" height="6" rx="3" fill="#669bbc" />
+        <rect className="ha-line l5" x="160" y="208" width="160" height="6" rx="3" fill="#669bbc" />
+        <rect x="146" y="242" width="108" height="40" rx="8" fill="#003049" />
+        <rect x="160" y="257" width="18" height="10" rx="3" fill="#fff" />
+        <rect x="184" y="258" width="56" height="8" rx="4" fill="#fff" opacity=".7" />
+        <rect x="266" y="242" width="108" height="40" rx="8" fill="#fff" stroke="#669bbc" strokeOpacity=".5" />
+        <rect x="146" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#669bbc" strokeOpacity=".5" />
+        <rect className="ha-pick" x="266" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#c1121f" strokeWidth="2" />
+        <rect x="146" y="346" width="228" height="10" rx="5" fill="#669bbc" opacity=".35" />
+        <rect className="ha-bar" x="146" y="346" width="150" height="10" rx="5" fill="#c1121f" />
+      </g>
+      <rect className="ha-book b1" x="30" y="330" width="150" height="26" rx="5" fill="#780000" />
+      <rect className="ha-book b2" x="44" y="304" width="132" height="26" rx="5" fill="#669bbc" />
+      <g className="ha-book b3">
+        <rect x="22" y="356" width="168" height="28" rx="5" fill="#003049" />
+        <rect x="40" y="364" width="80" height="6" rx="3" fill="#fdf0d5" opacity=".6" />
+      </g>
+      <g className="ha-pencil">
+        <g transform="rotate(-38 440 360)">
+          <rect x="380" y="350" width="130" height="18" rx="3" fill="#c1121f" />
+          <rect x="380" y="350" width="22" height="18" rx="3" fill="#669bbc" />
+          <path d="M510 350l22 9-22 9z" fill="#003049" />
+        </g>
       </g>
     </svg>
   );
@@ -106,12 +145,15 @@ function HeroArt() {
 
 export default function Home() {
   return <>
-    <header className="home-header">
+    <div className="top-sentinel" data-sentinel aria-hidden="true" />
+    <ScrollMotion />
+    <header className="home-header" data-header>
       <div className="shell home-header-inner">
         <Brand />
-        <nav className="home-nav" aria-label="Main navigation">{NAV.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
+        <nav className="home-nav" aria-label="Main navigation" data-spy>{NAV.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
         <div className="home-header-actions"><Link href="/profiles" className="home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up</Link></div>
       </div>
+      <span className="scroll-progress" aria-hidden="true" />
     </header>
 
     <main id="main" className="home">
@@ -119,7 +161,7 @@ export default function Home() {
         <div className="shell hero-inner">
           <div className="hero-copy">
             <span className="kicker kicker-fun"><Sparkle className="kicker-icon" color="#c1121f" /> For secondary school students in Nigeria</span>
-            <h1>Study smarter, <span className="hl">one week</span> at a time.</h1>
+            <h1><Words text="Study smarter," />{" "}<span className="hl"><Words text="one week" start={2} /></span>{" "}<Words text="at a time." start={4} /></h1>
             <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for JSS1 to SS3, following the same scheme of work as your school.</p>
             <div className="hero-actions">
               <Link href="/signup" className="pill-button">Create an account <ArrowRight /></Link>
@@ -133,10 +175,10 @@ export default function Home() {
           </div>
           <div className="hero-art">
             <HeroArt />
-            <Mascot pose="wave" className="hero-mascot float slow" />
+            <Mascot pose="wave" className="hero-mascot" />
             <SpeechBubble className="hero-speech">Hi, I’m Edi! Let’s ace this term together.</SpeechBubble>
             <Star className="hero-star wiggle" />
-            <Sparkle className="hero-sparkle float" />
+            <Sparkle className="hero-sparkle" />
             <Atom className="hero-atom" />
           </div>
         </div>
@@ -144,35 +186,45 @@ export default function Home() {
 
       <Wave fill="#003049" className="wave-into" />
       <section className="stat-band" aria-label="Edify in numbers">
-        <div className="shell stat-band-inner">
-          <div><strong>{totals.questions}+</strong><span>practice questions with answers</span></div>
-          <div><strong>{totals.readyTopics}</strong><span>lessons ready to study</span></div>
-          <div><strong>12</strong><span>likely exam questions per lesson</span></div>
+        <div className="shell stat-band-inner" data-stagger>
+          <div><strong><b className="num" data-count={totals.questions}>{totals.questions}</b>+</strong><span>practice questions with answers</span></div>
+          <div><strong><b className="num" data-count={totals.readyTopics}>{totals.readyTopics}</b></strong><span>lessons ready to study</span></div>
+          <div><strong><b className="num" data-count={12}>12</b></strong><span>likely exam questions per lesson</span></div>
           <div><strong>JSS1–SS3</strong><span>one account for every class</span></div>
         </div>
       </section>
 
+      <div className="ticker" aria-hidden="true">
+        <div className="ticker-track">
+          {[0, 1].map((copy) => (
+            <ul className="ticker-group" key={copy}>
+              {TICKER.map((item, index) => <li key={item.text} className={`ticker-${item.kind}`}>{item.text}<Star className="ticker-star" color={index % 2 ? "#669bbc" : "#c1121f"} /></li>)}
+            </ul>
+          ))}
+        </div>
+      </div>
+
       <section className="shell compare" aria-labelledby="compare-title">
-        <div className="compare-copy">
+        <div className="compare-copy" data-reveal="left">
           <span className="kicker">Why Edify</span>
           <h2 id="compare-title">Textbooks are long. <span className="hl">The exam is short.</span></h2>
           <p>Every class builds on the one before, from JSS1 to SS3, and the topics you learn each week come back in your tests and exams. Edify turns each week of the scheme of work into something you can revise in one sitting.</p>
         </div>
-        <div className="compare-table">
+        <div className="compare-table" data-reveal="right">
           <div className="compare-col is-before">
             <h3>Studying from the textbook alone</h3>
-            <ul><li>Dozens of pages for one topic</li><li>No way to check your answers</li><li>Errors in the book go unnoticed</li><li>Notes lost in exercise books</li></ul>
+            <ul data-stagger="fast"><li>Dozens of pages for one topic</li><li>No way to check your answers</li><li>Errors in the book go unnoticed</li><li>Notes lost in exercise books</li></ul>
           </div>
           <div className="compare-col is-after">
             <h3>Studying with Edify</h3>
-            <ul><li>One-screen quick notes per week</li><li>Questions that mark themselves</li><li>Book mistakes flagged and fixed</li><li>Notes saved to your account</li></ul>
+            <ul data-stagger="fast"><li>One-screen quick notes per week</li><li>Questions that mark themselves</li><li>Book mistakes flagged and fixed</li><li>Notes saved to your account</li></ul>
           </div>
         </div>
       </section>
 
       <section className="shell features" id="features" aria-labelledby="features-title">
-        <div className="section-head doodled"><Star className="head-doodle left" color="#669bbc" /><Sparkle className="head-doodle right" color="#c1121f" /><span className="kicker">Features</span><h2 id="features-title">Everything you need for the term, <span className="hl">in one place.</span></h2></div>
-        <div className="bento">
+        <div className="section-head doodled" data-reveal><Star className="head-doodle left" color="#669bbc" /><Sparkle className="head-doodle right" color="#c1121f" /><span className="kicker">Features</span><h2 id="features-title">Everything you need for the term, <span className="hl">in one place.</span></h2></div>
+        <div className="bento" data-stagger>
           <article className="tile tile-wide">
             <div className="tile-icon"><Bolt size={20} /></div>
             <h3>Quick exam notes</h3>
@@ -221,8 +273,8 @@ export default function Home() {
       <section className="lesson-anatomy" aria-labelledby="anatomy-title">
         <div className="shell anatomy-inner">
           <div>
-            <div className="section-head left"><span className="kicker">Inside every lesson</span><h2 id="anatomy-title">Five parts, <span className="hl">one week’s topic.</span></h2></div>
-            <ol className="anatomy-list">
+            <div className="section-head left" data-reveal><span className="kicker">Inside every lesson</span><h2 id="anatomy-title">Five parts, <span className="hl">one week’s topic.</span></h2></div>
+            <ol className="anatomy-list" data-stagger>
               {LESSON_PARTS.map(({ title, text, icon: Icon }, index) => (
                 <li key={title}><span className="anatomy-num">{index + 1}</span><div><h3><Icon size={17} /> {title}</h3><p>{text}</p></div></li>
               ))}
@@ -230,29 +282,31 @@ export default function Home() {
           </div>
           <div className="anatomy-demo" aria-hidden="true">
             <Mascot pose="read" className="anatomy-mascot" />
-            <div className="demo-head"><span>Chemistry · Week 12</span><strong>Electronic configuration</strong><div className="demo-toggle"><b>Quick notes</b><i>Full notes</i></div></div>
-            <div className="demo-block"><strong>1. Sub-shells and orbitals</strong><span /><span /><span className="short" /></div>
-            <div className="demo-block watch"><strong>Watch out</strong><span /><span className="short" /></div>
-            <div className="demo-question"><strong>Q09 · Objective</strong><div><i className="ok">A · 1s² 2s² 2p³</i><i>B · 1s² 2s² 2p⁵</i></div></div>
+            <div className="demo-stack" data-stagger>
+              <div className="demo-head"><span>Chemistry · Week 12</span><strong>Electronic configuration</strong><div className="demo-toggle"><b>Quick notes</b><i>Full notes</i></div></div>
+              <div className="demo-block"><strong>1. Sub-shells and orbitals</strong><span /><span /><span className="short" /></div>
+              <div className="demo-block watch"><strong>Watch out</strong><span /><span className="short" /></div>
+              <div className="demo-question"><strong>Q09 · Objective</strong><div><i className="ok">A · 1s² 2s² 2p³</i><i>B · 1s² 2s² 2p⁵</i></div></div>
+            </div>
           </div>
         </div>
       </section>
 
       <section className="shell how" id="how" aria-labelledby="how-title">
-        <div className="section-head doodled"><PencilDoodle className="head-doodle pencil" /><span className="kicker">How it works</span><h2 id="how-title">Set up in <span className="hl">two minutes.</span></h2></div>
-        <ol className="how-steps">
+        <div className="section-head doodled" data-reveal><PencilDoodle className="head-doodle pencil" /><span className="kicker">How it works</span><h2 id="how-title">Set up in <span className="hl">two minutes.</span></h2></div>
+        <ol className="how-steps" data-stagger>
           {STEPS.map((step, index) => <li key={step.title}><span className="how-num">{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p>{index < STEPS.length - 1 && <Arrow className="how-arrow" />}</li>)}
         </ol>
-        <div className="center-cta"><Link href="/signup" className="pill-button">Create an account <ArrowRight /></Link></div>
+        <div className="center-cta" data-reveal><Link href="/signup" className="pill-button">Create an account <ArrowRight /></Link></div>
       </section>
 
       <section className="shell subjects" id="subjects" aria-labelledby="subjects-title">
-        <div className="section-head"><span className="kicker">Subjects</span><h2 id="subjects-title">Follow the term, <span className="hl">week by week.</span></h2><p>Arranged the way you learn it at school: class, term, subject, then week.</p></div>
-        <div className="subject-cards">
+        <div className="section-head" data-reveal><span className="kicker">Subjects</span><h2 id="subjects-title">Follow the term, <span className="hl">week by week.</span></h2><p>Arranged the way you learn it at school: class, term, subject, then week.</p></div>
+        <div className="subject-cards" data-stagger>
           {catalog.map(({ term, subject, weeks, ready }) => (
             <article className="subject-card" key={`${term.slug}/${subject.slug}`}>
               <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}</small><h3>{subject.name}</h3></div><span className="status-pill ready">{ready} of {weeks.length} ready</span></header>
-              <ol>{weeks.map(({ week, lesson }) => <li key={week.slug} className={lesson ? "" : "soon"}><span>{week.label}</span><span>{week.topic}</span>{lesson ? <Check size={16} /> : <small>Soon</small>}</li>)}</ol>
+              <ol data-stagger="fast">{weeks.map(({ week, lesson }) => <li key={week.slug} className={lesson ? "" : "soon"}><span>{week.label}</span><span>{week.topic}</span>{lesson ? <Check size={16} /> : <small>Soon</small>}</li>)}</ol>
             </article>
           ))}
           <article className="subject-card more">
@@ -267,26 +321,26 @@ export default function Home() {
       <Wave fill="#003049" className="wave-into" />
       <section className="parents" id="parents" aria-labelledby="parents-title">
         <div className="shell parents-inner">
-          <div className="parents-copy">
+          <div className="parents-copy" data-reveal="left">
             <span className="kicker">For parents &amp; guardians</span>
             <h2 id="parents-title">Built for the whole family.</h2>
             <p>You create the account and add your children. They study; you can see how far each one has got.</p>
             <Link href="/signup" className="pill-button">Create a family account <ArrowRight /></Link>
           </div>
-          <ul className="parents-grid">
+          <ul className="parents-grid" data-stagger>
             {PARENT_POINTS.map(({ title, text, icon: Icon }) => <li key={title}><span className="parent-icon"><Icon size={20} /></span><h3>{title}</h3><p>{text}</p></li>)}
           </ul>
         </div>
       </section>
 
       <section className="shell playbook" aria-labelledby="playbook-title">
-        <div className="section-head left"><span className="kicker">Exam-hall playbook</span><h2 id="playbook-title">Know the topic. <span className="hl">Then know the exam.</span></h2></div>
-        <ol className="playbook-list">{PLAYBOOK.map((tip, index) => <li key={tip.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{tip.title}</h3><p>{tip.text}</p></li>)}</ol>
+        <div className="section-head left" data-reveal><span className="kicker">Exam-hall playbook</span><h2 id="playbook-title">Know the topic. <span className="hl">Then know the exam.</span></h2></div>
+        <ol className="playbook-list" data-stagger>{PLAYBOOK.map((tip, index) => <li key={tip.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{tip.title}</h3><p>{tip.text}</p></li>)}</ol>
       </section>
 
       <section className="plans" id="plans" aria-labelledby="plans-title">
         <div className="shell plans-inner">
-          <div className="plans-intro">
+          <div className="plans-intro" data-reveal="left">
             <span className="kicker">Plans</span>
             <h2 id="plans-title">One plan per child, <span className="hl">for 105 days.</span></h2>
             <p>Pick what each child needs. Brothers and sisters can be on different plans.</p>
@@ -296,7 +350,7 @@ export default function Home() {
             </div>
             <Link href="/billing" className="pill-button">Choose a plan <ArrowRight /></Link>
           </div>
-          <ol className="plan-steps">
+          <ol className="plan-steps" data-stagger="stairs">
             {PLANS.map((plan, index) => (
               <li key={plan.id} className={`plan plan-${plan.id}`}>
                 {plan.popular && <span className="plan-sticker">Most popular</span>}
@@ -306,7 +360,7 @@ export default function Home() {
                   <p>{plan.tagline}</p>
                   <ul>{plan.features.map((feature) => <li key={feature}><Check size={14} />{feature}</li>)}</ul>
                 </div>
-                <p className="plan-price"><strong>{naira(plan.price)}</strong><small>per child, for 105 days</small></p>
+                <p className="plan-price"><strong data-count={plan.price} data-prefix="₦">{naira(plan.price)}</strong><small>per child, for 105 days</small></p>
               </li>
             ))}
           </ol>
@@ -314,13 +368,16 @@ export default function Home() {
       </section>
 
       <section className="shell faq" id="faq" aria-labelledby="faq-title">
-        <div className="faq-intro"><span className="kicker">Questions</span><h2 id="faq-title">Things parents often ask.</h2><p>Create a family account, add your learners, then choose the right plan for each one.</p></div>
-        <dl className="faq-list">{FAQS.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
+        <div className="faq-intro" data-reveal="left"><span className="kicker">Questions</span><h2 id="faq-title">Things parents often ask.</h2><p>Create a family account, add your learners, then choose the right plan for each one.</p></div>
+        <dl className="faq-list" data-stagger="fast">{FAQS.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
       </section>
 
       <Wave fill="#c1121f" className="wave-into" />
       <section className="final-cta">
-        <div className="shell final-inner">
+        <div className="shell final-inner" data-reveal="none">
+          <div className="confetti" aria-hidden="true">
+            {CONFETTI.map(([left, top, width, height, color, rotate, delay], index) => <i key={index} style={vars({ left: `${left}%`, top: `${top}%`, width, height, background: color, "--rot": `${rotate}deg`, "--delay": `${delay}s` })} />)}
+          </div>
           <Mascot pose="cheer" className="final-mascot mascot-badge float" />
           <h2>Your A1 starts this week.</h2>
           <p>Create a family account, choose a learner plan and start studying.</p>
