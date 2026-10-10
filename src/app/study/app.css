@@ -209,7 +209,7 @@
 .question-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--r); padding: 20px 22px; }
 .question-meta { display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
 .question-meta span:first-child { background: var(--navy); color: var(--white); padding: 3px 8px; border-radius: 6px; font-variant-numeric: tabular-nums; }
-.question-card h3 { font-family: var(--font-geist), system-ui, sans-serif; font-size: 17px; font-weight: 600; line-height: 1.5; letter-spacing: 0; margin: 12px 0 14px; }
+.question-card h3 { font-family: var(--font-body), system-ui, sans-serif; font-size: 17px; font-weight: 600; line-height: 1.5; letter-spacing: 0; margin: 12px 0 14px; }
 .question-card > .text-button { margin-top: 4px; }
 .option-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .option-btn { display: flex; gap: 10px; align-items: flex-start; text-align: left; background: var(--white); border: 2px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; font-size: 15px; color: var(--ink); transition: border-color 0.15s, background-color 0.15s; }
@@ -288,3 +288,31 @@
   .quiz-result { grid-template-columns: 1fr; }
   .lesson-section p, .lesson-section li { font-size: 16px; }
 }
+
+/* Fun layer: Edi, doodles and chunkier, rounder pieces */
+.hello-head { justify-content: flex-start; align-items: center; }
+.hello-head > div { flex: 1 1 320px; }
+.hello-mascot { width: 92px; flex: none; }
+.hello-star { display: inline-block; width: 28px; height: 28px; vertical-align: -2px; }
+.next-card { position: relative; overflow: hidden; border-radius: var(--r-xl); }
+.next-sparkle { position: absolute; right: 26px; top: 22px; width: 42px; opacity: 0.85; }
+.empty-mascot { width: 128px; }
+.result-art { display: grid; justify-items: center; }
+.result-mascot { width: 92px; margin-bottom: -12px; position: relative; z-index: 1; }
+.panel, .stat-tile, .question-card, .quick-block, .likely-item, .lesson-head, .check-list li, .tips-list li, .quiz-result { border-width: 2px; }
+.panel, .stat-tile { border-color: rgba(0, 48, 73, 0.12); }
+.sidebar-link { border-radius: 999px; padding: 11px 16px; }
+.sidebar-link.active { box-shadow: 0 3px 0 var(--red-deep); }
+.stat-tile { border-radius: var(--r-xl); }
+.stat-tile.is-navy { transform: rotate(-1deg); }
+.week-tag, .question-meta span:first-child, .view-toggle button { border-radius: 999px; }
+.view-toggle { border-radius: 999px; }
+.option-btn { border-radius: var(--r); }
+.option-btn b, .tips-list li::before, .check-list li::before { border-radius: 999px; }
+.grade-badge { border-radius: 50%; transform: rotate(-6deg); }
+.lesson-head { border-left-width: 8px; border-radius: var(--r-xl); }
+.quiz-score { border-radius: 999px; }
+.continue-card, .summary-box { border-radius: var(--r-xl); }
+.continue-card b { border-radius: 50%; }
+@media (max-width: 860px) { .tab-bar { border-radius: 24px 24px 0 0; } .tab-bar a.active { box-shadow: none; color: var(--white); } .tab-bar a.active svg { color: var(--red); } }
+@media (max-width: 600px) { .hello-mascot { width: 72px; } .quiz-score { border-radius: var(--r); } }

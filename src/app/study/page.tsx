@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Note } from "@/components/icons";
+import Mascot from "@/components/mascot";
+import { Sparkle, Star } from "@/components/doodles";
 import { lessonIndex, plural, totals } from "@/data/catalog";
 import { requireLearner } from "@/lib/session";
 import { loadStudy, percent } from "@/lib/study";
@@ -20,10 +22,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="page">
-      <header className="page-head">
+      <header className="page-head hello-head">
+        <Mascot pose="wave" className="hello-mascot" />
         <div>
           <span className="kicker">SS1 · {term.name}</span>
-          <h1>{greeting()}, {firstName}.</h1>
+          <h1>{greeting()}, {firstName}! <Star className="hello-star" /></h1>
           <p>{next ? <>Your next lesson is <strong>{next.week.topic}</strong> in {next.subject.name}.</> : "You’ve finished every lesson that’s ready. New lessons are on the way."}</p>
         </div>
         {next && <Link href={next.href} className="pill-button">Continue learning <ArrowRight /></Link>}
@@ -46,6 +49,7 @@ export default async function DashboardPage() {
         <div className="overview-col">
           {next && (
             <section className="next-card" aria-labelledby="next-title">
+              <Sparkle className="next-sparkle" color="#fdf0d5" />
               <span className="next-meta">Up next · {next.subject.name} · {next.week.label}</span>
               <h2 id="next-title">{next.week.topic}</h2>
               <p>{next.lesson?.subtitle}</p>

@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: Edify
-description: A flat, confident study space for Nigerian SS1 learners. Solid colour blocks in navy, steel blue, cream and red; no shadows, gradients or decoration. Outfit for headings, Geist for text. The study app has a navy sidebar; the marketing site alternates cream, white, navy and red sections.
+description: A flat, confident study space for Nigerian SS1 learners. Solid colour blocks in navy, steel blue, cream and red; no shadows, gradients or decoration. Fredoka (rounded) for headings, Nunito for text, and Edi the owl mascot plus hand-drawn doodles for a playful, kid-friendly feel. The study app has a navy sidebar; the marketing site alternates cream, white, navy and red sections.
 
 colors:
   navy: "#003049"
@@ -17,16 +17,16 @@ colors:
   tint-slate: "rgba(102,155,188,.16)"
 
 typography:
-  display: "Outfit (next/font/google, --font-display), weights 700-800"
-  text: "Geist (next/font/google, --font-geist), 400-600"
+  display: "Fredoka (next/font/google, --font-display), weight 600-700"
+  text: "Nunito (next/font/google, --font-body), 500-700"
   h1-marketing: { size: "clamp(40px, 5.2vw, 64px)", weight: 800, tracking: "-0.03em", leading: 1.04 }
   h1-app: { size: "clamp(30px, 3.6vw, 40px)", weight: 700 }
   h2: { size: "clamp(30px, 3.6vw, 44px)", weight: 700 }
   body: { size: "16-19px", leading: 1.6 }
   kicker: { size: "13px", weight: 700, tracking: "0.08em", transform: uppercase, color: red }
 
-radius: { small: 8px, default: 12px, large: 16px }
-shadow: none
+radius: { small: 12px, default: 18px, large: 24px, xl: 32px, buttons: 999px }
+shadow: "only a solid 4px bottom edge on buttons (no blur)"
 ---
 
 ## Overview
@@ -47,7 +47,8 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - Secondary text uses navy at 76% (`--ink-2`), tertiary at 62% (`--ink-3`).
 
 ## Typography
-- Outfit for headings and big numbers; Geist for everything else, including question text.
+- Fredoka for headings and big numbers; Nunito for everything else, including question text.
+- Highlighted words (`.hl`) are red with a wavy red underline.
 - Sentence case. Kickers are the only uppercase text besides small metadata labels.
 - `text-wrap: balance` on headings, `pretty` on paragraphs, `tabular-nums` on numbers.
 
@@ -66,6 +67,12 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - **Quiz**: options are 2px-bordered; correct turns solid navy, wrong turns red-tinted with a red border. Result card shows a WAEC grade badge (navy for A/B, red for C, slate for D–F).
 - Icons are inline SVGs from `src/components/icons.tsx` (2px stroke, `aria-hidden`). No emoji.
 
+## Fun layer
+- **Edi** (`src/components/mascot.tsx`): an owl in a graduation cap with poses `wave` (greetings, hero, auth), `read` (empty states, lesson preview), `cheer` (A/B quiz grades, final CTA) and `think` (C–F grades, 404).
+- **Doodles** (`src/components/doodles.tsx`): Star, Sparkle, Squiggle, Arrow, Atom, Pencil, a speech bubble and a `Wave` edge used where a section changes colour.
+- Buttons are pills with a solid darker 4px bottom edge that presses down on click. Cards use 2px borders and 24–32px corners; a few accents tilt slightly (logo badge, step numbers, grade badge).
+- Gentle `float` and `wiggle` animations only run when the user hasn't asked for reduced motion.
+
 ## Do's and Don'ts
 ### Do
 - Keep copy subject-neutral; Chemistry is only the first subject with content.
@@ -74,6 +81,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - Honour `prefers-reduced-motion`.
 
 ### Don't
-- Add shadows, gradients, glows, blur, grain, rotated cards or floating decorative chips.
+- Add blurred shadows, gradients, glows, glass effects or grain.
+- Use third-party clip art; draw new cartoon elements in the palette, in the same style as Edi.
 - Introduce colours outside the palette (other than tints made from it).
-- Use slate for body text, or use serif fonts.
+- Use steel blue for body text, or use serif fonts.

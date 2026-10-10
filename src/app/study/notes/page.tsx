@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, Note } from "@/components/icons";
+import { ArrowRight } from "@/components/icons";
 import { lessonIndex, plural } from "@/data/catalog";
 import { requireLearner } from "@/lib/session";
+import Mascot from "@/components/mascot";
 import { loadStudy } from "@/lib/study";
 
 export const metadata = { title: "My notes — Edify" };
@@ -41,7 +42,7 @@ export default async function NotesPage() {
         </ul>
       ) : !loadFailed && (
         <div className="panel empty-state">
-          <span className="empty-icon" aria-hidden="true"><Note size={26} /></span>
+          <Mascot pose="read" className="empty-mascot" />
           <h2>No notes yet</h2>
           <p>At the bottom of every lesson there’s a “My notes” box. Write a question for your teacher or a trick to remember, and it saves here automatically.</p>
           <Link href="/study/subjects" className="pill-button">Go to lessons <ArrowRight /></Link>

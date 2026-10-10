@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Brand from "@/components/brand";
 import { ArrowLeft, Check } from "@/components/icons";
+import Mascot from "@/components/mascot";
+import { SpeechBubble } from "@/components/doodles";
 import "./account.css";
 
 export const metadata = { title: "Your family account — Edify" };
@@ -16,6 +18,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           <h2>Study smarter for WAEC, one week at a time.</h2>
           <ul>{POINTS.map((point) => <li key={point}><span aria-hidden="true"><Check size={14} /></span>{point}</li>)}</ul>
         </div>
+        <div className="auth-mascot"><SpeechBubble className="auth-speech">You’ve got this. One week at a time!</SpeechBubble><Mascot pose="wave" className="float slow" /></div>
         <small>© 2026 Edify</small>
       </aside>
       <main id="main" className="auth-main">

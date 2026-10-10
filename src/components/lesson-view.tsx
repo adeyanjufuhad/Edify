@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { Lesson } from "@/data/lessons/types";
 import { ArrowLeft, ArrowRight, Bolt, Check } from "@/components/icons";
+import Mascot from "@/components/mascot";
 
 type Props = {
   lesson: Lesson;
@@ -269,7 +270,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
                   </article>,
                   q.number === lastObjective && finished && (
                     <div className="quiz-result" key="result" role="status">
-                      <div className="grade-badge" data-grade={result.grade[0]}><strong>{result.grade}</strong><span>{percent}%</span></div>
+                      <div className="result-art"><Mascot pose={"AB".includes(result.grade[0]) ? "cheer" : "think"} className="result-mascot" /><div className="grade-badge" data-grade={result.grade[0]}><strong>{result.grade}</strong><span>{percent}%</span></div></div>
                       <div>
                         <span className="kicker">OBJECTIVE RESULT</span>
                         <h3>You scored {score} out of {objective.length}.</h3>

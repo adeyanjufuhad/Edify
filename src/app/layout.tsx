@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Outfit } from "next/font/google";
+import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-display" });
+const nunito = Nunito({ subsets: ["latin"], variable: "--font-body" });
+const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-display" });
 
 const description = "Clear weekly notes, quick exam summaries and WAEC-style practice for every SS1 subject.";
 
@@ -17,7 +17,7 @@ export const viewport: Viewport = { themeColor: "#fdf0d5", colorScheme: "light" 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${nunito.variable} ${fredoka.variable}`}>
       <body>
         <a href="#main" className="skip-link">Skip to content</a>
         {children}

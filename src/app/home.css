@@ -42,7 +42,7 @@
 .compare-copy p { font-size: 17px; color: var(--ink-2); margin: 0; }
 .compare-table { display: grid; grid-template-columns: 1fr 1fr; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--line); }
 .compare-col { padding: 26px 24px; }
-.compare-col h3 { font-family: var(--font-geist), system-ui, sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0; margin: 0 0 16px; }
+.compare-col h3 { font-family: var(--font-body), system-ui, sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0; margin: 0 0 16px; }
 .compare-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .compare-col li { position: relative; padding-left: 28px; font-size: 15px; }
 .compare-col li::before { position: absolute; left: 0; top: 1px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; font-size: 12px; font-weight: 700; }
@@ -237,3 +237,38 @@
   .demo-question div { grid-template-columns: 1fr; }
   .footer-inner, .footer-links { grid-template-columns: 1fr; }
 }
+
+/* Fun layer: Edi the owl, doodles, wavy edges, chunkier cards */
+.kicker-fun { display: inline-flex; align-items: center; gap: 8px; background: var(--white); border: 2px solid var(--ink); border-radius: 999px; padding: 5px 14px 5px 10px; letter-spacing: 0.05em; }
+.kicker-icon { width: 16px; height: 16px; }
+.hero-art { position: relative; }
+.hero-mascot { position: absolute; left: -2%; bottom: -4%; width: 36%; max-width: 190px; }
+.hero-speech { position: absolute; left: 0; top: 2%; max-width: 230px; }
+.hero-star { position: absolute; right: 4%; bottom: 8%; width: 38px; }
+.hero-sparkle { position: absolute; right: -1%; top: 44%; width: 30px; }
+.hero-atom { position: absolute; left: 44%; top: -2%; width: 48px; }
+.wave-into { margin-bottom: -1px; }
+.stat-band, .parents { border-radius: 0; }
+.section-head.doodled { position: relative; }
+.head-doodle { position: absolute; }
+.head-doodle.left { left: 2%; top: 4px; width: 34px; transform: rotate(-12deg); }
+.head-doodle.right { right: 4%; top: 44px; width: 28px; }
+.head-doodle.pencil { right: 6%; top: 0; width: 88px; transform: rotate(-16deg); }
+.anatomy-demo { position: relative; }
+.anatomy-mascot { position: absolute; right: -28px; top: -78px; width: 118px; }
+.how-steps li { position: relative; }
+.how-arrow { position: absolute; right: -40px; top: 18px; width: 64px; z-index: 1; }
+.final-mascot { width: 128px; margin: -110px auto 6px; }
+.final-cta { padding-top: 96px; }
+.footer-squiggle { width: 96px; height: 14px; margin-top: 14px; }
+.tile, .subject-card, .how-steps li, .compare-table, .anatomy-demo, .demo-head, .demo-block, .demo-question { border-width: 2px; }
+.tile, .subject-card, .how-steps li { border-color: rgba(0, 48, 73, 0.14); }
+.tile:hover, .how-steps li:hover { transform: translateY(-3px) rotate(-0.4deg); }
+.tile, .how-steps li { transition: transform 0.2s ease; }
+.tile-icon, .parent-icon, .how-num, .anatomy-num, .more-mark { border-radius: 14px; }
+.how-num { transform: rotate(-6deg); }
+.stat-band strong { font-weight: 700; }
+.faq-list div { border-top-width: 3px; border-radius: 0; }
+.home-header { border-bottom-width: 2px; }
+@media (max-width: 1024px) { .how-arrow, .head-doodle { display: none; } .hero-mascot { width: 30%; } }
+@media (max-width: 680px) { .hero-speech { max-width: 180px; font-size: 14px; } .anatomy-mascot { width: 84px; top: -56px; right: -8px; } .final-mascot { width: 104px; margin-top: -92px; } }

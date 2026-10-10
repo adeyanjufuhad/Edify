@@ -2,6 +2,8 @@ import Link from "next/link";
 import Brand from "@/components/brand";
 import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Note, Pencil, Shield, Target, Users } from "@/components/icons";
 import { catalog, totals } from "@/data/catalog";
+import Mascot from "@/components/mascot";
+import { Arrow, Atom, Pencil as PencilDoodle, Sparkle, SpeechBubble, Squiggle, Star, Wave } from "@/components/doodles";
 import "./home.css";
 
 const NAV = [
@@ -100,7 +102,7 @@ export default function Home() {
       <section className="hero">
         <div className="shell hero-inner">
           <div className="hero-copy">
-            <span className="kicker">For SS1 students in Nigeria</span>
+            <span className="kicker kicker-fun"><Sparkle className="kicker-icon" color="#c1121f" /> For SS1 students in Nigeria</span>
             <h1>Study smarter for <span className="hl">WAEC</span>, one week at a time.</h1>
             <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for every SS1 subject, following the same scheme of work as your school.</p>
             <div className="hero-actions">
@@ -113,10 +115,18 @@ export default function Home() {
               <li><Check size={16} /> Works on any phone</li>
             </ul>
           </div>
-          <div className="hero-art"><HeroArt /></div>
+          <div className="hero-art">
+            <HeroArt />
+            <Mascot pose="wave" className="hero-mascot float slow" />
+            <SpeechBubble className="hero-speech">Hi, I’m Edi! Let’s get you ready for WAEC.</SpeechBubble>
+            <Star className="hero-star wiggle" />
+            <Sparkle className="hero-sparkle float" />
+            <Atom className="hero-atom" />
+          </div>
         </div>
       </section>
 
+      <Wave fill="#003049" className="wave-into" />
       <section className="stat-band" aria-label="Edify in numbers">
         <div className="shell stat-band-inner">
           <div><strong>{totals.questions}+</strong><span>practice questions with answers</span></div>
@@ -145,7 +155,7 @@ export default function Home() {
       </section>
 
       <section className="shell features" id="features" aria-labelledby="features-title">
-        <div className="section-head"><span className="kicker">Features</span><h2 id="features-title">Everything you need for the term, <span className="hl">in one place.</span></h2></div>
+        <div className="section-head doodled"><Star className="head-doodle left" color="#669bbc" /><Sparkle className="head-doodle right" color="#c1121f" /><span className="kicker">Features</span><h2 id="features-title">Everything you need for the term, <span className="hl">in one place.</span></h2></div>
         <div className="bento">
           <article className="tile tile-wide">
             <div className="tile-icon"><Bolt size={20} /></div>
@@ -203,6 +213,7 @@ export default function Home() {
             </ol>
           </div>
           <div className="anatomy-demo" aria-hidden="true">
+            <Mascot pose="read" className="anatomy-mascot" />
             <div className="demo-head"><span>Chemistry · Week 12</span><strong>Electronic configuration</strong><div className="demo-toggle"><b>Quick notes</b><i>Full notes</i></div></div>
             <div className="demo-block"><strong>1. Sub-shells and orbitals</strong><span /><span /><span className="short" /></div>
             <div className="demo-block watch"><strong>Watch out</strong><span /><span className="short" /></div>
@@ -212,9 +223,9 @@ export default function Home() {
       </section>
 
       <section className="shell how" id="how" aria-labelledby="how-title">
-        <div className="section-head"><span className="kicker">How it works</span><h2 id="how-title">Set up in <span className="hl">two minutes.</span></h2></div>
+        <div className="section-head doodled"><PencilDoodle className="head-doodle pencil" /><span className="kicker">How it works</span><h2 id="how-title">Set up in <span className="hl">two minutes.</span></h2></div>
         <ol className="how-steps">
-          {STEPS.map((step, index) => <li key={step.title}><span className="how-num">{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}
+          {STEPS.map((step, index) => <li key={step.title}><span className="how-num">{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p>{index < STEPS.length - 1 && <Arrow className="how-arrow" />}</li>)}
         </ol>
         <div className="center-cta"><Link href="/signup" className="pill-button">Create a free account <ArrowRight /></Link></div>
       </section>
@@ -237,6 +248,7 @@ export default function Home() {
         </div>
       </section>
 
+      <Wave fill="#003049" className="wave-into" />
       <section className="parents" id="parents" aria-labelledby="parents-title">
         <div className="shell parents-inner">
           <div className="parents-copy">
@@ -261,8 +273,10 @@ export default function Home() {
         <dl className="faq-list">{FAQS.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
       </section>
 
+      <Wave fill="#c1121f" className="wave-into" />
       <section className="final-cta">
         <div className="shell final-inner">
+          <Mascot pose="cheer" className="final-mascot float" />
           <h2>Your A1 starts this week.</h2>
           <p>Create a free family account and open the first lesson in minutes.</p>
           <div className="final-actions"><Link href="/signup" className="btn-light">Create a free account <ArrowRight /></Link><Link href="/profiles" className="btn-line">Log in</Link></div>
@@ -272,7 +286,7 @@ export default function Home() {
 
     <footer className="site-footer">
       <div className="shell footer-inner">
-        <div className="footer-brand"><Brand /><p>Clear notes and WAEC-style practice for every SS1 subject, one week at a time.</p></div>
+        <div className="footer-brand"><Brand /><Squiggle className="footer-squiggle" color="#669bbc" /><p>Clear notes and WAEC-style practice for every SS1 subject, one week at a time.</p></div>
         <nav className="footer-links" aria-label="Footer">
           <div><strong>Study</strong><a href="#features">Features</a><a href="#how">How it works</a><a href="#subjects">Subjects</a></div>
           <div><strong>Parents</strong><a href="#parents">For parents</a><a href="#faq">FAQ</a></div>

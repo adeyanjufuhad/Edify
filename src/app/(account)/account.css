@@ -92,3 +92,11 @@
   .add-form { grid-template-columns: 1fr; }
   .profile-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Fun layer */
+.auth-mascot { display: grid; justify-items: start; gap: 16px; }
+.auth-mascot .mascot { width: 128px; }
+.auth-speech { max-width: 250px; font-size: 15px; }
+.account-card, .profile-card { border-width: 2px; border-radius: var(--r-xl); }
+.account-form input, .account-form select, .pin-row input { border-radius: var(--r); }
+.profile-select .avatar { border-radius: 50%; }
