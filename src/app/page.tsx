@@ -52,35 +52,35 @@ const FAQS = [
 function HeroArt() {
   return (
     <svg className="hero-svg" viewBox="0 0 520 460" role="img" aria-label="Illustration of an Edify lesson on a tablet, beside a stack of textbooks and a pencil">
-      <circle cx="300" cy="230" r="190" fill="#8d99ae" opacity=".22" />
-      <rect x="360" y="40" width="96" height="96" rx="16" fill="#ef233c" />
+      <circle cx="300" cy="230" r="190" fill="#669bbc" opacity=".22" />
+      <rect x="360" y="40" width="96" height="96" rx="16" fill="#c1121f" />
       <path d="M392 88l14 14 26-30" stroke="#fff" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <rect x="110" y="70" width="300" height="340" rx="26" fill="#2b2d42" />
-      <rect x="128" y="92" width="264" height="296" rx="12" fill="#edf2f4" />
+      <rect x="110" y="70" width="300" height="340" rx="26" fill="#003049" />
+      <rect x="128" y="92" width="264" height="296" rx="12" fill="#fdf0d5" />
       <rect x="128" y="92" width="264" height="58" rx="12" fill="#fff" />
-      <rect x="146" y="108" width="34" height="26" rx="6" fill="#ef233c" />
-      <rect x="192" y="110" width="120" height="9" rx="4.5" fill="#2b2d42" />
-      <rect x="192" y="126" width="78" height="7" rx="3.5" fill="#8d99ae" />
+      <rect x="146" y="108" width="34" height="26" rx="6" fill="#c1121f" />
+      <rect x="192" y="110" width="120" height="9" rx="4.5" fill="#003049" />
+      <rect x="192" y="126" width="78" height="7" rx="3.5" fill="#669bbc" />
       <rect x="146" y="166" width="228" height="64" rx="10" fill="#fff" />
-      <rect x="160" y="180" width="128" height="8" rx="4" fill="#2b2d42" />
-      <rect x="160" y="196" width="196" height="6" rx="3" fill="#8d99ae" />
-      <rect x="160" y="208" width="160" height="6" rx="3" fill="#8d99ae" />
-      <rect x="146" y="242" width="108" height="40" rx="8" fill="#2b2d42" />
+      <rect x="160" y="180" width="128" height="8" rx="4" fill="#003049" />
+      <rect x="160" y="196" width="196" height="6" rx="3" fill="#669bbc" />
+      <rect x="160" y="208" width="160" height="6" rx="3" fill="#669bbc" />
+      <rect x="146" y="242" width="108" height="40" rx="8" fill="#003049" />
       <rect x="160" y="257" width="18" height="10" rx="3" fill="#fff" />
       <rect x="184" y="258" width="56" height="8" rx="4" fill="#fff" opacity=".7" />
-      <rect x="266" y="242" width="108" height="40" rx="8" fill="#fff" stroke="#8d99ae" strokeOpacity=".5" />
-      <rect x="146" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#8d99ae" strokeOpacity=".5" />
-      <rect x="266" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#ef233c" strokeWidth="2" />
-      <rect x="146" y="346" width="228" height="10" rx="5" fill="#8d99ae" opacity=".35" />
-      <rect x="146" y="346" width="150" height="10" rx="5" fill="#ef233c" />
-      <rect x="30" y="330" width="150" height="26" rx="5" fill="#d90429" />
-      <rect x="44" y="304" width="132" height="26" rx="5" fill="#8d99ae" />
-      <rect x="22" y="356" width="168" height="28" rx="5" fill="#2b2d42" />
-      <rect x="40" y="364" width="80" height="6" rx="3" fill="#edf2f4" opacity=".6" />
+      <rect x="266" y="242" width="108" height="40" rx="8" fill="#fff" stroke="#669bbc" strokeOpacity=".5" />
+      <rect x="146" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#669bbc" strokeOpacity=".5" />
+      <rect x="266" y="292" width="108" height="40" rx="8" fill="#fff" stroke="#c1121f" strokeWidth="2" />
+      <rect x="146" y="346" width="228" height="10" rx="5" fill="#669bbc" opacity=".35" />
+      <rect x="146" y="346" width="150" height="10" rx="5" fill="#c1121f" />
+      <rect x="30" y="330" width="150" height="26" rx="5" fill="#780000" />
+      <rect x="44" y="304" width="132" height="26" rx="5" fill="#669bbc" />
+      <rect x="22" y="356" width="168" height="28" rx="5" fill="#003049" />
+      <rect x="40" y="364" width="80" height="6" rx="3" fill="#fdf0d5" opacity=".6" />
       <g transform="rotate(-38 440 360)">
-        <rect x="380" y="350" width="130" height="18" rx="3" fill="#ef233c" />
-        <rect x="380" y="350" width="22" height="18" rx="3" fill="#8d99ae" />
-        <path d="M510 350l22 9-22 9z" fill="#2b2d42" />
+        <rect x="380" y="350" width="130" height="18" rx="3" fill="#c1121f" />
+        <rect x="380" y="350" width="22" height="18" rx="3" fill="#669bbc" />
+        <path d="M510 350l22 9-22 9z" fill="#003049" />
       </g>
     </svg>
   );

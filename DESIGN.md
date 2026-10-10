@@ -1,20 +1,20 @@
 ---
 version: alpha
 name: Edify
-description: A flat, confident study space for Nigerian SS1 learners. Solid colour blocks in navy, slate, mist and red; no shadows, gradients or decoration. Outfit for headings, Geist for text. The study app has a navy sidebar; the marketing site alternates mist, white, navy and red sections.
+description: A flat, confident study space for Nigerian SS1 learners. Solid colour blocks in navy, steel blue, cream and red; no shadows, gradients or decoration. Outfit for headings, Geist for text. The study app has a navy sidebar; the marketing site alternates cream, white, navy and red sections.
 
 colors:
-  navy: "#2b2d42"
-  slate: "#8d99ae"
-  mist: "#edf2f4"
-  red: "#ef233c"
-  red-deep: "#d90429"
+  navy: "#003049"
+  slate: "#669bbc"
+  mist: "#fdf0d5"
+  red: "#c1121f"
+  red-deep: "#780000"
   white: "#ffffff"
-  ink-2: "rgba(43,45,66,.76)"
-  ink-3: "rgba(43,45,66,.62)"
-  line: "rgba(141,153,174,.38)"
-  tint-red: "rgba(239,35,60,.09)"
-  tint-slate: "rgba(141,153,174,.16)"
+  ink-2: "rgba(0,48,73,.76)"
+  ink-3: "rgba(0,48,73,.62)"
+  line: "rgba(102,155,188,.38)"
+  tint-red: "rgba(193,18,31,.09)"
+  tint-slate: "rgba(102,155,188,.16)"
 
 typography:
   display: "Outfit (next/font/google, --font-display), weights 700-800"
@@ -31,7 +31,7 @@ shadow: none
 
 ## Overview
 
-Flat design: depth comes from solid colour blocks and 1px lines, never from shadows, gradients, blur, grain or tilted cards. Light page background (`#edf2f4`), white panels, navy for weight, red for action. All tokens are CSS variables on `:root` in `src/app/globals.css`.
+Flat design: depth comes from solid colour blocks and 1px lines, never from shadows, gradients, blur, grain or tilted cards. Warm cream page background (`#fdf0d5`), white panels, navy for weight, red for action. All tokens are CSS variables on `:root` in `src/app/globals.css`.
 
 ## Files
 - `src/app/globals.css`: tokens, base, buttons, status pills, forms, skeletons, 404.
@@ -40,10 +40,10 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - `src/app/(account)/account.css`: sign-up, log-in, verify, reset and learner profiles.
 
 ## Colors
-- **Navy `#2b2d42`**: text, the app sidebar, the footer, stat bands and "weight" tiles; also means *correct* and *completed* (checks, correct options, done nodes).
-- **Red `#ef233c`**: primary buttons, the active sidebar link, the next lesson, kickers and highlighted words. Hover/pressed is `#d90429`. Also means *wrong* on quiz options (with a red tint).
-- **Slate `#8d99ae`**: secondary marks on navy, dashed "coming soon" nodes, one bento tile. Never body text on mist (too little contrast).
-- **Mist `#edf2f4`**: page background and inner wells. **White** for panels and cards.
+- **Navy `#003049`**: text, the app sidebar, the footer, stat bands and "weight" tiles; also means *correct* and *completed* (checks, correct options, done nodes).
+- **Red `#c1121f`**: primary buttons, the active sidebar link, the next lesson, kickers and highlighted words. Hover/pressed is `#780000`. Also means *wrong* on quiz options (with a red tint).
+- **Steel blue `#669bbc`**: secondary marks on navy, dashed "coming soon" nodes, one bento tile. Never body text on mist (too little contrast).
+- **Cream `#fdf0d5`**: page background and inner wells. **White** for panels and cards.
 - Secondary text uses navy at 76% (`--ink-2`), tertiary at 62% (`--ink-3`).
 
 ## Typography

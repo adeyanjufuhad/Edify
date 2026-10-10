@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: { title: "Edify — Study smart. Ace your exams.", description, siteName: "Edify", type: "website", locale: "en_NG" },
 };
 
-export const viewport: Viewport = { themeColor: "#edf2f4", colorScheme: "light" };
+export const viewport: Viewport = { themeColor: "#fdf0d5", colorScheme: "light" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
