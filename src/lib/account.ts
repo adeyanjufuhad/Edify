@@ -43,6 +43,8 @@ export const getLearner = cache(async (): Promise<Learner | null> => {
   const profileId = (await cookies()).get(PROFILE_COOKIE)?.value;
   if (!parent || !profileId) return null;
   try {
+    // A parent who hasn't agreed to the current policies gets no learner, so the progress API is closed to them too.
+    if (!(await hasAcceptedLegal(parent.id))) return null;
     const profile = await getProfile(parent.id, profileId);
     return profile;
   } catch {
