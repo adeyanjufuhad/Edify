@@ -59,6 +59,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - Breakpoints: 1100/1024px (stack two-column areas), 860px (app shell), 680/600px (phone).
 
 ## Components
+- **Logo** (`src/components/brand.tsx`, favicon `src/app/icon.svg`): a cream "e." in a red badge tilted −6°, wearing a navy graduation cap with a steel-blue tassel; the cap has a cream edge so it shows on navy. The "edify" wordmark is Fredoka 700 with a red star in place of the dot on the i. Draw the "e" as a path, never as font text, so the badge and favicon match.
 - **Buttons**: `.pill-button` (solid red), `.pill-outline` (2px navy outline, fills navy on hover), `.btn-navy`, `.btn-light`/`.btn-line` on red. 8px radius, 48px tall, 40px small. Pressed: 1px down.
 - **Panels**: white, 1px line, 16px radius, no shadow.
 - **Stat tile**: label, big Outfit number, optional meter; the first tile is navy.

@@ -52,8 +52,11 @@ svg { flex: none; }
 
 /* Brand */
 .brand { display: inline-flex; align-items: center; gap: 10px; }
-.brand-badge { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; transform: rotate(-6deg); background: var(--red); color: var(--white); font-family: var(--display); font-weight: 800; font-size: 17px; }
-.brand-word { font-family: var(--display); font-size: 25px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+.brand-mark { flex: none; width: 44px; height: 44px; margin: -6px 0 0 -2px; }
+.brand-word { font-family: var(--display); font-size: 25px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); line-height: 1; }
+.brand-i { position: relative; display: inline-block; }
+.brand-star { position: absolute; left: 50%; top: -0.1em; width: 0.42em; height: 0.42em; transform: translateX(-50%) rotate(-10deg); }
+@media (prefers-reduced-motion: no-preference) { .brand:hover .brand-star { transform: translateX(-50%) rotate(20deg) scale(1.15); } .brand-star { transition: transform 0.25s ease; } }
 
 /* Buttons (class names kept from earlier versions; all flat) */
 .pill-button, .pill-outline, .btn-navy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 0 26px; border-radius: 999px; border: 2px solid transparent; font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: 0.01em; white-space: nowrap; transition: background-color 0.15s, color 0.15s, border-color 0.15s; }

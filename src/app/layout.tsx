@@ -3,7 +3,7 @@ import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
 
 const nunito = Nunito({ subsets: ["latin"], variable: "--font-body" });
-const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-display" });
+const fredoka = Fredoka({ subsets: ["latin", "latin-ext"], variable: "--font-display" });
 
 const description = "Clear weekly notes, quick exam summaries and exam-style practice for secondary school students in Nigeria, JSS1 to SS3.";
 
