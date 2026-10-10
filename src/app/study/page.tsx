@@ -27,7 +27,7 @@ export default async function StudyPage() {
   return (
     <div className="shell dashboard-content">
       <div className="dashboard-hello">
-        <div><span className="kicker">SS1 · BRAINFIELD SCHOOL</span><h1>Keep going, <span className="hl">{learner.name}.</span></h1><p>{next ? `Your next step: ${next.subject.name}, ${next.week.topic}.` : "You’re all caught up. New lessons are on the way."}</p></div>
+        <div><span className="kicker">SS1 · YOUR STUDY SPACE</span><h1>Keep going, <span className="hl">{learner.name}.</span></h1><p>{next ? `Your next step: ${next.subject.name}, ${next.week.topic}.` : "You’re all caught up. New lessons are on the way."}</p></div>
         <div className="progress-stamp"><strong>{completedCount}</strong><span>of {plural(rows.length, "topic")} done</span></div>
       </div>
       {loadFailed && <p role="alert" className="form-error">Your progress could not be loaded. Refresh the page to try again.</p>}

@@ -1,7 +1,6 @@
 import Brand from "@/components/brand";
 import { ArrowRight, Bolt, Check, Pencil, Spark } from "@/components/icons";
 import { catalog, plural, totals } from "@/data/catalog";
-import { LEARNERS } from "@/lib/learners";
 
 const FEATURES = [
   {
@@ -69,17 +68,17 @@ export default function Home() {
     <header className="site-header">
       <div className="shell header-inner">
         <Brand />
-        <nav aria-label="Main navigation"><a href="#features">Features</a><a href="#curriculum">Curriculum</a><a href="#who" className="pill-button small">Start learning</a></nav>
+        <nav aria-label="Main navigation"><a href="#features">Features</a><a href="#curriculum">Curriculum</a><a href="/profiles">Log in</a><a href="/signup" className="pill-button small">Sign up free</a></nav>
       </div>
     </header>
 
     <main id="main" className="home">
       <section className="hero shell">
         <div className="hero-copy">
-          <span className="badge"><b>SS1</b> The study space built for Brainfield learners</span>
+          <span className="badge"><b>SS1</b> The study space built for senior secondary learners</span>
           <h1>Study smart.<br />Ace your <span className="hl">exams.</span></h1>
           <p className="hero-intro">Clear weekly notes, quick exam summaries and <strong>WAEC-style practice</strong> with answers for every SS1 subject, one week at a time.</p>
-          <div className="hero-actions"><a className="pill-button" href="#who">Start learning <ArrowRight /></a><a className="pill-outline" href="#curriculum">See the curriculum <ArrowRight /></a></div>
+          <div className="hero-actions"><a className="pill-button" href="/signup">Create a free account <ArrowRight /></a><a className="pill-outline" href="#curriculum">See the curriculum <ArrowRight /></a></div>
           <p className="hero-proof"><strong>{totals.questions}+</strong> practice questions across <strong>{plural(totals.readyTopics, "topic")}</strong>. Free to explore.</p>
         </div>
         <div className="hero-art" aria-hidden="true">
@@ -115,8 +114,11 @@ export default function Home() {
       </section>
 
       <section className="who-section shell" id="who">
-        <div><span className="kicker">WHO’S STUDYING TODAY?</span><h2>Is this Taiwo or <span className="hl">Kehinde?</span></h2><p>Tap your name to open your own study space. Your progress and notes are saved just for you.</p></div>
-        <div className="who-grid">{LEARNERS.map((learner) => <a key={learner.slug} href={`/start/${learner.slug}`} className="who-card"><span className="avatar" aria-hidden="true">{learner.name[0]}</span><strong>I’m {learner.name}</strong><small>Open my study space <ArrowRight size={14} /></small></a>)}</div>
+        <div><span className="kicker">GET STARTED</span><h2>One account for the <span className="hl">whole family.</span></h2><p>A parent or guardian signs up, adds each child with their own 4-digit PIN, and every child gets their own progress and notes.</p></div>
+        <div className="who-grid">
+          <a href="/signup" className="who-card"><span className="avatar" aria-hidden="true"><Spark /></span><strong>New to Edify</strong><small>Create a family account <ArrowRight size={14} /></small></a>
+          <a href="/profiles" className="who-card"><span className="avatar" aria-hidden="true"><Check /></span><strong>Already joined</strong><small>Log in and pick a learner <ArrowRight size={14} /></small></a>
+        </div>
       </section>
 
       <section className="features shell" id="features">
@@ -138,7 +140,7 @@ export default function Home() {
               <div className="topic-list">{weeks.map(({ week, lesson }) => <div className="topic-row" key={week.slug}><span className="topic-number">{week.label}</span><span>{week.topic}</span><span className={lesson ? "status-pill ready" : "status-pill"}>{lesson ? "Ready" : "Coming soon"}</span></div>)}</div>
             </div>
           ))}
-          <div className="more-subjects"><span className="subject-symbol muted" aria-hidden="true"><Spark /></span><div><strong>More subjects are on the way</strong><p>Each new subject appears here as soon as its first lessons are ready.</p></div><a href="#who" className="text-link">Open my study space <ArrowRight size={14} /></a></div>
+          <div className="more-subjects"><span className="subject-symbol muted" aria-hidden="true"><Spark /></span><div><strong>More subjects are on the way</strong><p>Each new subject appears here as soon as its first lessons are ready.</p></div><a href="/signup" className="text-link">Create a free account <ArrowRight size={14} /></a></div>
         </div>
       </section>
 
@@ -146,8 +148,8 @@ export default function Home() {
         <div className="shell closing-inner">
           <span className="kicker">ONE WEEK AT A TIME</span>
           <h2>Your A1 <span className="hl">starts here.</span></h2>
-          <p>Pick your profile and continue from your next lesson.</p>
-          <div className="hero-actions center"><a href="#who" className="pill-button">Pick my profile <ArrowRight /></a><a href="#features" className="pill-outline">See features</a></div>
+          <p>Create a free family account and start with the first lesson today.</p>
+          <div className="hero-actions center"><a href="/signup" className="pill-button">Create a free account <ArrowRight /></a><a href="/profiles" className="pill-outline">Log in</a></div>
         </div>
       </section>
     </main>

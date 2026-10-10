@@ -9,6 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@neondatabase/auth": "^0.5.0-beta",
     "@neondatabase/serverless": "latest",
     "next": "latest",
     "react": "latest",
