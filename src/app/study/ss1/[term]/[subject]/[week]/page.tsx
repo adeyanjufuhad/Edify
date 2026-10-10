@@ -4,6 +4,7 @@ import { curriculum, lessonPath } from "@/data/curriculum";
 import { getLesson } from "@/data/lessons";
 import { requireLearner } from "@/lib/session";
 import { getProgress } from "@/lib/progress";
+import { hasPlan } from "@/lib/access";
 
 type Params = { term: string; subject: string; week: string };
 
@@ -19,6 +20,9 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
   const lesson = getLesson(term, subject, week);
   if (!lesson) notFound();
   const learner = await requireLearner();
+  const practiceAvailable = hasPlan(learner, "silver");
+  // Remove paid practice data on the server, before serializing client props.
+  const visibleLesson = practiceAvailable ? lesson : { ...lesson, questions: [], quick: lesson.quick ? { ...lesson.quick, likely: [] } : undefined };
 
   let record = null;
   let loadFailed = false;
@@ -32,7 +36,8 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
 
   return (
     <LessonView
-      lesson={lesson}
+      lesson={visibleLesson}
+      practiceAvailable={practiceAvailable}
       crumbs={crumbs}
       initialCompleted={record?.completed ?? false}
       initialNote={record?.notes ?? ""}

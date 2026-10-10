@@ -6,4 +6,4 @@ export default function proxy(request: NextRequest) {
   return getAuth().middleware({ loginUrl: "/login" })(request);
 }
 
-export const config = { matcher: ["/study/:path*", "/profiles/:path*"] };
+export const config = { matcher: ["/study/:path*", "/profiles/:path*", "/billing/:path*"] };

@@ -1,0 +1,13 @@
+.billing-page { display: grid; gap: 24px; width: 100%; }
+.billing-page h1 { margin-block: 12px; }
+.billing-page h2 { font-family: var(--display); margin-top: 0; }
+.billing-page p { line-height: 1.65; }
+.billing-learners { display: flex; flex-wrap: wrap; gap: 12px; }
+.billing-learners [aria-current="page"] { background: var(--navy); color: var(--white); }
+.billing-plans { display: grid; gap: 18px; }
+.billing-plan { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.billing-plan small { font-size: 14px; font-weight: 500; }
+.billing-plan ul { padding-left: 20px; line-height: 1.8; }
+.billing-history { list-style: none; padding: 0; }
+.billing-history li { display: grid; gap: 8px; padding: 18px 0; border-top: 1px solid var(--line); }
+@media (max-width: 680px) { .billing-plan { align-items: start; flex-direction: column; } }

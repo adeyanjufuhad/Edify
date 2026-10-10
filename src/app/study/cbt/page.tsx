@@ -3,6 +3,8 @@ import Mascot from "@/components/mascot";
 import { CURRICULUM_CLASS } from "@/data/curriculum";
 import { bankSummaries, listAttempts, type AttemptSummary } from "@/lib/cbt";
 import { requireLearner } from "@/lib/session";
+import { hasPlan } from "@/lib/access";
+import Link from "next/link";
 import AttemptList from "./attempt-list";
 import CbtSetup from "./cbt-setup";
 import "./cbt.css";
@@ -11,6 +13,7 @@ export const metadata = { title: "CBT tests — Edify" };
 
 export default async function CbtPage() {
   const learner = await requireLearner();
+  if (!hasPlan(learner, "gold")) return <div className="page"><section className="panel"><h1>CBT tests are included in Gold.</h1><p>Ask your parent to choose Gold for timed exam-style tests and a full review of your answers.</p><Link href={`/billing?learner=${learner.id}`} className="pill-button">View plans</Link></section></div>;
   const banks = bankSummaries();
   let attempts: AttemptSummary[] = [];
   let loadFailed = false;

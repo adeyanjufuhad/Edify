@@ -1,11 +1,13 @@
 "use server";
 
 import { requireLearner } from "@/lib/session";
+import { hasPlan } from "@/lib/access";
 import { gradeSubmission, saveAttempt, type Submission } from "@/lib/cbt";
 
 // Marks a finished CBT paper on the server and saves the attempt for the signed-in learner.
 export async function submitCbt(input: Submission): Promise<{ id?: string; error?: string }> {
   const learner = await requireLearner();
+  if (!hasPlan(learner, "gold")) return { error: "A Gold plan is required for CBT tests. Ask your parent to open Plans and payments." };
   if (!input || typeof input.params !== "string" || input.params.length > 2000 || typeof input.picks !== "object" || input.picks === null) {
     return { error: "That test could not be read. Start a new one from the CBT page." };
   }

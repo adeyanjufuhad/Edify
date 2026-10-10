@@ -8,6 +8,7 @@ import Mascot from "@/components/mascot";
 import { examGrade } from "@/lib/grades";
 
 type Props = {
+  practiceAvailable: boolean;
   lesson: Lesson;
   crumbs: string;
   initialCompleted: boolean;
@@ -20,7 +21,7 @@ type Props = {
 const LETTERS = ["A", "B", "C", "D", "E"];
 const AUTOSAVE_DELAY_MS = 1500;
 
-export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, initialView, next }: Props) {
+export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, initialView, next, practiceAvailable }: Props) {
   const [complete, setComplete] = useState(initialCompleted);
   const [note, setNote] = useState(initialNote);
   const [saveStatus, setSaveStatus] = useState(loadFailed ? "Your saved notes could not be loaded. Please refresh before writing." : "");
@@ -63,7 +64,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
     ...(showQuick
       ? [["quick", "Must-know notes"], ["likely", "Likely questions"], ["hidden-facts", "Exam tips"]] as [string, string][]
       : [["objectives", "Learning objectives"], ["notes", "Full notes"], ["hidden-facts", "Exam tips"], ["summary", "Key summary"]] as [string, string][]),
-    ["practice", `${lesson.questions.length} practice questions`],
+    ["practice", practiceAvailable ? `${lesson.questions.length} practice questions` : "Unlock practice"],
     ["my-notes", "My notes"],
   ];
 
@@ -171,6 +172,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
               </section>
               <section id="likely" className="lesson-section">
                 <span className="kicker">02 / COVER THE ANSWER, THEN CHECK</span><h2>Likely exam questions</h2>
+                {!practiceAvailable && <p>Exam-style questions and answers are included in Silver and Gold. <Link href="/billing" className="text-link">View plans</Link></p>}
                 <div className="likely-list">{quick.likely.map((item, index) => (
                   <div className="likely-item" key={item.question}>
                     <p><b>{index + 1}.</b> {item.question}</p>
@@ -214,6 +216,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
           )}
 
           <section id="practice" className="lesson-section">
+            {!practiceAvailable ? <><h2>Unlock exam-style practice</h2><p>Ask your parent to choose Silver or Gold for practice questions and model answers.</p><Link href="/billing" className="pill-button small">View plans</Link></> : <>
             <span className="kicker">05 / TEST YOURSELF</span><h2>{lesson.questions.length} exam-style questions</h2>
             <p className="practice-intro">Tap an option to check your answer straight away. For the theory questions, write your own answer first, then reveal the model answer.</p>
             <div className="quiz-score" role="status" aria-live="polite">
@@ -271,6 +274,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
             <button type="button" className="answer-toggle" onClick={() => setShownTheory(allTheoryShown ? new Set() : new Set(theory.map((q) => q.number)))}>
               {allTheoryShown ? "Hide all theory answers" : "Show all theory answers"}
             </button>
+            </>}
           </section>
 
           <section id="my-notes" className="lesson-section">

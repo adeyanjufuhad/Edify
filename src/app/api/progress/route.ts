@@ -1,4 +1,5 @@
 import { getLearner } from "@/lib/session";
+import { hasPlan } from "@/lib/access";
 import { lessonIds } from "@/data/lessons";
 import { getCompletedLessons, getProgress, saveProgress } from "@/lib/progress";
 
@@ -24,6 +25,7 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   const learner = await getLearner();
   if (!learner) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  if (!hasPlan(learner, "bronze")) return Response.json({ error: "An active plan is required to save study progress." }, { status: 403 });
   let input: { lessonId?: unknown; completed?: unknown; notes?: unknown };
   try {
     input = await request.json();

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { ArrowLeft } from "@/components/icons";
 import { buildPaper, paperTitle, parsePaperSpec, specParams } from "@/lib/cbt";
 import { requireLearner } from "@/lib/session";
+import { hasPlan } from "@/lib/access";
 import CbtExam from "./cbt-exam";
 import "../cbt.css";
 
@@ -11,6 +12,7 @@ export const metadata = { title: "CBT test — Edify" };
 
 export default async function ExamPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const learner = await requireLearner();
+  if (!hasPlan(learner, "gold")) redirect(`/billing?learner=${learner.id}`);
   const raw = await searchParams;
   const params = new URLSearchParams(Object.entries(raw).flatMap(([key, value]) => (typeof value === "string" ? [[key, value]] : [])));
   const spec = parsePaperSpec(params);

@@ -45,7 +45,7 @@ const PLAYBOOK = [
 ];
 
 const FAQS = [
-  { q: "Is Edify free?", a: "Yes, while we’re in beta every learner gets every feature for free. Later, plans will cost from ₦1,000 to ₦5,000 per child per term, and families will be told well before anything changes." },
+  { q: "How much does Edify cost?", a: "Creating a family account is free. Study access costs ₦1,000 for Bronze, ₦3,000 for Silver or ₦5,000 for Gold per learner for 105 days (3½ months). Pay through Paystack, with no automatic renewal. Valid partner-school referral codes still unlock sponsored Gold." },
   { q: "Which classes is Edify for?", a: "Every secondary school class in Nigeria, from JSS1 to SS3. SS1 lessons are ready first; other classes are added as their lessons are written and checked." },
   { q: "Which subjects are covered?", a: "Edify is built for every school subject. Chemistry is ready first, and more subjects are added one by one." },
   { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the Nigerian scheme of work for each class, term by term and week by week, so what you read matches what was taught in class." },
@@ -110,7 +110,7 @@ export default function Home() {
       <div className="shell home-header-inner">
         <Brand />
         <nav className="home-nav" aria-label="Main navigation">{NAV.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
-        <div className="home-header-actions"><Link href="/profiles" className="home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up free</Link></div>
+        <div className="home-header-actions"><Link href="/profiles" className="home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up</Link></div>
       </div>
     </header>
 
@@ -122,11 +122,11 @@ export default function Home() {
             <h1>Study smarter, <span className="hl">one week</span> at a time.</h1>
             <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for JSS1 to SS3, following the same scheme of work as your school.</p>
             <div className="hero-actions">
-              <Link href="/signup" className="pill-button">Create a free account <ArrowRight /></Link>
+              <Link href="/signup" className="pill-button">Create an account <ArrowRight /></Link>
               <a href="#how" className="pill-outline">See how it works</a>
             </div>
             <ul className="hero-facts">
-              <li><Check size={16} /> Free for families</li>
+              <li><Check size={16} /> Plans from ₦1,000</li>
               <li><Check size={16} /> JSS1 to SS3</li>
               <li><Check size={16} /> Works on any phone</li>
             </ul>
@@ -243,7 +243,7 @@ export default function Home() {
         <ol className="how-steps">
           {STEPS.map((step, index) => <li key={step.title}><span className="how-num">{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p>{index < STEPS.length - 1 && <Arrow className="how-arrow" />}</li>)}
         </ol>
-        <div className="center-cta"><Link href="/signup" className="pill-button">Create a free account <ArrowRight /></Link></div>
+        <div className="center-cta"><Link href="/signup" className="pill-button">Create an account <ArrowRight /></Link></div>
       </section>
 
       <section className="shell subjects" id="subjects" aria-labelledby="subjects-title">
@@ -259,7 +259,7 @@ export default function Home() {
             <span className="more-mark" aria-hidden="true">+</span>
             <h3>More classes and subjects are on the way</h3>
             <p>JSS1 to SS3, every subject. Each one appears here as soon as its first lessons are written and checked. One account covers them all.</p>
-            <Link href="/signup" className="pill-outline small">Create a free account</Link>
+            <Link href="/signup" className="pill-outline small">Create an account</Link>
           </article>
         </div>
       </section>
@@ -288,13 +288,13 @@ export default function Home() {
         <div className="shell plans-inner">
           <div className="plans-intro">
             <span className="kicker">Plans</span>
-            <h2 id="plans-title">One plan per child, <span className="hl">per term.</span></h2>
+            <h2 id="plans-title">One plan per child, <span className="hl">for 105 days.</span></h2>
             <p>Pick what each child needs. Brothers and sisters can be on different plans.</p>
             <div className="beta-stamp">
               <Mascot pose="cheer" className="beta-mascot" />
-              <div><strong>Free while we’re in beta</strong><p>Every learner gets every feature at no cost for now. We’ll tell families well before any payment starts.</p></div>
+              <div><strong>Pay securely with Paystack</strong><p>One payment covers 105 days (3½ months). No automatic renewal. Choose a plan for each learner.</p></div>
             </div>
-            <Link href="/signup" className="pill-button">Start free <ArrowRight /></Link>
+            <Link href="/billing" className="pill-button">Choose a plan <ArrowRight /></Link>
           </div>
           <ol className="plan-steps">
             {PLANS.map((plan, index) => (
@@ -306,7 +306,7 @@ export default function Home() {
                   <p>{plan.tagline}</p>
                   <ul>{plan.features.map((feature) => <li key={feature}><Check size={14} />{feature}</li>)}</ul>
                 </div>
-                <p className="plan-price"><strong>{naira(plan.price)}</strong><small>per child, per term</small></p>
+                <p className="plan-price"><strong>{naira(plan.price)}</strong><small>per child, for 105 days</small></p>
               </li>
             ))}
           </ol>
@@ -314,7 +314,7 @@ export default function Home() {
       </section>
 
       <section className="shell faq" id="faq" aria-labelledby="faq-title">
-        <div className="faq-intro"><span className="kicker">Questions</span><h2 id="faq-title">Things parents often ask.</h2><p>Something else on your mind? Create an account and look around. It’s free.</p></div>
+        <div className="faq-intro"><span className="kicker">Questions</span><h2 id="faq-title">Things parents often ask.</h2><p>Create a family account, add your learners, then choose the right plan for each one.</p></div>
         <dl className="faq-list">{FAQS.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
       </section>
 
@@ -323,8 +323,8 @@ export default function Home() {
         <div className="shell final-inner">
           <Mascot pose="cheer" className="final-mascot mascot-badge float" />
           <h2>Your A1 starts this week.</h2>
-          <p>Create a free family account and open the first lesson in minutes.</p>
-          <div className="final-actions"><Link href="/signup" className="btn-light">Create a free account <ArrowRight /></Link><Link href="/profiles" className="btn-line">Log in</Link></div>
+          <p>Create a family account, choose a learner plan and start studying.</p>
+          <div className="final-actions"><Link href="/signup" className="btn-light">Create an account <ArrowRight /></Link><Link href="/profiles" className="btn-line">Log in</Link></div>
         </div>
       </section>
     </main>

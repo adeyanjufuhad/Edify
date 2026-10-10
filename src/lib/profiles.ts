@@ -2,11 +2,12 @@ import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:cry
 import { promisify } from "node:util";
 import { database } from "@/lib/db";
 import { isPlanId, type PlanId } from "@/data/plans";
+import { paidAccess } from "@/lib/access";
 
 const scrypt = promisify(scryptCallback) as (password: string, salt: Buffer, keylen: number) => Promise<Buffer>;
 
 // `sponsored` is true when a referral code set the learner's plan.
-export type LearnerProfile = { id: string; name: string; classLevel: string; school: string | null; plan: PlanId; sponsored: boolean };
+export type LearnerProfile = { id: string; name: string; classLevel: string; school: string | null; plan: PlanId; sponsored: boolean; expiresAt?: string | null };
 type NewProfile = { name: string; pin: string; classLevel: string; school: string; plan: PlanId; referralCode: string | null };
 
 export const MAX_PROFILES = 6;
@@ -27,20 +28,23 @@ async function pinMatches(pin: string, stored: string) {
   return timingSafeEqual(actual, expected);
 }
 
-function toProfile(row: Record<string, unknown>): LearnerProfile {
+async function toProfile(row: Record<string, unknown>): Promise<LearnerProfile> {
+  const sponsored = !!row.referral_code && row.plan === "gold";
+  const access = sponsored ? { plan: "gold" as const, expiresAt: null } : await paidAccess(row.id as string);
   return {
     id: row.id as string,
     name: row.name as string,
     classLevel: row.class_level as string,
     school: (row.school as string | null) ?? null,
-    plan: isPlanId(row.plan) ? row.plan : "free",
-    sponsored: !!row.referral_code,
+    plan: isPlanId(access.plan) ? access.plan : "free",
+    expiresAt: access.expiresAt,
+    sponsored,
   };
 }
 
 export async function listProfiles(parentId: string): Promise<LearnerProfile[]> {
   const rows = await database()`select id, name, class_level, school, plan, referral_code from public.learner_profiles where parent_id = ${parentId} order by created_at`;
-  return rows.map(toProfile);
+  return Promise.all(rows.map(toProfile));
 }
 
 export async function getProfile(parentId: string, profileId: string): Promise<LearnerProfile | null> {
