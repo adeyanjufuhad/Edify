@@ -272,3 +272,55 @@
 .home-header { border-bottom-width: 2px; }
 @media (max-width: 1024px) { .how-arrow, .head-doodle { display: none; } .hero-mascot { width: 30%; } }
 @media (max-width: 680px) { .hero-speech { max-width: 180px; font-size: 14px; } .anatomy-mascot { width: 84px; top: -56px; right: -8px; } .final-mascot { width: 116px; height: 116px; margin-top: -96px; } }
+
+/* Plans: a staircase of wide rows (Bronze -> Gold), not three equal towers. Display only during the beta. */
+.plans { padding-block: 88px 24px; }
+.plans-inner { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px; align-items: center; }
+.plans-intro h2 { font-size: clamp(30px, 3.6vw, 44px); font-weight: 700; line-height: 1.1; margin: 8px 0 12px; text-wrap: balance; }
+.plans-intro > p { font-size: 17px; color: var(--ink-2); margin: 0; max-width: 40ch; }
+.beta-stamp { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 14px; align-items: center; margin: 26px 0 28px; padding: 16px 18px 16px 10px; background: var(--white); border: 2px dashed var(--red); border-radius: var(--r-xl); transform: rotate(-1.2deg); }
+.beta-mascot { width: 62px; justify-self: center; }
+.beta-stamp strong { font-family: var(--display); font-size: 20px; font-weight: 700; color: var(--red); }
+.beta-stamp p { margin: 4px 0 0; font-size: 15px; color: var(--ink-2); }
+.plan-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.plan { position: relative; display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 18px; align-items: center; padding: 20px 24px 20px 18px; background: var(--white); border: 2px solid rgba(0, 48, 73, 0.14); border-radius: var(--r-xl); }
+.plan-silver { margin-left: 32px; border-color: var(--red); }
+.plan-gold { margin-left: 64px; background: var(--navy); border-color: var(--navy); color: var(--mist); }
+.plan-medal { width: 72px; height: auto; }
+.medal-ribbon { fill: var(--navy); }
+.medal-ring { stroke: rgba(253, 240, 213, 0.55); }
+.medal-star { fill: var(--mist); }
+.medal-bronze .medal-disc { fill: var(--red-deep); }
+.medal-silver .medal-disc { fill: var(--slate); }
+.medal-gold .medal-disc { fill: var(--red); }
+.medal-gold .medal-ribbon { fill: var(--slate); }
+.plan-body h3 { font-size: 24px; font-weight: 700; margin: 0; }
+.plan-body > p { margin: 0 0 10px; font-size: 15px; color: var(--ink-2); }
+.plan-body ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.plan-body li { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--mist); }
+.plan-body li svg { color: var(--red); flex: none; }
+.plan-gold h3 { color: var(--white); }
+.plan-gold .plan-body > p { color: var(--on-navy-2); }
+.plan-gold .plan-body li { background: rgba(253, 240, 213, 0.1); color: var(--mist); }
+.plan-gold .plan-body li svg { color: var(--mist); }
+.plan-price { margin: 0; display: grid; justify-items: end; text-align: right; }
+.plan-price strong { font-family: var(--display); font-size: 32px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.plan-price small { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+.plan-gold .plan-price strong { color: var(--white); }
+.plan-gold .plan-price small { color: var(--on-navy-2); }
+.plan-sticker { position: absolute; top: -14px; right: 22px; padding: 4px 12px; border-radius: 999px; background: var(--red); color: var(--white); font-family: var(--display); font-size: 14px; font-weight: 600; transform: rotate(3deg); }
+.plan { transition: transform 0.2s ease; }
+.plan:hover { transform: translateY(-3px) rotate(-0.4deg); }
+@media (max-width: 1024px) {
+  .plans-inner { grid-template-columns: 1fr; gap: 36px; }
+}
+@media (max-width: 680px) {
+  .plans { padding-block: 56px 8px; }
+  .plan-silver, .plan-gold { margin-left: 0; }
+  .plan { grid-template-columns: 56px minmax(0, 1fr); gap: 14px; padding: 20px 18px 18px 14px; }
+  .plan-medal { width: 56px; grid-area: 1 / 1; align-self: start; }
+  .plan-body { grid-area: 1 / 2; }
+  .plan-price { grid-area: 2 / 2; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; text-align: left; }
+  .plan-price strong { font-size: 26px; }
+  .beta-stamp { transform: none; }
+}

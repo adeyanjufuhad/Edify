@@ -2,6 +2,7 @@ import Link from "next/link";
 import Brand from "@/components/brand";
 import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Note, Pencil, Shield, Target, Users } from "@/components/icons";
 import { catalog, totals } from "@/data/catalog";
+import { PLANS, naira, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
 import { Arrow, Atom, Pencil as PencilDoodle, Sparkle, SpeechBubble, Squiggle, Star, Wave } from "@/components/doodles";
 import "./home.css";
@@ -11,6 +12,7 @@ const NAV = [
   { href: "#how", label: "How it works" },
   { href: "#subjects", label: "Subjects" },
   { href: "#parents", label: "For parents" },
+  { href: "#plans", label: "Plans" },
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -43,7 +45,7 @@ const PLAYBOOK = [
 ];
 
 const FAQS = [
-  { q: "Is Edify free?", a: "Yes, Edify is free while we build it out. If paid plans arrive later, families will be told before anything changes." },
+  { q: "Is Edify free?", a: "Yes, while we’re in beta every learner gets every feature for free. Later, plans will cost from ₦1,000 to ₦5,000 per child per term, and families will be told well before anything changes." },
   { q: "Which classes is Edify for?", a: "Every secondary school class in Nigeria, from JSS1 to SS3. SS1 lessons are ready first; other classes are added as their lessons are written and checked." },
   { q: "Which subjects are covered?", a: "Edify is built for every school subject. Chemistry is ready first, and more subjects are added one by one." },
   { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the Nigerian scheme of work for each class, term by term and week by week, so what you read matches what was taught in class." },
@@ -51,6 +53,19 @@ const FAQS = [
   { q: "Does it work on a phone?", a: "Yes. Edify is a website that works in any phone or computer browser. There’s nothing to install." },
   { q: "What if a PIN is forgotten?", a: "A parent can remove that learner and add them again with a new PIN. Ask for help first, because removing a learner also clears their progress." },
 ];
+
+// A flat medal for each plan: one, two or three stars on a palette-coloured disc.
+function Medal({ plan, tier }: { plan: Plan; tier: number }) {
+  const stars = [[50], [38, 62], [30, 50, 70]][tier];
+  return (
+    <svg className={`plan-medal medal-${plan.id}`} viewBox="0 0 100 112" aria-hidden="true">
+      <path d="M30 4h18l8 30H38zM52 4h18l-8 30H44z" className="medal-ribbon" />
+      <circle cx="50" cy="70" r="38" className="medal-disc" />
+      <circle cx="50" cy="70" r="29" className="medal-ring" fill="none" strokeWidth="3" />
+      {stars.map((x) => <path key={x} transform={`translate(${x - 9} 61)`} d="M9 0l2.6 5.6 6.1.7-4.5 4.2 1.2 6L9 13.6 3.6 16.5l1.2-6L.3 6.3l6.1-.7z" className="medal-star" />)}
+    </svg>
+  );
+}
 
 function HeroArt() {
   return (
@@ -269,6 +284,35 @@ export default function Home() {
         <ol className="playbook-list">{PLAYBOOK.map((tip, index) => <li key={tip.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{tip.title}</h3><p>{tip.text}</p></li>)}</ol>
       </section>
 
+      <section className="plans" id="plans" aria-labelledby="plans-title">
+        <div className="shell plans-inner">
+          <div className="plans-intro">
+            <span className="kicker">Plans</span>
+            <h2 id="plans-title">One plan per child, <span className="hl">per term.</span></h2>
+            <p>Pick what each child needs. Brothers and sisters can be on different plans.</p>
+            <div className="beta-stamp">
+              <Mascot pose="cheer" className="beta-mascot" />
+              <div><strong>Free while we’re in beta</strong><p>Every learner gets every feature at no cost for now. We’ll tell families well before any payment starts.</p></div>
+            </div>
+            <Link href="/signup" className="pill-button">Start free <ArrowRight /></Link>
+          </div>
+          <ol className="plan-steps">
+            {PLANS.map((plan, index) => (
+              <li key={plan.id} className={`plan plan-${plan.id}`}>
+                {plan.popular && <span className="plan-sticker">Most popular</span>}
+                <Medal plan={plan} tier={index} />
+                <div className="plan-body">
+                  <h3>{plan.name}</h3>
+                  <p>{plan.tagline}</p>
+                  <ul>{plan.features.map((feature) => <li key={feature}><Check size={14} />{feature}</li>)}</ul>
+                </div>
+                <p className="plan-price"><strong>{naira(plan.price)}</strong><small>per child, per term</small></p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       <section className="shell faq" id="faq" aria-labelledby="faq-title">
         <div className="faq-intro"><span className="kicker">Questions</span><h2 id="faq-title">Things parents often ask.</h2><p>Something else on your mind? Create an account and look around. It’s free.</p></div>
         <dl className="faq-list">{FAQS.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
@@ -290,7 +334,7 @@ export default function Home() {
         <div className="footer-brand"><Brand /><Squiggle className="footer-squiggle" color="#669bbc" /><p>Clear notes and exam-style practice for secondary school students in Nigeria, JSS1 to SS3.</p></div>
         <nav className="footer-links" aria-label="Footer">
           <div><strong>Study</strong><a href="#features">Features</a><a href="#how">How it works</a><a href="#subjects">Subjects</a></div>
-          <div><strong>Parents</strong><a href="#parents">For parents</a><a href="#faq">FAQ</a></div>
+          <div><strong>Parents</strong><a href="#parents">For parents</a><a href="#plans">Plans</a><a href="#faq">FAQ</a></div>
           <div><strong>Account</strong><Link href="/signup">Create an account</Link><Link href="/profiles">Log in</Link><Link href="/forgot-password">Reset password</Link></div>
         </nav>
       </div>
