@@ -1,3 +1,12 @@
+// Nigerian secondary school classes. Lessons are published class by class; SS1 is first.
+export const CLASS_LEVELS = ["JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"] as const;
+export type ClassLevel = (typeof CLASS_LEVELS)[number];
+export const CURRICULUM_CLASS: ClassLevel = "SS1";
+
+export function isClassLevel(value: string): value is ClassLevel {
+  return (CLASS_LEVELS as readonly string[]).includes(value);
+}
+
 export type Week = { slug: string; label: string; topic: string };
 export type Subject = { slug: string; name: string; weeks: Week[] };
 export type Term = { slug: string; name: string; subjects: Subject[] };

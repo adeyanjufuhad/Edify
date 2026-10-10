@@ -10,7 +10,7 @@ export const PROFILE_COOKIE = "edify_profile";
 export const PROFILE_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
 
 export type Parent = { id: string; name: string; email: string };
-export type Learner = { id: string; name: string };
+export type Learner = { id: string; name: string; classLevel: string };
 
 export const getParent = cache(async (): Promise<Parent | null> => {
   try {
@@ -35,7 +35,7 @@ export const getLearner = cache(async (): Promise<Learner | null> => {
   if (!parent || !profileId) return null;
   try {
     const profile = await getProfile(parent.id, profileId);
-    return profile ? { id: profile.id, name: profile.name } : null;
+    return profile ? { id: profile.id, name: profile.name, classLevel: profile.classLevel } : null;
   } catch {
     return null;
   }

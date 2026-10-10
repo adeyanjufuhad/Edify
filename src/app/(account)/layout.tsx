@@ -7,7 +7,7 @@ import "./account.css";
 
 export const metadata = { title: "Your family account — Edify" };
 
-const POINTS = ["Quick exam notes for every week", "WAEC-style practice that marks itself", "Separate progress for each child"];
+const POINTS = ["Quick exam notes for every week", "Practice questions that mark themselves", "JSS1 to SS3, one account per family"];
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +15,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       <aside className="auth-side">
         <Brand />
         <div className="auth-side-copy">
-          <h2>Study smarter for WAEC, one week at a time.</h2>
+          <h2>Study smarter, one week at a time.</h2>
           <ul>{POINTS.map((point) => <li key={point}><span aria-hidden="true"><Check size={14} /></span>{point}</li>)}</ul>
         </div>
         <div className="auth-mascot"><SpeechBubble className="auth-speech">You’ve got this. One week at a time!</SpeechBubble><Mascot pose="wave" className="float slow" /></div>

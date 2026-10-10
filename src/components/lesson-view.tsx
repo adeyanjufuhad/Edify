@@ -19,7 +19,7 @@ type Props = {
 const LETTERS = ["A", "B", "C", "D", "E"];
 const AUTOSAVE_DELAY_MS = 1500;
 
-// WAEC's grade bands, so a practice score reads like a real result.
+// The A1–F9 grade bands used in Nigerian secondary school exams, so a practice score reads like a real result.
 const GRADES: [number, string, string][] = [
   [75, "A1", "Excellent. You know this topic well."],
   [70, "B2", "Very good. Review the few you missed."],
@@ -231,7 +231,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
           )}
 
           <section id="practice" className="lesson-section">
-            <span className="kicker">05 / TEST YOURSELF</span><h2>{lesson.questions.length} WAEC-style questions</h2>
+            <span className="kicker">05 / TEST YOURSELF</span><h2>{lesson.questions.length} exam-style questions</h2>
             <p className="practice-intro">Tap an option to check your answer straight away. For the theory questions, write your own answer first, then reveal the model answer.</p>
             <div className="quiz-score" role="status" aria-live="polite">
               <strong>{score} / {objective.length}</strong><span>objective score · {answered} of {objective.length} answered</span>

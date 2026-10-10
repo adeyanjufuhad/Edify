@@ -1,10 +1,11 @@
-import { curriculum } from "@/data/curriculum";
+import { CURRICULUM_CLASS, curriculum } from "@/data/curriculum";
 import { catalog } from "@/data/catalog";
 import { getLearnerRecords, type LessonRecord } from "@/lib/progress";
 
 // Everything the study pages need about one learner: their saved records and per-subject progress
-// for the current term (the first term that has subjects).
-export async function loadStudy(learnerId: string) {
+// for the current term (the first term that has subjects). `ownClass` is false while the learner's
+// class has no lessons yet; the lessons that do exist (CURRICULUM_CLASS) are still returned to browse.
+export async function loadStudy(learnerId: string, classLevel: string) {
   let records: LessonRecord[] = [];
   let loadFailed = false;
   try { records = await getLearnerRecords(learnerId); } catch { loadFailed = true; }
@@ -18,7 +19,7 @@ export async function loadStudy(learnerId: string) {
   const rows = subjects.flatMap((entry) => entry.weeks.map((row) => ({ ...row, subject: entry.subject })));
   const upcoming = rows.filter((row) => row.lesson && !row.completed);
 
-  return { records, loadFailed, term, subjects, rows, upcoming, next: upcoming[0], completedCount: rows.filter((row) => row.completed).length };
+  return { records, loadFailed, term, subjects, rows, upcoming, next: upcoming[0], completedCount: rows.filter((row) => row.completed).length, ownClass: classLevel === CURRICULUM_CLASS, contentClass: CURRICULUM_CLASS };
 }
 
 export function percent(part: number, whole: number) {

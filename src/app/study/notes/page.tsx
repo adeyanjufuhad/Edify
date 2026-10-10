@@ -11,7 +11,7 @@ const dateFormat = new Intl.DateTimeFormat("en-NG", { day: "numeric", month: "sh
 
 export default async function NotesPage() {
   const learner = await requireLearner();
-  const { records, loadFailed } = await loadStudy(learner.id);
+  const { records, loadFailed } = await loadStudy(learner.id, learner.classLevel);
   const notes = records.filter((record) => record.notes.trim() && lessonIndex.has(record.lessonId));
 
   return (

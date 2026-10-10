@@ -15,7 +15,7 @@ function greeting() {
 
 export default async function DashboardPage() {
   const learner = await requireLearner();
-  const { records, loadFailed, term, subjects, rows, upcoming, next, completedCount } = await loadStudy(learner.id);
+  const { records, loadFailed, term, subjects, rows, upcoming, next, completedCount, ownClass, contentClass } = await loadStudy(learner.id, learner.classLevel);
   const notes = records.filter((record) => record.notes.trim() && lessonIndex.has(record.lessonId));
   const firstName = learner.name.split(" ")[0];
   const readyQuestions = rows.reduce((sum, row) => sum + (row.lesson?.questions.length ?? 0), 0);
@@ -25,15 +25,26 @@ export default async function DashboardPage() {
       <header className="page-head hello-head">
         <Mascot pose="wave" className="hello-mascot" />
         <div>
-          <span className="kicker">SS1 · {term.name}</span>
+          <span className="kicker">{learner.classLevel} · {term.name}</span>
           <h1>{greeting()}, {firstName}! <Star className="hello-star" /></h1>
-          <p>{next ? <>Your next lesson is <strong>{next.week.topic}</strong> in {next.subject.name}.</> : "You’ve finished every lesson that’s ready. New lessons are on the way."}</p>
+          <p>{!ownClass ? <>Lessons for {learner.classLevel} are being written. You can get a head start with the {contentClass} lessons that are ready.</> : next ? <>Your next lesson is <strong>{next.week.topic}</strong> in {next.subject.name}.</> : "You’ve finished every lesson that’s ready. New lessons are on the way."}</p>
         </div>
-        {next && <Link href={next.href} className="pill-button">Continue learning <ArrowRight /></Link>}
+        {ownClass && next && <Link href={next.href} className="pill-button">Continue learning <ArrowRight /></Link>}
       </header>
 
       {loadFailed && <p role="alert" className="form-error">Your progress could not be loaded. Refresh the page to try again.</p>}
 
+      {!ownClass ? (
+        <section className="panel coming-class">
+          <Mascot pose="read" className="coming-mascot" />
+          <div>
+            <span className="kicker">On the way</span>
+            <h2>{learner.classLevel} lessons are coming soon.</h2>
+            <p>We’re writing and checking lessons for {learner.classLevel} now. They’ll appear on this dashboard automatically. Until then, you can read the {contentClass} lessons that are ready; your notes and ticks are saved as usual.</p>
+            <Link href="/study/subjects" className="pill-button">Browse ready lessons <ArrowRight /></Link>
+          </div>
+        </section>
+      ) : <>
       <section className="stat-grid" aria-label="Your progress">
         <div className="stat-tile is-navy">
           <span>Lessons completed</span>
@@ -105,6 +116,7 @@ export default async function DashboardPage() {
           </section>
         </div>
       </div>
+      </>}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import "./globals.css";
 const nunito = Nunito({ subsets: ["latin"], variable: "--font-body" });
 const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-display" });
 
-const description = "Clear weekly notes, quick exam summaries and WAEC-style practice for every SS1 subject.";
+const description = "Clear weekly notes, quick exam summaries and exam-style practice for secondary school students in Nigeria, JSS1 to SS3.";
 
 export const metadata: Metadata = {
   title: "Edify — Study smart. Ace your exams.",

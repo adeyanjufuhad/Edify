@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import type { LearnerProfile } from "@/lib/profiles";
+import { CLASS_LEVELS } from "@/data/curriculum";
 import { addProfile, forgetProfile, openProfile, removeProfile, type FormState } from "./actions";
 
 const digitsOnly = (value: string) => value.replace(/\D/g, "").slice(0, 4);
@@ -67,8 +68,10 @@ export function AddProfileForm() {
       </div>
       <div className="field">
         <label htmlFor="learner-class">Class</label>
-        <select id="learner-class" name="classLevel" defaultValue="SS1" disabled><option value="SS1">SS1</option></select>
-        <small className="field-help">More classes are coming.</small>
+        <select id="learner-class" name="classLevel" defaultValue="" required>
+          <option value="" disabled>Choose a class…</option>
+          {CLASS_LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
+        </select>
       </div>
       <div className="field">
         <label htmlFor="learner-pin">4-digit PIN</label>

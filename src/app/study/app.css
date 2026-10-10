@@ -316,3 +316,8 @@
 .continue-card b { border-radius: 50%; }
 @media (max-width: 860px) { .tab-bar { border-radius: 24px 24px 0 0; } .tab-bar a.active { box-shadow: none; color: var(--white); } .tab-bar a.active svg { color: var(--red); } }
 @media (max-width: 600px) { .hello-mascot { width: 72px; } .quiz-score { border-radius: var(--r); } }
+.coming-class { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; padding: 32px; border-radius: var(--r-xl); }
+.coming-class h2 { font-size: clamp(24px, 3vw, 32px); margin: 6px 0 10px; }
+.coming-class p { color: var(--ink-2); margin: 0 0 20px; max-width: 60ch; }
+.coming-mascot { width: 150px; }
+@media (max-width: 600px) { .coming-class { grid-template-columns: 1fr; justify-items: start; padding: 22px; } .coming-mascot { width: 110px; } }

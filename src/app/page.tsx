@@ -18,13 +18,13 @@ const LESSON_PARTS = [
   { title: "Quick exam notes", text: "The must-know points for the week on one screen, with memory aids and “Watch out” boxes for common traps.", icon: Bolt },
   { title: "Full notes", text: "The whole topic explained in plain English, with worked examples and diagrams to draw.", icon: Layers },
   { title: "Hidden facts & book checks", text: "Exam tips, and the places where the textbook or past-question answers are wrong.", icon: Flag },
-  { title: "WAEC-style practice", text: "Objective questions that mark themselves when you tap, and theory questions with model answers.", icon: Target },
+  { title: "Exam-style practice", text: "Objective questions that mark themselves when you tap, and theory questions with model answers.", icon: Target },
   { title: "My notes", text: "A box at the end of every lesson for your own notes. They save to your account automatically.", icon: Note },
 ];
 
 const STEPS = [
   { title: "A parent signs up", text: "Create a free family account with an email address and confirm it with a 6-digit code." },
-  { title: "Add each child", text: "Give every learner a first name and their own 4-digit PIN. Up to six per family." },
+  { title: "Add each child", text: "Give every learner a first name, their class (JSS1 to SS3) and their own 4-digit PIN. Up to six per family." },
   { title: "Study one week at a time", text: "Read the quick notes, practise the questions and tick the lesson off. Progress saves automatically." },
 ];
 
@@ -37,15 +37,16 @@ const PARENT_POINTS = [
 
 const PLAYBOOK = [
   { title: "Read the question twice", text: "Underline what is actually asked. Many marks are lost answering a different question." },
-  { title: "Never leave an objective blank", text: "WAEC objective papers have no negative marking, so a reasoned guess can only help." },
+  { title: "Never leave an objective blank", text: "Unless your paper takes marks away for wrong answers, a reasoned guess can only help." },
   { title: "Show every step", text: "In theory answers, method marks count. Write the formula, the substitution and the unit." },
   { title: "Watch the traps", text: "Each Edify lesson flags the textbook mistakes and common slips so they don’t catch you out." },
 ];
 
 const FAQS = [
   { q: "Is Edify free?", a: "Yes, Edify is free while we build it out. If paid plans arrive later, families will be told before anything changes." },
-  { q: "Which subjects are covered?", a: "Edify is built for every SS1 subject. Chemistry is ready first; more subjects are added as their lessons are written and checked." },
-  { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the SS1 scheme of work, term by term and week by week, so what you read matches what was taught in class." },
+  { q: "Which classes is Edify for?", a: "Every secondary school class in Nigeria, from JSS1 to SS3. SS1 lessons are ready first; other classes are added as their lessons are written and checked." },
+  { q: "Which subjects are covered?", a: "Edify is built for every school subject. Chemistry is ready first, and more subjects are added one by one." },
+  { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the Nigerian scheme of work for each class, term by term and week by week, so what you read matches what was taught in class." },
   { q: "Who creates the account?", a: "A parent or guardian. They add each child as a learner, so one family account covers brothers and sisters." },
   { q: "Does it work on a phone?", a: "Yes. Edify is a website that works in any phone or computer browser. There’s nothing to install." },
   { q: "What if a PIN is forgotten?", a: "A parent can remove that learner and add them again with a new PIN. Ask for help first, because removing a learner also clears their progress." },
@@ -102,23 +103,23 @@ export default function Home() {
       <section className="hero">
         <div className="shell hero-inner">
           <div className="hero-copy">
-            <span className="kicker kicker-fun"><Sparkle className="kicker-icon" color="#c1121f" /> For SS1 students in Nigeria</span>
-            <h1>Study smarter for <span className="hl">WAEC</span>, one week at a time.</h1>
-            <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for every SS1 subject, following the same scheme of work as your school.</p>
+            <span className="kicker kicker-fun"><Sparkle className="kicker-icon" color="#c1121f" /> For secondary school students in Nigeria</span>
+            <h1>Study smarter, <span className="hl">one week</span> at a time.</h1>
+            <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for JSS1 to SS3, following the same scheme of work as your school.</p>
             <div className="hero-actions">
               <Link href="/signup" className="pill-button">Create a free account <ArrowRight /></Link>
               <a href="#how" className="pill-outline">See how it works</a>
             </div>
             <ul className="hero-facts">
               <li><Check size={16} /> Free for families</li>
-              <li><Check size={16} /> Follows the SS1 scheme</li>
+              <li><Check size={16} /> JSS1 to SS3</li>
               <li><Check size={16} /> Works on any phone</li>
             </ul>
           </div>
           <div className="hero-art">
             <HeroArt />
             <Mascot pose="wave" className="hero-mascot float slow" />
-            <SpeechBubble className="hero-speech">Hi, I’m Edi! Let’s get you ready for WAEC.</SpeechBubble>
+            <SpeechBubble className="hero-speech">Hi, I’m Edi! Let’s ace this term together.</SpeechBubble>
             <Star className="hero-star wiggle" />
             <Sparkle className="hero-sparkle float" />
             <Atom className="hero-atom" />
@@ -132,7 +133,7 @@ export default function Home() {
           <div><strong>{totals.questions}+</strong><span>practice questions with answers</span></div>
           <div><strong>{totals.readyTopics}</strong><span>lessons ready to study</span></div>
           <div><strong>12</strong><span>likely exam questions per lesson</span></div>
-          <div><strong>A1–F9</strong><span>WAEC-style grade on every quiz</span></div>
+          <div><strong>JSS1–SS3</strong><span>one account for every class</span></div>
         </div>
       </section>
 
@@ -140,7 +141,7 @@ export default function Home() {
         <div className="compare-copy">
           <span className="kicker">Why Edify</span>
           <h2 id="compare-title">Textbooks are long. <span className="hl">The exam is short.</span></h2>
-          <p>Universities and JAMB ask for credits in five subjects, including English and Mathematics, and much of what WAEC tests is first taught in SS1. Edify turns each week of the scheme into something you can revise in one sitting.</p>
+          <p>Every class builds on the one before, from JSS1 to SS3, and the topics you learn each week come back in your tests and exams. Edify turns each week of the scheme of work into something you can revise in one sitting.</p>
         </div>
         <div className="compare-table">
           <div className="compare-col is-before">
@@ -179,7 +180,7 @@ export default function Home() {
           </article>
           <article className="tile">
             <div className="tile-icon"><Pencil size={20} /></div>
-            <h3>A real WAEC grade</h3>
+            <h3>A real exam grade</h3>
             <p>Finish a quiz and get graded A1–F9, then retry only the ones you missed.</p>
             <div className="tile-demo grade-demo"><strong>B2</strong><span>29 of 40 · 72%</span></div>
           </article>
@@ -241,8 +242,8 @@ export default function Home() {
           ))}
           <article className="subject-card more">
             <span className="more-mark" aria-hidden="true">+</span>
-            <h3>More SS1 subjects are on the way</h3>
-            <p>Each new subject appears here as soon as its first lessons are written and checked. One account covers them all.</p>
+            <h3>More classes and subjects are on the way</h3>
+            <p>JSS1 to SS3, every subject. Each one appears here as soon as its first lessons are written and checked. One account covers them all.</p>
             <Link href="/signup" className="pill-outline small">Create a free account</Link>
           </article>
         </div>
@@ -286,7 +287,7 @@ export default function Home() {
 
     <footer className="site-footer">
       <div className="shell footer-inner">
-        <div className="footer-brand"><Brand /><Squiggle className="footer-squiggle" color="#669bbc" /><p>Clear notes and WAEC-style practice for every SS1 subject, one week at a time.</p></div>
+        <div className="footer-brand"><Brand /><Squiggle className="footer-squiggle" color="#669bbc" /><p>Clear notes and exam-style practice for secondary school students in Nigeria, JSS1 to SS3.</p></div>
         <nav className="footer-links" aria-label="Footer">
           <div><strong>Study</strong><a href="#features">Features</a><a href="#how">How it works</a><a href="#subjects">Subjects</a></div>
           <div><strong>Parents</strong><a href="#parents">For parents</a><a href="#faq">FAQ</a></div>

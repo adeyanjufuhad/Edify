@@ -39,9 +39,9 @@ export async function getProfile(parentId: string, profileId: string): Promise<L
   return rows[0] ? toProfile(rows[0]) : null;
 }
 
-export async function createProfile(parentId: string, name: string, pin: string): Promise<LearnerProfile> {
-  const rows = await database()`insert into public.learner_profiles (parent_id, name, pin_hash)
-    select ${parentId}, ${name}, ${await hashPin(pin)}
+export async function createProfile(parentId: string, name: string, pin: string, classLevel: string): Promise<LearnerProfile> {
+  const rows = await database()`insert into public.learner_profiles (parent_id, name, pin_hash, class_level)
+    select ${parentId}, ${name}, ${await hashPin(pin)}, ${classLevel}
     where (select count(*) from public.learner_profiles where parent_id = ${parentId}) < ${MAX_PROFILES}
     returning id, name, class_level`;
   if (!rows[0]) throw new Error(`A parent account can have at most ${MAX_PROFILES} learners.`);

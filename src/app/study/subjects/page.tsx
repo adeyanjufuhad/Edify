@@ -9,15 +9,15 @@ export const metadata = { title: "Subjects & lessons — Edify" };
 
 export default async function SubjectsPage() {
   const learner = await requireLearner();
-  const { loadFailed, term, subjects, next } = await loadStudy(learner.id);
+  const { loadFailed, term, subjects, next, ownClass, contentClass } = await loadStudy(learner.id, learner.classLevel);
 
   return (
     <div className="page">
       <header className="page-head">
         <div>
-          <span className="kicker">SS1 · {term.name}</span>
+          <span className="kicker">{contentClass} · {term.name}</span>
           <h1>Subjects &amp; lessons</h1>
-          <p>Work through each subject week by week. Finished lessons stay open for revision.</p>
+          <p>{ownClass ? "Work through each subject week by week. Finished lessons stay open for revision." : `${learner.classLevel} lessons are on the way. These ${contentClass} lessons are ready to read now.`}</p>
         </div>
       </header>
 
@@ -56,7 +56,7 @@ export default async function SubjectsPage() {
         <aside className="panel path-more">
           <span className="kicker">More on the way</span>
           <h2>New subjects appear here.</h2>
-          <p>As soon as the first lessons of another SS1 subject are ready, it gets its own path on this page.</p>
+          <p>As soon as the first lessons of another subject or class are ready, they get their own path on this page.</p>
         </aside>
       </div>
     </div>

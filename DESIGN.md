@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: Edify
-description: A flat, confident study space for Nigerian SS1 learners. Solid colour blocks in navy, steel blue, cream and red; no shadows, gradients or decoration. Fredoka (rounded) for headings, Nunito for text, and Edi the owl mascot plus hand-drawn doodles for a playful, kid-friendly feel. The study app has a navy sidebar; the marketing site alternates cream, white, navy and red sections.
+description: A flat, playful study space for secondary school students in Nigeria (JSS1 to SS3). Solid colour blocks in navy, steel blue, cream and red; no shadows, gradients or decoration. Fredoka (rounded) for headings, Nunito for text, and Edi the owl mascot plus hand-drawn doodles for a playful, kid-friendly feel. The study app has a navy sidebar; the marketing site alternates cream, white, navy and red sections.
 
 colors:
   navy: "#003049"
