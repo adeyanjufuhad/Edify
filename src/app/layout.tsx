@@ -8,8 +8,10 @@ const fredoka = Fredoka({ subsets: ["latin", "latin-ext"], variable: "--font-dis
 const description = "Clear weekly notes, quick exam summaries and exam-style practice for secondary school students in Nigeria, JSS1 to SS3.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://edify-sigma-plum.vercel.app"),
   title: "Edify — Study smart. Ace your exams.",
   description,
+  twitter: { card: "summary_large_image" },
   openGraph: { title: "Edify — Study smart. Ace your exams.", description, siteName: "Edify", type: "website", locale: "en_NG" },
 };
 
