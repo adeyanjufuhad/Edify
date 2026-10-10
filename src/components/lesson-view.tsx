@@ -18,6 +18,24 @@ type Props = {
 const LETTERS = ["A", "B", "C", "D", "E"];
 const AUTOSAVE_DELAY_MS = 1500;
 
+// WAEC's grade bands, so a practice score reads like a real result.
+const GRADES: [number, string, string][] = [
+  [75, "A1", "Excellent. You know this topic well."],
+  [70, "B2", "Very good. Review the few you missed."],
+  [65, "B3", "Good. One more pass and you’re there."],
+  [60, "C4", "Credit. Go over the misses, then retry them."],
+  [55, "C5", "Credit. Reread the quick notes for the misses."],
+  [50, "C6", "Credit, just. Study the exam tips, then retry."],
+  [45, "D7", "Pass. Read the full notes, then try again."],
+  [40, "E8", "Pass, just. Work through the full notes first."],
+  [0, "F9", "Not yet. Read the lesson again, then retry."],
+];
+
+function waecGrade(percent: number) {
+  const [, grade, advice] = GRADES.find(([min]) => percent >= min) ?? GRADES[GRADES.length - 1];
+  return { grade, advice };
+}
+
 export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, initialView, next }: Props) {
   const [complete, setComplete] = useState(initialCompleted);
   const [note, setNote] = useState(initialNote);
@@ -40,6 +58,30 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
   const quick = lesson.quick;
   const showQuick = view === "quick" && !!quick;
   const allTheoryShown = theory.every((q) => shownTheory.has(q.number));
+  const finished = objective.length > 0 && answered === objective.length;
+  const percent = objective.length ? Math.round((score / objective.length) * 100) : 0;
+  const result = waecGrade(percent);
+  const lastObjective = objective[objective.length - 1]?.number;
+  const [activeId, setActiveId] = useState("");
+
+  // Highlight the section the learner is reading in the side list.
+  useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>(".lesson-content .lesson-section[id]");
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (visible) setActiveId(visible.target.id);
+    }, { rootMargin: "-96px 0px -55% 0px" });
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [showQuick]);
+
+  const toc: [string, string][] = [
+    ...(showQuick
+      ? [["quick", "Must-know notes"], ["likely", "Likely questions"], ["hidden-facts", "Exam tips"]] as [string, string][]
+      : [["objectives", "Learning objectives"], ["notes", "Full notes"], ["hidden-facts", "Exam tips"], ["summary", "Key summary"]] as [string, string][]),
+    ["practice", `${lesson.questions.length} practice questions`],
+    ["my-notes", "My notes"],
+  ];
 
   function request(nextComplete: boolean, text: string, keepalive = false) {
     return fetch("/api/progress", {
@@ -112,6 +154,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
 
   return (
     <div className="shell lesson-shell">
+      <div className="read-progress" aria-hidden="true" />
       <Link href="/study" className="back-link"><ArrowLeft size={15} /> Back to study space</Link>
       <div className="lesson-head">
         <span className="kicker">{crumbs}</span>
@@ -123,11 +166,10 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
         </div>
       </div>
       <div className="lesson-columns">
-        <aside className="lesson-toc">
+        <nav className="lesson-toc" aria-label="In this lesson">
           <strong>IN THIS LESSON</strong>
-          {showQuick ? <><a href="#quick">Must-know notes</a><a href="#likely">Likely questions</a><a href="#hidden-facts">Exam tips</a></> : <><a href="#objectives">Learning objectives</a><a href="#notes">Full notes</a><a href="#hidden-facts">Exam tips</a><a href="#summary">Key summary</a></>}
-          <a href="#practice">{lesson.questions.length} practice questions</a><a href="#my-notes">My notes</a>
-        </aside>
+          {toc.map(([id, label]) => <a key={id} href={`#${id}`} className={activeId === id ? "active" : ""} aria-current={activeId === id ? "location" : undefined}>{label}</a>)}
+        </nav>
         <div className="lesson-content">
           {showQuick && quick && (
             <>
@@ -191,15 +233,16 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
             <span className="kicker">05 / TEST YOURSELF</span><h2>{lesson.questions.length} WAEC-style questions</h2>
             <p className="practice-intro">Tap an option to check your answer straight away. For the theory questions, write your own answer first, then reveal the model answer.</p>
             <div className="quiz-score" role="status" aria-live="polite">
-              <strong>{score} / {objective.length}</strong><span>objective score · {answered} answered</span>
+              <strong>{score} / {objective.length}</strong><span>objective score · {answered} of {objective.length} answered</span>
               {answered > 0 && <button type="button" className="text-button" onClick={() => setPicks({})}>Reset quiz</button>}
+              <span className="quiz-meter" aria-hidden="true"><span style={{ transform: `scaleX(${objective.length ? answered / objective.length : 0})` }} /></span>
             </div>
             <div className="questions">
               {lesson.questions.map((q) => {
                 const picked = picks[q.number];
                 const isTheory = q.kind === "Theory";
                 const revealed = isTheory ? shownTheory.has(q.number) : !!picked;
-                return (
+                return [
                   <article className="question-card" key={q.number}>
                     <div className="question-meta"><span>{String(q.number).padStart(2, "0")}</span><span>{q.kind}</span></div>
                     <h3>{q.prompt}</h3>
@@ -223,8 +266,22 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
                         {isTheory ? <p>{q.answer}</p> : q.explanation && <p>{q.explanation}</p>}
                       </div>
                     )}
-                  </article>
-                );
+                  </article>,
+                  q.number === lastObjective && finished && (
+                    <div className="quiz-result" key="result" role="status">
+                      <div className="grade-badge" data-grade={result.grade[0]}><strong>{result.grade}</strong><span>{percent}%</span></div>
+                      <div>
+                        <span className="kicker">OBJECTIVE RESULT</span>
+                        <h3>You scored {score} out of {objective.length}.</h3>
+                        <p>{result.advice}</p>
+                        <div className="quiz-result-actions">
+                          {score < objective.length && <button type="button" className="pill-button small" onClick={() => setPicks((current) => Object.fromEntries(objective.filter((q) => current[q.number] === q.answer).map((q) => [q.number, q.answer])))}>Retry the {objective.length - score} I missed</button>}
+                          <button type="button" className="pill-outline small" onClick={() => setPicks({})}>Start again</button>
+                        </div>
+                      </div>
+                    </div>
+                  ),
+                ];
               })}
             </div>
             <button type="button" className="answer-toggle" onClick={() => setShownTheory(allTheoryShown ? new Set() : new Set(theory.map((q) => q.number)))}>

@@ -2,15 +2,14 @@
 export default function Loading() {
   return (
     <div className="shell dashboard-content" aria-busy="true" aria-label="Loading your study space…">
-      <div className="dashboard-hello">
+      <div className="dash-hero">
         <div className="skeleton-stack"><span className="skeleton w-30" /><span className="skeleton h-title w-60" /><span className="skeleton w-45" /></div>
-        <span className="skeleton stamp" />
+        <span className="skeleton ring" />
       </div>
       <span className="skeleton bar" />
-      <span className="skeleton continue" />
-      <div className="dashboard-grid">
+      <div className="path-grid">
+        <div className="skeleton-stack">{Array.from({ length: 7 }, (_, index) => <span className="skeleton row" key={index} />)}</div>
         <span className="skeleton panel" />
-        <div className="skeleton-stack">{Array.from({ length: 6 }, (_, index) => <span className="skeleton row" key={index} />)}</div>
       </div>
     </div>
   );
