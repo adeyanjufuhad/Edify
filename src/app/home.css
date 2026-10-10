@@ -189,9 +189,9 @@
 /* Footer */
 .site-footer { background: var(--navy); color: var(--mist); padding-top: 64px; }
 .site-footer .brand-word { color: var(--white); }
-.footer-inner { display: grid; grid-template-columns: 1.1fr 1.4fr; gap: 48px; padding-bottom: 48px; }
+.footer-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr); gap: 48px; padding-bottom: 48px; }
 .footer-brand p { margin: 16px 0 0; max-width: 38ch; font-size: 15px; color: var(--on-navy-2); }
-.footer-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.footer-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .footer-links div { display: grid; gap: 10px; align-content: start; }
 .footer-links strong { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate); }
 .footer-links a { font-size: 15px; color: var(--mist); width: fit-content; }
@@ -214,6 +214,7 @@
   .playbook-list { grid-template-columns: 1fr 1fr; }
   .playbook-list li:nth-child(3) { padding-left: 0; border-left: 0; }
   .subject-cards { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 36px; }
 }
 @media (max-width: 680px) {
   .home-header-inner { gap: 12px; }
@@ -236,7 +237,8 @@
   .subject-card header { flex-wrap: wrap; }
   .subject-card header .status-pill { margin-left: 0; }
   .demo-question div { grid-template-columns: 1fr; }
-  .footer-inner, .footer-links { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .footer-links { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
 }
 
 /* Fun layer: Edi the owl, doodles, wavy edges, chunkier cards */

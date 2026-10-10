@@ -4,7 +4,8 @@ import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Note, Pencil, Shield, Tar
 import { catalog, totals } from "@/data/catalog";
 import { PLANS, naira, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
-import { Arrow, Atom, Pencil as PencilDoodle, Sparkle, SpeechBubble, Squiggle, Star, Wave } from "@/components/doodles";
+import SiteFooter from "@/components/site-footer";
+import { Arrow, Atom, Pencil as PencilDoodle, Sparkle, SpeechBubble, Star, Wave } from "@/components/doodles";
 import "./home.css";
 
 const NAV = [
@@ -329,16 +330,6 @@ export default function Home() {
       </section>
     </main>
 
-    <footer className="site-footer">
-      <div className="shell footer-inner">
-        <div className="footer-brand"><Brand /><Squiggle className="footer-squiggle" color="#669bbc" /><p>Clear notes and exam-style practice for secondary school students in Nigeria, JSS1 to SS3.</p></div>
-        <nav className="footer-links" aria-label="Footer">
-          <div><strong>Study</strong><a href="#features">Features</a><a href="#how">How it works</a><a href="#subjects">Subjects</a></div>
-          <div><strong>Parents</strong><a href="#parents">For parents</a><a href="#plans">Plans</a><a href="#faq">FAQ</a></div>
-          <div><strong>Account</strong><Link href="/signup">Create an account</Link><Link href="/profiles">Log in</Link><Link href="/forgot-password">Reset password</Link></div>
-        </nav>
-      </div>
-      <div className="shell footer-base"><span>© 2026 Edify</span><span>Made with care for the next generation of thinkers.</span></div>
-    </footer>
+    <SiteFooter />
   </>;
 }
