@@ -277,7 +277,7 @@ export default function Home() {
       <Wave fill="#c1121f" className="wave-into" />
       <section className="final-cta">
         <div className="shell final-inner">
-          <Mascot pose="cheer" className="final-mascot float" />
+          <Mascot pose="cheer" className="final-mascot mascot-badge float" />
           <h2>Your A1 starts this week.</h2>
           <p>Create a free family account and open the first lesson in minutes.</p>
           <div className="final-actions"><Link href="/signup" className="btn-light">Create a free account <ArrowRight /></Link><Link href="/profiles" className="btn-line">Log in</Link></div>

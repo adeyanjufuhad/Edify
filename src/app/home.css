@@ -258,7 +258,7 @@
 .anatomy-mascot { position: absolute; right: -28px; top: -78px; width: 118px; }
 .how-steps li { position: relative; }
 .how-arrow { position: absolute; right: -40px; top: 18px; width: 64px; z-index: 1; }
-.final-mascot { width: 128px; margin: -110px auto 6px; }
+.final-mascot { width: 150px; height: 150px; margin: -120px auto 10px; }
 .final-cta { padding-top: 96px; }
 .footer-squiggle { width: 96px; height: 14px; margin-top: 14px; }
 .tile, .subject-card, .how-steps li, .compare-table, .anatomy-demo, .demo-head, .demo-block, .demo-question { border-width: 2px; }
@@ -271,4 +271,4 @@
 .faq-list div { border-top-width: 3px; border-radius: 0; }
 .home-header { border-bottom-width: 2px; }
 @media (max-width: 1024px) { .how-arrow, .head-doodle { display: none; } .hero-mascot { width: 30%; } }
-@media (max-width: 680px) { .hero-speech { max-width: 180px; font-size: 14px; } .anatomy-mascot { width: 84px; top: -56px; right: -8px; } .final-mascot { width: 104px; margin-top: -92px; } }
+@media (max-width: 680px) { .hero-speech { max-width: 180px; font-size: 14px; } .anatomy-mascot { width: 84px; top: -56px; right: -8px; } .final-mascot { width: 116px; height: 116px; margin-top: -96px; } }

@@ -68,7 +68,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - Icons are inline SVGs from `src/components/icons.tsx` (2px stroke, `aria-hidden`). No emoji.
 
 ## Fun layer
-- **Edi** (`src/components/mascot.tsx`): an owl in a graduation cap with poses `wave` (greetings, hero, auth), `read` (empty states, lesson preview), `cheer` (A/B quiz grades, final CTA) and `think` (C–F grades, 404).
+- **Edi** (`src/components/mascot.tsx`, artwork `src/assets/edi.png`, supplied by the owner): an owl in a red graduation cap. The `pose` prop (`wave`, `read`, `cheer`, `think`) only changes extras; `cheer` adds stars. On navy or red backgrounds wrap him in `.mascot-badge` (cream circle) so his navy body and red cap stay visible.
 - **Doodles** (`src/components/doodles.tsx`): Star, Sparkle, Squiggle, Arrow, Atom, Pencil, a speech bubble and a `Wave` edge used where a section changes colour.
 - Buttons are pills with a solid darker 4px bottom edge that presses down on click. Cards use 2px borders and 24–32px corners; a few accents tilt slightly (logo badge, step numbers, grade badge).
 - Gentle `float` and `wiggle` animations only run when the user hasn't asked for reduced motion.
@@ -82,6 +82,6 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 
 ### Don't
 - Add blurred shadows, gradients, glows, glass effects or grain.
-- Use third-party clip art; draw new cartoon elements in the palette, in the same style as Edi.
+- Use third-party clip art; new cartoon elements should match Edi's flat style and the palette.
 - Introduce colours outside the palette (other than tints made from it).
 - Use steel blue for body text, or use serif fonts.

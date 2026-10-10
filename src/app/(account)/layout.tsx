@@ -18,7 +18,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           <h2>Study smarter, one week at a time.</h2>
           <ul>{POINTS.map((point) => <li key={point}><span aria-hidden="true"><Check size={14} /></span>{point}</li>)}</ul>
         </div>
-        <div className="auth-mascot"><SpeechBubble className="auth-speech">You’ve got this. One week at a time!</SpeechBubble><Mascot pose="wave" className="float slow" /></div>
+        <div className="auth-mascot"><SpeechBubble className="auth-speech">You’ve got this. One week at a time!</SpeechBubble><Mascot pose="wave" className="mascot-badge float slow" /></div>
         <small>© 2026 Edify</small>
       </aside>
       <main id="main" className="auth-main">

@@ -111,7 +111,12 @@ svg { flex: none; }
 @media (max-width: 380px) { .pill-button, .pill-outline, .btn-navy { white-space: normal; text-align: center; padding-block: 10px; } }
 
 /* Mascot and doodles */
-.mascot { display: block; width: 100%; height: auto; }
+.mascot { position: relative; display: block; width: 100%; }
+.mascot img { display: block; width: 100%; height: auto; }
+.mascot-star { position: absolute; width: 22%; }
+.mascot-star.one { left: -14%; top: 8%; }
+.mascot-star.two { right: -12%; top: 0; width: 18%; }
+.mascot-star.three { right: -16%; top: 40%; width: 14%; }
 .doodle { display: block; pointer-events: none; }
 .wave { display: block; width: 100%; height: 40px; }
 .speech { position: relative; background: var(--white); color: var(--ink); border: 2.5px solid var(--ink); border-radius: 22px; padding: 12px 16px; font-family: var(--display); font-weight: 600; font-size: 16px; line-height: 1.3; }
@@ -126,3 +131,6 @@ svg { flex: none; }
 .nf-mascot { width: 150px; margin-bottom: 8px; }
 .avatar { border-radius: 50%; }
 .subject-symbol { border-radius: 14px; transform: rotate(-4deg); }
+/* Edi on a cream badge, for coloured backgrounds where his red cap or navy body would blend in */
+.mascot-badge { display: flex; align-items: center; justify-content: center; aspect-ratio: 1; border-radius: 50%; background: var(--mist); border: 4px solid var(--white); padding: 12px; }
+.mascot-badge img { width: auto; height: 100%; }
