@@ -102,3 +102,17 @@
 .account-form input, .account-form select, .pin-row input { border-radius: var(--r); }
 .profile-select .avatar { border-radius: 50%; }
 .account-form label .optional { font-weight: 500; color: var(--ink-3); }
+
+/* Agreement box (sign-up, and the agreement screen for existing accounts) */
+.consent-check { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 12px; align-items: start; margin-top: 16px; padding: 14px 16px; background: var(--mist); border: 2px solid var(--line); border-radius: var(--r); font-size: 15px; font-weight: 500; line-height: 1.5; color: var(--ink-2); cursor: pointer; }
+.consent-check:has(input:checked) { border-color: var(--navy); }
+.account-form .consent-check { margin-top: 16px; font-size: 15px; font-weight: 500; }
+.account-form .consent-check input { width: 22px; height: 22px; min-height: 0; padding: 0; margin: 1px 0 0; accent-color: var(--red); cursor: pointer; }
+.account-form .consent-check input:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; translate: none; }
+
+/* Delete your account (bottom of /profiles) */
+.danger-zone { border-color: var(--red); background: var(--white); }
+.danger-zone h2 { color: var(--red-deep); }
+.danger-zone p { font-size: 16px; color: var(--ink-2); margin: 0 0 12px; max-width: 62ch; }
+.danger-zone .account-form { margin-top: 18px; max-width: 420px; }
+.danger-zone .account-form .pill-button:disabled { box-shadow: none; }

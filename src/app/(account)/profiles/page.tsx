@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { requireParent } from "@/lib/account";
+import { hasAcceptedLegal } from "@/lib/consent";
 import { MAX_PROFILES, listProfiles, type LearnerProfile } from "@/lib/profiles";
 import { AddProfileForm, ProfilePicker, SignOutButton } from "./profile-forms";
+import ConsentForm from "./consent-form";
+import DeleteAccount from "./delete-account";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Who’s studying? — Edify" };
@@ -10,8 +13,34 @@ export default async function ProfilesPage() {
   const parent = await requireParent();
   let profiles: LearnerProfile[] = [];
   let loadFailed = false;
-  try { profiles = await listProfiles(parent.id); } catch { loadFailed = true; }
+  let agreed = false;
+  try {
+    agreed = await hasAcceptedLegal(parent.id);
+    if (agreed) profiles = await listProfiles(parent.id);
+  } catch { loadFailed = true; }
   const onboarding = !profiles.length && !loadFailed;
+
+  // New sign-ups agree on /signup. This screen catches accounts made before the policies existed and any
+  // account whose agreement was not saved, and again whenever the policies change.
+  if (!agreed && !loadFailed) {
+    return (
+      <div className="profiles-page">
+        <div className="profiles-head">
+          <div>
+            <span className="kicker">BEFORE YOU CONTINUE</span>
+            <h1>Please agree to our <span className="hl">policies.</span></h1>
+            <p>Edify looks after your children’s study data for you, so a parent or guardian needs to agree to our privacy policy and terms of use before adding learners, studying or paying. Read them first if you like.</p>
+          </div>
+          <SignOutButton />
+        </div>
+        <section className="account-card" aria-labelledby="agree-title">
+          <h2 id="agree-title">Your agreement</h2>
+          <ConsentForm />
+        </section>
+        <DeleteAccount />
+      </div>
+    );
+  }
 
   return (
     <div className="profiles-page">
@@ -31,6 +60,7 @@ export default async function ProfilesPage() {
           <AddProfileForm />
         </section>
       )}
+      {!loadFailed && <DeleteAccount />}
     </div>
   );
 }

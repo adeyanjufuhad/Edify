@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireParent } from "@/lib/account";
+import { requireConsentedParent } from "@/lib/account";
 import { listProfiles } from "@/lib/profiles";
 import { database } from "@/lib/db";
 import { paymentSettings } from "@/lib/paystack";
@@ -14,7 +14,7 @@ export const metadata = { title: "Learner plans and payments — Edify" };
 const date = (value: string) => new Intl.DateTimeFormat("en-NG", { day: "numeric", month: "long", year: "numeric", timeZone: "Africa/Lagos" }).format(new Date(value));
 
 export default async function BillingPage({ searchParams }: { searchParams: Promise<{ learner?: string; cancelled?: string }> }) {
-  const parent = await requireParent();
+  const parent = await requireConsentedParent();
   const params = await searchParams;
   const profiles = await listProfiles(parent.id);
   const selected = profiles.find((profile) => profile.id === params.learner) ?? profiles[0];
@@ -39,7 +39,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
           <div><h2>{plan.name}</h2><strong>{naira(plan.price)} <small>per learner / 105 days</small></strong><ul>{plan.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div>
           {PLAN_RANK[selected.plan] >= PLAN_RANK[plan.id] ? <p>Included in your current plan</p> : <CheckoutForm profileId={selected.id} plan={plan} disabled={!settings.enabled} />}
         </section>)}</div>
-        <p className="account-note">You’ll complete payment on Paystack. Your parent email is shared with Paystack for the payment; Edify never receives your card details.</p>
+        <p className="account-note">You’ll complete payment on Paystack. Your parent email is shared with Paystack for the payment; Edify never receives your card details. By paying you agree to the <Link href="/terms#refunds" className="text-link">Terms of use, including refunds and cancellation</Link>, and the <Link href="/privacy#payments" className="text-link">Privacy policy</Link>.</p>
       </>}
     </>}
     <section className="account-card"><h2>Recent payments</h2>{payments.length ? <ul className="billing-history">{payments.map((payment) => <li key={payment.reference as string}>

@@ -41,7 +41,8 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - `src/app/study/motion.css`: dashboard, learning path, quiz and CBT motion (imported by `src/app/study/layout.tsx`).
 - `src/app/study/app.css`: study app shell, dashboard, subjects, notes, lesson pages (imported by `src/app/study/layout.tsx`).
 - `src/app/study/cbt/cbt.css`: CBT setup, the exam screen, results and the recent-attempts list (imported by the CBT pages and the dashboard).
-- `src/app/(account)/account.css`: sign-up, log-in, verify, reset and learner profiles.
+- `src/app/(account)/account.css`: sign-up, log-in, verify, reset and learner profiles, the agreement checkbox and the "Delete your account" panel.
+- `src/app/(legal)/legal.css`: the privacy policy and terms of use (`LegalDoc` in `src/app/(legal)/legal-doc.tsx`). Cream hero with a dashed red "Draft for review" note, a sticky contents list, a white article panel with numbered section headings, `mist` data panels, and `mark.legal-todo` (red tint with a dashed red underline) for every gap the owner or a lawyer still has to fill. Tailwind's reset removes list bullets, so lists restore them in this file.
 
 ## Colors
 - **Navy `#003049`**: text, the app sidebar, the footer, stat bands and "weight" tiles; also means *correct* and *completed* (checks, correct options, done nodes).
@@ -72,6 +73,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - **Quiz**: options are 2px-bordered; correct turns solid navy, wrong turns red-tinted with a red border. Result card shows an A1–F9 grade badge (navy for A/B, red for C, slate for D–F); the bands live in `src/lib/grades.ts`.
 - **CBT exam**: sticky navy bar with the countdown (turns red in the last minute) and Submit; one question at a time with big A–D option buttons (picked = solid navy with a red letter); a numbered grid (answered = navy, flagged = red border and dot, current = red ring). On phones the grid folds behind "Show all numbers" and Previous / Flag / Next stick to the bottom.
 - **Plans** (landing page): a staircase of wide rows, Bronze → Silver → Gold, each with a flat medal (red-deep, steel blue, red) and its features as chips; Gold is the navy row, Silver carries a tilted "Most popular" sticker, and a dashed red "Pay securely with Paystack" stamp (Edi cheering) sits beside them. **Plan badge**: a small pill on profile cards and in the sidebar ("Gold · sponsored").
+- **Agreement box** (`src/components/consent-field.tsx`): a cream well with a 2px line and a red-accent checkbox, unticked by default, used on sign-up and on the agreement screen at `/profiles`. **Delete your account** (`profiles/delete-account.tsx`): a white `account-card` with a red border at the bottom of `/profiles`, a typed DELETE confirmation and a red pill button.
 - Icons are inline SVGs from `src/components/icons.tsx` (2px stroke, `aria-hidden`). No emoji.
 
 ## Fun layer

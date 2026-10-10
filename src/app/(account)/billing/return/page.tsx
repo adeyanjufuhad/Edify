@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { requireParent } from "@/lib/account";
+import { requireConsentedParent } from "@/lib/account";
 import { verifyPayment } from "@/lib/paystack";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Payment status — Edify" };
 
 export default async function PaymentReturn({ searchParams }: { searchParams: Promise<{ reference?: string }> }) {
-  const parent = await requireParent();
+  const parent = await requireConsentedParent();
   const { reference } = await searchParams;
   let result: string = "unknown";
   try { if (reference) result = await verifyPayment(reference, parent.id); } catch { result = "unavailable"; }

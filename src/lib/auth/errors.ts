@@ -26,3 +26,5 @@ export function authErrorMessage(error: { code?: string; message?: string; statu
 }
 
 export const VERIFY_EMAIL_KEY = "edify_verify_email";
+// Set in the browser tab when the sign-up box was ticked; /verify turns it into a saved consent record once the parent is signed in.
+export const LEGAL_CONSENT_KEY = "edify_legal_consent";

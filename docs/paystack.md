@@ -4,7 +4,7 @@ Bronze costs ₦1,000, Silver ₦3,000 and Gold ₦5,000 per learner for **105 d
 
 ## Deployment
 
-1. Apply `node scripts/migrate-payments.mjs` against the intended `DATABASE_URL` before deploying. It runs the additive migration transactionally. Migration 005 is reserved for the separate consent work.
+1. Apply `node scripts/migrate-payments.mjs` against the intended `DATABASE_URL` before deploying. It runs the additive migration transactionally. Migration 005 is intentionally absent. The consent table (`007_parent_consents.sql`) must be applied before any release that includes the sign-up consent checkbox, because every signed-in parent is checked against it.
 2. Set `PAYSTACK_SECRET_KEY` in Vercel's **production** environment using the merchant's live key. Never expose it as `NEXT_PUBLIC_*` or commit it. Use a separate test key and database for previews/local testing. Production rejects test checkout and test entitlements.
 3. Set `PAYMENT_SITE_URL` to the public origin (currently `https://edify-sigma-plum.vercel.app`). Use `http://localhost:3000` locally.
 4. In Paystack's live settings, set the webhook to `https://edify-sigma-plum.vercel.app/api/paystack/webhook`. Checkout supplies `/billing/return` as its callback URL.
@@ -17,7 +17,7 @@ Bronze costs ₦1,000, Silver ₦3,000 and Gold ₦5,000 per learner for **105 d
 - The raw webhook body is checked against Paystack's HMAC SHA512 signature. Both callbacks and webhooks verify the transaction server-side and compare reference, amount, currency, customer and test/live environment.
 - A single atomic pending-to-success update makes repeat notifications idempotent. A unique pending-order index and saved checkout URL allow checkout retries to reuse the same order.
 - Access comes from unexpired successful payment records. Study routes and mutation endpoints check access server-side; Bronze responses exclude paid practice questions before sending props to the browser.
-- Deleting a learner does not transfer purchased access to a new profile. Payment records remain with a null learner for payment reconciliation; deleting the parent nulls the parent reference. Payment retention and refund policies must be included in the final legal copy.
+- Deleting a learner does not transfer purchased access to a new profile. Payment records remain with a null learner for payment reconciliation. "Delete your account" on `/profiles` (see `src/lib/account-deletion-sql.ts`) unlinks every payment row from the parent and learners but keeps the row, including paid and still-pending orders and the checkout email, so a payment that completes after deletion can still be matched. The retention period for these rows, and whether to mask the email, is a decision for the owner and a Nigerian lawyer; the privacy policy flags it. The refund policy in the terms is a draft with owner decisions marked.
 - Refunds/disputes currently need merchant review and manual access revocation; automatic refund/dispute processing is not implemented. Do not delete financial records as a way to revoke access.
 - Never set a real payment to successful manually. Use the verification flow and Paystack dashboard to investigate mismatches.
 

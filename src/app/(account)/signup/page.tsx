@@ -4,20 +4,24 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { authClient } from "@/lib/auth/client";
-import { VERIFY_EMAIL_KEY, authErrorMessage } from "@/lib/auth/errors";
+import { LEGAL_CONSENT_KEY, VERIFY_EMAIL_KEY, authErrorMessage } from "@/lib/auth/errors";
+import { LEGAL_VERSION } from "@/data/legal";
 import PasswordField from "@/components/password-field";
+import ConsentField from "@/components/consent-field";
 
 export default function SignupPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (password.length < 8) { setError("Use a password with at least 8 characters."); return; }
+    if (!agreed) { setError("Tick the box to confirm you’re the parent or guardian and agree to the privacy policy and terms."); return; }
     setBusy(true);
     setError("");
     try {
@@ -26,6 +30,8 @@ export default function SignupPage() {
       // Neon Auth requires a verified email but doesn't email a code on sign-up by itself, so ask for one.
       await authClient.emailOtp.sendVerificationOtp({ email: email.trim(), type: "email-verification" }).catch(() => {});
       sessionStorage.setItem(VERIFY_EMAIL_KEY, email.trim());
+      // Saved to the database on /verify, once the email is confirmed and we know whose account it is.
+      sessionStorage.setItem(LEGAL_CONSENT_KEY, LEGAL_VERSION);
       router.push("/verify");
     } catch {
       setError("The account service is unavailable right now. Check your connection and try again.");
@@ -51,10 +57,10 @@ export default function SignupPage() {
           <input id="email" name="email" type="email" autoComplete="email" spellCheck={false} required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com…" />
           <label htmlFor="password">Password</label>
           <PasswordField id="password" name="password" autoComplete="new-password" minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 8 characters…" />
+          <ConsentField checked={agreed} onChange={(event) => setAgreed(event.target.checked)} />
           {error && <p role="alert" className="form-error">{error}</p>}
           <button className="pill-button" type="submit" disabled={busy}>{busy ? "Creating account…" : "Create account"}</button>
         </form>
-        <p className="account-note">By signing up you confirm you’re the parent or guardian of the learners you add.</p>
         <p className="account-switch">Already have an account? <Link href="/login" className="text-link">Log in</Link></p>
       </div>
     </div>

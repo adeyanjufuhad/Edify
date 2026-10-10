@@ -3,7 +3,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
-import { PROFILE_COOKIE, PROFILE_COOKIE_MAX_AGE, requireParent } from "@/lib/account";
+import { PROFILE_COOKIE, PROFILE_COOKIE_MAX_AGE, requireConsentedParent, requireParent } from "@/lib/account";
+import { deleteParentAccount } from "@/lib/account-deletion";
+import { getAuth } from "@/lib/auth/server";
 import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile } from "@/lib/profiles";
 import { isClassLevel } from "@/data/curriculum";
 import { normalizeSchool } from "@/data/schools";
@@ -14,7 +16,7 @@ export type FormValues = { name: string; classLevel: string; school: string; ref
 export type FormState = { error?: string; addedAt?: number; values?: FormValues };
 
 export async function addProfile(_state: FormState, formData: FormData): Promise<FormState> {
-  const parent = await requireParent();
+  const parent = await requireConsentedParent();
   const name = String(formData.get("name") ?? "").trim().replace(/\s+/g, " ");
   const pin = String(formData.get("pin") ?? "");
   const confirm = String(formData.get("confirmPin") ?? "");
@@ -41,7 +43,7 @@ export async function addProfile(_state: FormState, formData: FormData): Promise
 }
 
 export async function openProfile(_state: FormState, formData: FormData): Promise<FormState> {
-  const parent = await requireParent();
+  const parent = await requireConsentedParent();
   const profileId = String(formData.get("profileId") ?? "");
   const pin = String(formData.get("pin") ?? "");
   let profile;
@@ -72,4 +74,30 @@ export async function removeProfile(formData: FormData) {
 
 export async function forgetProfile() {
   (await cookies()).delete(PROFILE_COOKIE);
+}
+
+export type DeleteState = { error?: string };
+
+// Cookies set by Neon Auth start with this prefix (sign-in token, cached session, sign-in challenge).
+const AUTH_COOKIE_PREFIX = "__Secure-neon-auth";
+
+// Deletes the whole account: the learners and all their data, then the parent's sign-in. The parent is
+// the signed-in user from the session; nothing in the form says whose account to delete.
+export async function deleteAccount(_state: DeleteState, formData: FormData): Promise<DeleteState> {
+  const parent = await requireParent();
+  if (String(formData.get("confirmation") ?? "").trim() !== "DELETE") return { error: "Type DELETE in capital letters to confirm." };
+  try {
+    await deleteParentAccount(parent.id, parent.email);
+  } catch {
+    return { error: "We couldn’t delete your account just now, and nothing was removed. Check your connection and try again." };
+  }
+  // The sessions are already gone. Ask Neon Auth to sign out, then clear the cookies ourselves
+  // (a cached session would otherwise look signed in for a few more minutes).
+  await getAuth().signOut().catch(() => undefined);
+  const store = await cookies();
+  store.delete(PROFILE_COOKIE);
+  for (const { name } of store.getAll()) {
+    if (name.startsWith(AUTH_COOKIE_PREFIX)) store.set(name, "", { path: "/", maxAge: 0, secure: true, httpOnly: true, sameSite: "lax" });
+  }
+  redirect("/deleted");
 }

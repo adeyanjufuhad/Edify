@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type FormEvent } from "react";
 import { authClient } from "@/lib/auth/client";
-import { VERIFY_EMAIL_KEY, authErrorMessage } from "@/lib/auth/errors";
+import { LEGAL_CONSENT_KEY, VERIFY_EMAIL_KEY, authErrorMessage } from "@/lib/auth/errors";
+import { acceptLegal } from "../consent-actions";
 
 const RESEND_WAIT_SECONDS = 30;
 
@@ -35,6 +36,7 @@ export default function VerifyPage() {
       const { error: verifyError } = await authClient.emailOtp.verifyEmail({ email: email.trim(), otp: code });
       if (verifyError) { setError(authErrorMessage(verifyError, "Could not confirm your email. Try again.")); return; }
       sessionStorage.removeItem(VERIFY_EMAIL_KEY);
+      await saveSignupConsent();
       router.push("/profiles");
       router.refresh();
     } catch {
@@ -42,6 +44,17 @@ export default function VerifyPage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  // The box ticked on /signup is saved now that the parent is signed in. If this fails (or the sign-up
+  // happened in another tab or device), /profiles asks for the agreement before anything else.
+  async function saveSignupConsent() {
+    try {
+      if (!sessionStorage.getItem(LEGAL_CONSENT_KEY)) return;
+      const form = new FormData();
+      form.set("agree", "on");
+      if ((await acceptLegal({}, form)).accepted) sessionStorage.removeItem(LEGAL_CONSENT_KEY);
+    } catch {}
   }
 
   async function resend() {

@@ -1,13 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { requireParent } from "@/lib/account";
+import { requireConsentedParent } from "@/lib/account";
 import { getProfile } from "@/lib/profiles";
 import { isPlanId, PLAN_RANK } from "@/data/plans";
 import { initializePayment } from "@/lib/paystack";
 
 export async function checkout(_state: { error?: string }, form: FormData): Promise<{ error?: string }> {
-  const parent = await requireParent();
+  const parent = await requireConsentedParent();
   const profileId = String(form.get("profileId") ?? "");
   const plan = form.get("plan");
   if (!isPlanId(plan) || plan === "free") return { error: "Choose a plan." };
