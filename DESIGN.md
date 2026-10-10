@@ -1,143 +1,144 @@
 ---
 version: alpha
 name: Edify
-description: A warm, confident study space for Nigerian SS1 learners. Near-white paper canvas, one deep crimson accent, heavy Geist headlines with a soft crimson underline on the key word, pill buttons and soft warm-shadowed cards. Inspired by csca.id's exam-prep look, adapted into Edify's own brand.
+description: An editorial study space for Nigerian SS1 learners. Warm paper canvas, near-black ink, one deep crimson accent, Newsreader serif headlines with the key word in crimson italics and a thin underline, Geist for everything else, a floating pill header and a black footer. Inspired by the csca-90plus exam-prep site, adapted into Edify's own brand.
 
 colors:
-  brand: "#961313"
-  brand-gradient-start: "#ab1d1d"
-  brand-gradient-end: "#8a1010"
+  brand: "#9b0000"
+  brand-active: "#7a0000"
   on-brand: "#ffffff"
-  ink: "#1c1917"
-  text: "#292524"
-  body: "#57534e"
-  strong: "#44403c"
-  muted: "#78716c"
-  soft: "#a8a29e"
-  canvas: "#fffdf9"
-  surface: "#ffffff"
-  hairline: "#ece5dd"
-  stone-100: "#f5f5f4"
-  stone-200: "#e7e5e4"
-  tint: "#f7f2ec"
-  tint-line: "#ebe2d8"
-  brand-soft: "#fbefee"
-  brand-soft-line: "#f1d2d0"
-  success: "#15803d"
-  success-soft: "#ecfdf3"
-  success-line: "#bbf7d0"
+  ink: "#141413"
+  body: "#3d3d3a"
+  muted: "#6c6a64"
+  soft: "#8e8b82"
+  canvas: "#faf9f5"
+  raised: "#fffefb"
+  surface-soft: "#f5f0e8"
+  surface-card: "#efe9de"
+  dark: "#181715"
+  hairline: "#e6dfd8"
+  line-strong: "#d3c9ba"
+  brand-soft: "#fbeeee"
+  brand-soft-line: "#efc1ba"
+  success: "#2f7d4f"
+  success-soft: "#e9f1e6"
+  success-line: "#b9d4b8"
 
 typography:
-  family: "Geist (next/font/google), system-ui fallback"
-  display: { size: "clamp(44px, 5.4vw, 72px)", weight: 800, tracking: "-0.045em", leading: 1.02 }
-  h2: { size: "clamp(34px, 4.2vw, 52px)", weight: 800, tracking: "-0.04em", leading: 1.08 }
-  h3: { size: "clamp(28px, 3vw, 40px)", weight: 800, tracking: "-0.035em" }
-  body: { size: "16-19px", weight: 400, leading: 1.6 }
-  kicker: { size: "12px", weight: 700, tracking: "0.12em", transform: uppercase, color: brand }
+  display-family: "Newsreader (next/font/google, --font-display), Georgia fallback"
+  ui-family: "Geist (next/font/google, --font-geist), system-ui fallback"
+  display: { family: display, size: "clamp(46px, 5.6vw, 72px)", weight: 400, tracking: "-0.025em", leading: 1.02 }
+  h2: { family: display, size: "clamp(34px, 4.2vw, 52px)", weight: 400, tracking: "-0.025em", leading: 1.08 }
+  emphasis: { family: display, style: italic, color: brand, underline: "0.06em at 30% brand, 0.14em offset" }
+  app-heading: { family: ui, weight: 800, tracking: "-0.045em" }
+  body: { family: ui, size: "16-19px", weight: 400, leading: 1.6 }
+  kicker: { family: ui, size: "12px", weight: 700, tracking: "0.12em", transform: uppercase, color: brand }
 
 radius:
-  container: 24px
-  card: 20px
-  inner: 14px
-  control: 999px
+  container: 16px
+  card: 14px
+  inner: 12px
+  button: 10px
+  chip: 999px
 
 shadow:
-  card: "0 1px 2px rgba(68,40,28,.05), 0 12px 32px -12px rgba(68,40,28,.14)"
-  raised: "0 2px 4px rgba(68,40,28,.05), 0 30px 60px -24px rgba(68,40,28,.22)"
-  brand: "0 10px 24px -10px rgba(150,19,19,.6)"
+  card: "0 1px 2px rgba(20,20,19,.04), 0 10px 28px -14px rgba(20,20,19,.16)"
+  raised: "0 2px 4px rgba(20,20,19,.04), 0 28px 56px -28px rgba(20,20,19,.28)"
+  brand: "0 8px 18px -10px rgba(155,0,0,.45)"
 ---
 
 ## Overview
 
-Edify helps SS1 students revise every subject one week at a time: quick exam notes, full notes, hidden facts and WAEC-style practice. The interface should feel like a well-kept exercise book: warm paper, crisp dark ink and one confident crimson. Everything is light mode. All tokens live as CSS variables on `:root` in `src/app/globals.css`.
+Edify helps SS1 students revise every subject one week at a time: quick exam notes, full notes, hidden facts and WAEC-style practice. It should read like a well-made textbook: warm paper, crisp ink, serif headlines and one confident crimson. Light mode only. All tokens live as CSS variables on `:root` in `src/app/globals.css`; the account pages add `src/app/(account)/account.css`.
 
 ## Colors
 
 ### Brand & Accent
-- **Crimson `#961313`** is the only accent. Use it for the key word in a headline, kickers, links, primary buttons, active states and focus rings.
-- Primary surfaces that need weight use the vertical gradient `#ab1d1d → #961313 → #8a1010` (`--grad`).
-- Soft crimson (`#fbefee` / `#f1d2d0`) is for selected chips, "Ready" pills and the quiz score badge.
+- **Crimson `#9b0000`** is the only accent: the emphasised headline word, kickers, links, primary buttons, active states and focus rings. Hover and pressed buttons darken to `#7a0000`.
+- Soft crimson (`#fbeeee` / `#efc1ba`) marks selected items, the "up next" row and "Ready" pills.
 
 ### Surface
-- Canvas `#fffdf9` (warm off-white). Cards are pure white with a warm hairline `#ece5dd`.
-- Neutral callouts (memory aids, diagrams to draw) use the warm tint `#f7f2ec` with a crimson label, not a second hue.
+- Canvas `#faf9f5`; cards and panels are raised paper `#fffefb` with a `#e6dfd8` hairline.
+- Neutral callouts (memory aids, diagrams to draw, stats) use `#f5f0e8`.
+- `#181715` is the dark surface: the announcement bar and the footer. Text on it is `#faf9f5`, secondary `#a09d96`.
 
 ### Text
-- Headlines `#1c1917`, paragraphs `#57534e`, secondary text `#78716c`. `#a8a29e` is only for disabled or decorative text; it fails contrast for reading.
-- All greys come from the warm stone family. Never mix in cool greys.
+- Headlines `#141413`, paragraphs `#3d3d3a`, secondary `#6c6a64`. `#8e8b82` only for disabled or decorative text.
 
 ### Semantic
-- Green (`#15803d` on `#ecfdf3`) only means correct, completed or ready-count. Wrong answers use crimson on `#fff5f5`.
+- Green (`#2f7d4f` on `#e9f1e6`) only means correct, completed or an A/B grade. Wrong answers use crimson on a soft red tint.
 
 ## Typography
 
 ### Font Family
-Geist via `next/font/google` (`--font-geist`). No serif anywhere; no Inter.
+- **Newsreader** for display headings on the home page, account pages and lesson reading pages (h1, section h2, lesson section headings), always weight 400.
+- **Geist** for body text and all app UI. The study dashboard, quiz, buttons, forms and numbers stay in Geist (serif is not used for software UI).
 
 ### Hierarchy
-- Display h1: 800 weight, tight negative tracking, one key word wrapped in `.hl` (crimson text with a rounded 0.26em underline bar at 22% opacity).
-- Section h2: same treatment, often split over two lines with the second line highlighted.
+- Display h1 in Newsreader with one key word in `.hl`: crimson italic serif with a thin 30% crimson underline.
+- On the dashboard, `.hl` keeps Geist and only changes colour.
 - Kicker above each heading: 12px uppercase, 0.12em tracking, crimson.
 - Body 16–19px at 1.6–1.78 line height, max ~65ch.
 
 ### Principles
-- `text-wrap: balance` on headings, `pretty` on paragraphs.
-- Numbers that change or are compared (scores, progress) use `tabular-nums`.
-- Use real typographic characters: `…`, curly quotes, en dashes.
+- `text-wrap: balance` on headings, `pretty` on paragraphs; `tabular-nums` for scores and progress.
+- Real typographic characters: `…`, curly quotes, en dashes.
 
 ## Layout
 
 ### Spacing System
-Multiples of 4px. Sections breathe with 60–100px vertical padding; cards use 22–44px padding.
+Multiples of 4px. Sections use 60–100px vertical padding; cards 22–44px.
 
 ### Grid & Container
 `.shell` = `min(1180px, 100% - 64px)`, centred; 16px side gutter under 600px. CSS grid for every multi-column layout.
 
 ### Responsive Strategy
-- ≤900px: every two-column section stacks; the dashboard puts lessons before the term list.
-- ≤600px: buttons go full width, floating hero chips are hidden, option grids become one column. No horizontal scroll at 375px.
+- ≤900px: two-column sections stack; the dashboard's "more subjects" panel drops below the paths.
+- ≤600px: buttons go full width, floating hero chips hide, option grids become one column. No horizontal scroll at 375px.
 
 ## Elevation & Depth
-- Two shadow levels, both tinted warm brown, never black or navy: `card` for resting cards, `raised` for hero/feature mock-ups and the "why" panel.
-- Crimson buttons carry a crimson-tinted drop shadow.
-- A fixed, pointer-events-none grain overlay (3.5% opacity, multiply) gives the canvas a paper feel.
+- Two warm-ink shadow levels: `card` for resting cards, `raised` for hero and feature mock-ups, the greeting card and auth cards.
+- The hero quiz card tilts −0.7°.
+- A fixed, pointer-events-none grain overlay gives the canvas a paper feel.
 
 ## Shapes
-- Containers 24px, cards 20px, inner elements 12–16px, controls fully rounded (pills).
-- Nested radii shrink inward. Avatars are rounded squares (16px), small nav avatars are circles.
+- Containers 16px, cards 14px, inner elements 12px, buttons 10px, chips and the header fully rounded.
+- Nested radii shrink inward. Avatars and the logo badge are rounded squares.
 
 ## Components
 
 ### Buttons
-- **Primary pill**: crimson gradient, white 700 text, 16px/30px padding, lifts 2px on hover, scales to 0.98 on press.
-- **Outline pill**: white, crimson text, soft crimson border; tints on hover.
+- **Primary**: solid crimson, white 700 text, 10px radius, lifts 1px on hover, scales to 0.98 on press. The small header CTA is a pill.
+- **Outline**: raised paper, ink text, hairline border; tints on hover.
 - **Text link**: crimson 700 with an underline on hover.
-- Icons are inline SVGs from `src/components/icons.tsx` (2px stroke, `aria-hidden`). No emoji or dingbat glyphs.
-
-### Cards & Containers
-White, warm hairline, `card` shadow. Use cards when elevation means something (a lesson, a subject, a question), not for every block of text.
+- Icons are inline SVGs from `src/components/icons.tsx` (2px stroke, `aria-hidden`). No emoji.
 
 ### Navigation
-A sticky white header (95% opacity, 12px blur) with a hairline bottom border. A crimson announcement bar above it on the home page. A skip link is the first focusable element.
+- A dark announcement bar on the home page, then a floating pill header (86% canvas, 18px blur, hairline, soft shadow) that sticks 12px from the top.
+- Logo: crimson rounded-square badge with "e." and the "edify" wordmark.
+- A skip link is the first focusable element.
+
+### Footer
+Full-width black (`#181715`): brand and one-line description, Study and Account link columns, and a base row with the copyright.
 
 ### Signature Components
-- **Mock window**: a white card with three small window dots showing a slice of the real UI (quiz question, quick notes, progress). Used in the hero and the feature rows.
-- **Continue card**: a full-width crimson gradient card that links to the next unfinished lesson.
-- **Status pills**: "Ready" (soft crimson), "Review" (green), "Coming soon" (stone).
-- **Option buttons**: A–D letter badges; green when correct, crimson when wrong.
-- **Skeletons**: warm shimmer blocks shaped like the dashboard or the lesson.
+- **Mock window**: a paper card with window dots showing a slice of the real UI.
+- **Learning path** (dashboard): a dotted vertical line with a node per week: green tick (done), pulsing crimson (up next), crimson ring (ready), dashed grey (coming soon).
+- **Progress ring** next to the greeting card.
+- **Quiz result**: a WAEC grade badge (green for A/B, crimson for C, ink for D–F) with "Retry the ones I missed".
+- **Reading progress bar**: a 3px crimson bar at the top of lesson pages, driven by CSS scroll timelines.
 
 ## Do's and Don'ts
 
 ### Do
 - Keep copy subject-neutral. Edify covers every SS1 subject; Chemistry is only the first with content.
-- Compute counts from the lesson registry (`src/data/catalog.ts`) and never hard-code them.
-- Use sentence case for headings and buttons, active voice, numerals for counts.
+- Compute counts from the lesson registry (`src/data/catalog.ts`); never hard-code them.
+- Use sentence case, active voice and numerals for counts.
 - Give every interactive element a visible `:focus-visible` ring and hover and pressed states.
-- Honour `prefers-reduced-motion` and animate only `transform` and `opacity`.
+- Honour `prefers-reduced-motion`; animate only `transform` and `opacity`.
 
 ### Don't
 - Add a second accent colour, purple/blue gradients or neon glows.
-- Use emoji, pure black, cool greys or navy-tinted shadows.
-- Use `transition: all`, serif fonts or oversized type beyond the scale above.
-- Build three equal cards in a row; use zig-zag rows or asymmetric grids.
+- Use emoji, pure black, cool greys or heavy serif weights.
+- Use serif type inside the dashboard, quiz or forms.
+- Use `transition: all`, or build three equal cards in a row.

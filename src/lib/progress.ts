@@ -1,11 +1,6 @@
-import { neon } from "@neondatabase/serverless";
+import { database } from "@/lib/db";
 
 export type ProgressRecord = { completed: boolean; notes: string };
-
-function database() {
-  if (!process.env.DATABASE_URL) throw new Error("Neon database is not configured.");
-  return neon(process.env.DATABASE_URL);
-}
 
 export async function getCompletedLessons(userId: string): Promise<string[]> {
   const rows = await database()`select lesson_id from public.lesson_progress where user_id = ${userId} and completed = true`;
