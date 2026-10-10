@@ -139,8 +139,9 @@
 .subject-card.more { display: grid; gap: 10px; justify-items: start; background: var(--navy); border-color: var(--navy); }
 .subject-card.more h3 { color: var(--white); font-size: 22px; margin: 6px 0 0; }
 .subject-card.more p { margin: 0 0 8px; color: var(--on-navy-2); font-size: 15px; }
-.subject-card.more .pill-outline { color: var(--white); border-color: var(--white); }
+.subject-card.more .pill-outline { background: transparent; color: var(--white); border-color: var(--white); }
 .subject-card.more .pill-outline:hover { background: var(--white); color: var(--navy); }
+.subject-card.more .pill-outline:focus-visible { outline-color: var(--white); }
 .more-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--r); background: var(--red); color: var(--white); font-family: var(--display); font-size: 26px; font-weight: 700; }
 
 /* Parents */
