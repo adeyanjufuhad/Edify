@@ -15,7 +15,8 @@ export function accountDeletionStatements(parentId: string, parentEmail: string)
     { text: "delete from public.cbt_attempts where learner_id in (select id from public.learner_profiles where parent_id = $1)", params: [parentId] },
     { text: "delete from public.learner_profiles where parent_id = $1", params: [parentId] },
     { text: "delete from public.parent_consents where parent_id = $1", params: [parentId] },
-    { text: "delete from neon_auth.verification where position(lower($1) in lower(identifier)) > 0", params: [parentEmail] },
+    // The length check keeps an empty email (which would "match" every row) from ever clearing other people's codes.
+    { text: "delete from neon_auth.verification where char_length(btrim($1)) > 3 and position(lower($1) in lower(identifier)) > 0", params: [parentEmail] },
     { text: 'delete from neon_auth."user" where id = $1', params: [parentId] },
   ];
 }

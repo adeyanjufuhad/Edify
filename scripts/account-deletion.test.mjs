@@ -110,6 +110,12 @@ test("an unknown parent id deletes nothing", async () => {
   assert.equal(await count(db, "select count(*) n from public.payments where parent_id is not null"), 3);
 });
 
+test("an empty email cannot clear other people's sign-in codes", async () => {
+  const db = await freshDatabase();
+  await run(db, PARENT_A, "");
+  assert.equal(await count(db, "select count(*) n from neon_auth.verification"), 2, "an empty email must match no sign-in codes at all");
+});
+
 test("running the deletion twice is harmless", async () => {
   const db = await freshDatabase();
   await run(db, PARENT_A, "parent.a@example.com");
