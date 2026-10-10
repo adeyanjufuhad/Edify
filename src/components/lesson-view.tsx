@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { Lesson } from "@/data/lessons/types";
 import { ArrowLeft, ArrowRight, Bolt, Check } from "@/components/icons";
 import Mascot from "@/components/mascot";
+import { examGrade } from "@/lib/grades";
 
 type Props = {
   lesson: Lesson;
@@ -18,24 +19,6 @@ type Props = {
 
 const LETTERS = ["A", "B", "C", "D", "E"];
 const AUTOSAVE_DELAY_MS = 1500;
-
-// The A1–F9 grade bands used in Nigerian secondary school exams, so a practice score reads like a real result.
-const GRADES: [number, string, string][] = [
-  [75, "A1", "Excellent. You know this topic well."],
-  [70, "B2", "Very good. Review the few you missed."],
-  [65, "B3", "Good. One more pass and you’re there."],
-  [60, "C4", "Credit. Go over the misses, then retry them."],
-  [55, "C5", "Credit. Reread the quick notes for the misses."],
-  [50, "C6", "Credit, just. Study the exam tips, then retry."],
-  [45, "D7", "Pass. Read the full notes, then try again."],
-  [40, "E8", "Pass, just. Work through the full notes first."],
-  [0, "F9", "Not yet. Read the lesson again, then retry."],
-];
-
-function waecGrade(percent: number) {
-  const [, grade, advice] = GRADES.find(([min]) => percent >= min) ?? GRADES[GRADES.length - 1];
-  return { grade, advice };
-}
 
 export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, initialView, next }: Props) {
   const [complete, setComplete] = useState(initialCompleted);
@@ -61,7 +44,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
   const allTheoryShown = theory.every((q) => shownTheory.has(q.number));
   const finished = objective.length > 0 && answered === objective.length;
   const percent = objective.length ? Math.round((score / objective.length) * 100) : 0;
-  const result = waecGrade(percent);
+  const result = examGrade(percent);
   const lastObjective = objective[objective.length - 1]?.number;
   const [activeId, setActiveId] = useState("");
 
@@ -270,7 +253,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
                   </article>,
                   q.number === lastObjective && finished && (
                     <div className="quiz-result" key="result" role="status">
-                      <div className="result-art"><Mascot pose={"AB".includes(result.grade[0]) ? "cheer" : "think"} className="result-mascot" /><div className="grade-badge" data-grade={result.grade[0]}><strong>{result.grade}</strong><span>{percent}%</span></div></div>
+                      <div className="result-art"><Mascot pose={result.great ? "cheer" : "think"} className="result-mascot" /><div className="grade-badge" data-grade={result.grade[0]}><strong>{result.grade}</strong><span>{percent}%</span></div></div>
                       <div>
                         <span className="kicker">OBJECTIVE RESULT</span>
                         <h3>You scored {score} out of {objective.length}.</h3>

@@ -26,3 +26,4 @@ export const Shield = (props: IconProps) => <Svg {...props}><path d="M12 3 4.5 6
 export const Clock = (props: IconProps) => <Svg {...props}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></Svg>;
 export const Flag = (props: IconProps) => <Svg {...props}><path d="M5 21V4" /><path d="M5 4h11l-2 4 2 4H5" /></Svg>;
 export const Plus = (props: IconProps) => <Svg {...props}><path d="M12 5v14M5 12h14" /></Svg>;
+export const Monitor = (props: IconProps) => <Svg {...props}><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /><path d="m8.5 10 2 2 4-4" /></Svg>;

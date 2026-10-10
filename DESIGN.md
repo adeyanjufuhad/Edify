@@ -37,6 +37,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - `src/app/globals.css`: tokens, base, buttons, status pills, forms, skeletons, 404.
 - `src/app/home.css`: landing page (imported by `src/app/page.tsx`).
 - `src/app/study/app.css`: study app shell, dashboard, subjects, notes, lesson pages (imported by `src/app/study/layout.tsx`).
+- `src/app/study/cbt/cbt.css`: CBT setup, the exam screen, results and the recent-attempts list (imported by the CBT pages and the dashboard).
 - `src/app/(account)/account.css`: sign-up, log-in, verify, reset and learner profiles.
 
 ## Colors
@@ -54,7 +55,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 
 ## Layout
 - Marketing: `.shell` = `min(1160px, 100% - 64px)`; sections 88px tall padding on desktop, 56px on phones. Bento feature grid on 6 columns (4+2, 2+2+2, 3+3).
-- App: 256px navy sidebar + content (max 1120px). Below 860px the sidebar becomes a navy top bar and a 4-item bottom tab bar.
+- App: 256px navy sidebar + content (max 1120px). Below 860px the sidebar becomes a navy top bar and a 5-item bottom tab bar (Home, Subjects, CBT, Notes, Family). The CBT exam screen hides the sidebar and tab bar (`.app:has(.cbt-exam)`) so the test fills the screen.
 - Breakpoints: 1100/1024px (stack two-column areas), 860px (app shell), 680/600px (phone).
 
 ## Components
@@ -64,7 +65,9 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - **Meter**: 8px track in slate tint, red fill (`transform: scaleX`).
 - **Learning path**: vertical line with nodes: navy filled with tick (done), red with a ring (up next, row tinted red), red outline (ready), dashed slate (coming soon).
 - **Sidebar link**: icon + label; active is solid red.
-- **Quiz**: options are 2px-bordered; correct turns solid navy, wrong turns red-tinted with a red border. Result card shows a WAEC grade badge (navy for A/B, red for C, slate for D–F).
+- **Quiz**: options are 2px-bordered; correct turns solid navy, wrong turns red-tinted with a red border. Result card shows an A1–F9 grade badge (navy for A/B, red for C, slate for D–F); the bands live in `src/lib/grades.ts`.
+- **CBT exam**: sticky navy bar with the countdown (turns red in the last minute) and Submit; one question at a time with big A–D option buttons (picked = solid navy with a red letter); a numbered grid (answered = navy, flagged = red border and dot, current = red ring). On phones the grid folds behind "Show all numbers" and Previous / Flag / Next stick to the bottom.
+- **Plans** (landing page): a staircase of wide rows, Bronze → Silver → Gold, each with a flat medal (red-deep, steel blue, red) and its features as chips; Gold is the navy row, Silver carries a tilted "Most popular" sticker, and a dashed red "Free while we’re in beta" stamp sits beside them. **Plan badge**: a small pill on profile cards and in the sidebar ("Gold · sponsored").
 - Icons are inline SVGs from `src/components/icons.tsx` (2px stroke, `aria-hidden`). No emoji.
 
 ## Fun layer

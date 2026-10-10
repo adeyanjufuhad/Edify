@@ -1,8 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, Note } from "@/components/icons";
+import { ArrowRight, Monitor, Note } from "@/components/icons";
 import Mascot from "@/components/mascot";
 import { Sparkle, Star } from "@/components/doodles";
 import { lessonIndex, plural, totals } from "@/data/catalog";
+import { listAttempts, type AttemptSummary } from "@/lib/cbt";
+import AttemptList from "./cbt/attempt-list";
+import "./cbt/cbt.css";
 import { requireLearner } from "@/lib/session";
 import { loadStudy, percent } from "@/lib/study";
 
@@ -19,6 +22,8 @@ export default async function DashboardPage() {
   const notes = records.filter((record) => record.notes.trim() && lessonIndex.has(record.lessonId));
   const firstName = learner.name.split(" ")[0];
   const readyQuestions = rows.reduce((sum, row) => sum + (row.lesson?.questions.length ?? 0), 0);
+  let attempts: AttemptSummary[] = [];
+  try { attempts = await listAttempts(learner.id, 3); } catch {}
 
   return (
     <div className="page">
@@ -99,6 +104,13 @@ export default async function DashboardPage() {
                 ))}
               </ol>
             ) : <p className="empty">Nothing left to start. Revisit a lesson and retry its quiz.</p>}
+          </section>
+
+          <section className="panel" aria-labelledby="cbt-title">
+            <header className="panel-head"><h2 id="cbt-title">CBT tests</h2><Link href="/study/cbt" className="text-link small">{attempts.length ? "All tests" : "Start one"} <ArrowRight size={14} /></Link></header>
+            {attempts.length ? <AttemptList attempts={attempts} /> : (
+              <div className="empty"><Monitor size={22} /><p>Practise like the real exam: timed questions on screen, one at a time, with your grade at the end.</p><Link href="/study/cbt" className="pill-outline small">Take a CBT test</Link></div>
+            )}
           </section>
 
           <section className="panel" aria-labelledby="notes-title">

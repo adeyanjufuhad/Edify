@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Brand from "@/components/brand";
-import { Grid, Layers, Note, Swap, Users } from "@/components/icons";
+import { Grid, Layers, Monitor, Note, Swap, Users } from "@/components/icons";
 import PlanBadge from "@/components/plan-badge";
 import type { LearnerProfile } from "@/lib/profiles";
 
 const STUDY_LINKS = [
   { href: "/study", label: "Dashboard", short: "Home", icon: Grid },
   { href: "/study/subjects", label: "Subjects & lessons", short: "Subjects", icon: Layers },
+  { href: "/study/cbt", label: "CBT tests", short: "CBT", icon: Monitor },
   { href: "/study/notes", label: "My notes", short: "Notes", icon: Note },
 ];
 
