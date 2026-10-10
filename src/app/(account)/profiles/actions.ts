@@ -7,8 +7,11 @@ import { PROFILE_COOKIE, PROFILE_COOKIE_MAX_AGE, requireParent } from "@/lib/acc
 import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile } from "@/lib/profiles";
 import { isClassLevel } from "@/data/curriculum";
 import { normalizeSchool } from "@/data/schools";
+import { applyReferral } from "@/lib/referrals";
 
-export type FormState = { error?: string; addedAt?: number };
+// `values` hands back what was typed (never the PINs) so a rejected form keeps it.
+export type FormValues = { name: string; classLevel: string; school: string; referralCode: string };
+export type FormState = { error?: string; addedAt?: number; values?: FormValues };
 
 export async function addProfile(_state: FormState, formData: FormData): Promise<FormState> {
   const parent = await requireParent();
@@ -17,16 +20,21 @@ export async function addProfile(_state: FormState, formData: FormData): Promise
   const confirm = String(formData.get("confirmPin") ?? "");
   const classLevel = String(formData.get("classLevel") ?? "");
   const school = normalizeSchool(String(formData.get("school") ?? ""));
-  if (!name || name.length > 40) return { error: "Enter the learner’s first name (up to 40 letters)." };
-  if (!isClassLevel(classLevel)) return { error: "Choose the learner’s class (JSS1 to SS3)." };
-  if (school.length < 2 || school.length > 80) return { error: "Enter the learner’s school (pick one from the list or type its name)." };
-  if (!PIN_PATTERN.test(pin)) return { error: "Choose a PIN of exactly 4 digits." };
-  if (pin !== confirm) return { error: "The two PINs don’t match. Type the same 4 digits twice." };
+  const referralCode = String(formData.get("referralCode") ?? "").trim().slice(0, 40);
+  const values = { name, classLevel, school, referralCode };
+  const fail = (error: string): FormState => ({ error, values });
+  if (!name || name.length > 40) return fail("Enter the learner’s first name (up to 40 letters).");
+  if (!isClassLevel(classLevel)) return fail("Choose the learner’s class (JSS1 to SS3).");
+  if (school.length < 2 || school.length > 80) return fail("Enter the learner’s school (pick one from the list or type its name).");
+  if (!PIN_PATTERN.test(pin)) return fail("Choose a PIN of exactly 4 digits.");
+  if (pin !== confirm) return fail("The two PINs don’t match. Type the same 4 digits twice.");
+  const referral = applyReferral(referralCode, school);
+  if (!referral.ok) return fail(referral.error);
   try {
-    await createProfile(parent.id, name, pin, classLevel, school);
+    await createProfile(parent.id, { name, pin, classLevel, school, plan: referral.plan, referralCode: referral.code });
   } catch (error) {
     const limit = error instanceof Error && error.message.includes(String(MAX_PROFILES));
-    return { error: limit ? `You can add up to ${MAX_PROFILES} learners.` : "Could not add the learner. Check your connection and try again." };
+    return fail(limit ? `You can add up to ${MAX_PROFILES} learners.` : "Could not add the learner. Check your connection and try again.");
   }
   refresh();
   return { addedAt: Date.now() };

@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth/client";
 import type { LearnerProfile } from "@/lib/profiles";
 import { CLASS_LEVELS } from "@/data/curriculum";
 import { SUGGESTED_SCHOOLS } from "@/data/schools";
+import PlanBadge from "@/components/plan-badge";
 import { addProfile, forgetProfile, openProfile, removeProfile, type FormState } from "./actions";
 
 const digitsOnly = (value: string) => value.replace(/\D/g, "").slice(0, 4);
@@ -28,6 +29,7 @@ export function ProfilePicker({ profiles }: { profiles: LearnerProfile[] }) {
               <span className="avatar" aria-hidden="true">{profile.name[0]?.toUpperCase()}</span>
               <strong>{profile.name}</strong>
               <small>{profile.classLevel}{profile.school && <> · <span className="profile-school">{profile.school}</span></>}</small>
+              <PlanBadge plan={profile.plan} sponsored={profile.sponsored} />
             </button>
             {confirmRemove === profile.id ? (
               <form action={removeProfile} className="remove-confirm">
@@ -59,22 +61,24 @@ export function ProfilePicker({ profiles }: { profiles: LearnerProfile[] }) {
 
 export function AddProfileForm() {
   const [state, action, pending] = useActionState<FormState, FormData>(addProfile, {});
+  const values = state.values;
 
-  // A new key after each successful add gives the learner a fresh, empty form.
+  // A new key after each successful add gives the learner a fresh, empty form. After a rejected
+  // submit, the server hands back what was typed (not the PINs) as the fields' defaults.
   return (
     <form key={state.addedAt ?? 0} action={action} className="account-form add-form">
       <div className="field">
         <label htmlFor="learner-name">First name</label>
-        <input id="learner-name" name="name" autoComplete="off" required maxLength={40} placeholder="e.g. Taiwo…" />
+        <input id="learner-name" name="name" autoComplete="off" required maxLength={40} defaultValue={values?.name} placeholder="e.g. Taiwo…" />
       </div>
       <div className="field">
         <label htmlFor="learner-class">Class</label>
-        <select id="learner-class" name="classLevel" defaultValue="" required>
+        <select id="learner-class" name="classLevel" defaultValue={values?.classLevel ?? ""} required>
           <option value="" disabled>Choose a class…</option>
           {CLASS_LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
         </select>
       </div>
-      <SchoolField />
+      <SchoolField initial={values?.school} />
       <div className="field">
         <label htmlFor="learner-pin">4-digit PIN</label>
         <input id="learner-pin" name="pin" type="password" inputMode="numeric" autoComplete="off" pattern="\d{4}" title="4 digits" maxLength={4} required placeholder="••••" />
@@ -82,6 +86,11 @@ export function AddProfileForm() {
       <div className="field">
         <label htmlFor="learner-pin-confirm">Type the PIN again</label>
         <input id="learner-pin-confirm" name="confirmPin" type="password" inputMode="numeric" autoComplete="off" pattern="\d{4}" title="4 digits" maxLength={4} required placeholder="••••" />
+      </div>
+      <div className="field full">
+        <label htmlFor="learner-referral">Referral code <span className="optional">(optional)</span></label>
+        <input id="learner-referral" name="referralCode" autoComplete="off" autoCapitalize="characters" spellCheck={false} maxLength={40} defaultValue={values?.referralCode} placeholder="Leave empty if you don’t have one" aria-describedby="learner-referral-help" />
+        <span className="field-help" id="learner-referral-help">Got a code from your child’s school? Enter it to unlock their sponsored plan.</span>
       </div>
       {state.error && <p role="alert" className="form-error full">{state.error}</p>}
       {state.addedAt && <p role="status" className="form-success full">Learner added. Pick their name above to start.</p>}
@@ -91,8 +100,8 @@ export function AddProfileForm() {
 }
 
 // A free-text school field: the suggestions fill it in one tap, and any other school can be typed.
-function SchoolField() {
-  const [school, setSchool] = useState("");
+function SchoolField({ initial = "" }: { initial?: string }) {
+  const [school, setSchool] = useState(initial);
   return (
     <div className="field full">
       <label htmlFor="learner-school">School</label>

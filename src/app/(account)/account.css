@@ -106,3 +106,4 @@
 .account-card, .profile-card { border-width: 2px; border-radius: var(--r-xl); }
 .account-form input, .account-form select, .pin-row input { border-radius: var(--r); }
 .profile-select .avatar { border-radius: 50%; }
+.account-form label .optional { font-weight: 500; color: var(--ink-3); }

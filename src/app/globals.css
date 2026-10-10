@@ -134,3 +134,10 @@ svg { flex: none; }
 /* Edi on a cream badge, for coloured backgrounds where his red cap or navy body would blend in */
 .mascot-badge { display: flex; align-items: center; justify-content: center; aspect-ratio: 1; border-radius: 50%; background: var(--mist); border: 4px solid var(--white); padding: 12px; }
 .mascot-badge img { width: auto; height: 100%; }
+
+/* Plan badge (profile cards and the study sidebar). */
+.plan-badge { display: inline-flex; align-items: center; width: fit-content; margin-top: 6px; padding: 3px 10px; border-radius: 999px; font-family: var(--display); font-size: 13px; font-weight: 600; line-height: 1.3; background: var(--red); color: var(--white); }
+.plan-badge-silver { background: var(--slate); color: var(--navy); }
+.plan-badge-bronze { background: var(--red-deep); }
+.sidebar-user .plan-badge { display: flex; font-size: 12px; color: var(--white); }
+.sidebar-user .plan-badge-silver { color: var(--navy); }

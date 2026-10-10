@@ -2,7 +2,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAuth } from "@/lib/auth/server";
-import { getProfile } from "@/lib/profiles";
+import { getProfile, type LearnerProfile } from "@/lib/profiles";
 
 // The parent signs in with Neon Auth; the learner they picked is kept in this cookie
 // and re-checked against the parent's own profiles on every request.
@@ -10,7 +10,7 @@ export const PROFILE_COOKIE = "edify_profile";
 export const PROFILE_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
 
 export type Parent = { id: string; name: string; email: string };
-export type Learner = { id: string; name: string; classLevel: string; school: string | null };
+export type Learner = LearnerProfile;
 
 export const getParent = cache(async (): Promise<Parent | null> => {
   try {
@@ -35,7 +35,7 @@ export const getLearner = cache(async (): Promise<Learner | null> => {
   if (!parent || !profileId) return null;
   try {
     const profile = await getProfile(parent.id, profileId);
-    return profile ? { id: profile.id, name: profile.name, classLevel: profile.classLevel, school: profile.school } : null;
+    return profile;
   } catch {
     return null;
   }

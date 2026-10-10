@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Brand from "@/components/brand";
 import { Grid, Layers, Note, Swap, Users } from "@/components/icons";
+import PlanBadge from "@/components/plan-badge";
+import type { LearnerProfile } from "@/lib/profiles";
 
 const STUDY_LINKS = [
   { href: "/study", label: "Dashboard", short: "Home", icon: Grid },
@@ -17,8 +19,9 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href);
 }
 
-export default function AppSidebar({ learnerName, classLevel, school }: { learnerName: string; classLevel: string; school: string | null }) {
+export default function AppSidebar({ learner }: { learner: LearnerProfile }) {
   const pathname = usePathname();
+  const { name: learnerName, classLevel, school } = learner;
 
   return (
     <>
@@ -36,7 +39,7 @@ export default function AppSidebar({ learnerName, classLevel, school }: { learne
         </nav>
         <div className="sidebar-user">
           <span className="avatar small" aria-hidden="true">{learnerName[0]?.toUpperCase()}</span>
-          <div><strong>{learnerName}</strong><span>{classLevel} learner</span>{school && <span className="sidebar-school" title={school}>{school}</span>}</div>
+          <div><strong>{learnerName}</strong><span>{classLevel} learner</span>{school && <span className="sidebar-school" title={school}>{school}</span>}<PlanBadge plan={learner.plan} sponsored={learner.sponsored} className="on-navy" /></div>
         </div>
       </aside>
 
