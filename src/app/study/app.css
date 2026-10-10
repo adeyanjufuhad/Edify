@@ -15,6 +15,8 @@
 .sidebar-user { display: flex; align-items: center; gap: 12px; padding: 14px 10px 4px; border-top: 1px solid rgba(102, 155, 188, 0.25); }
 .sidebar-user strong { display: block; font-size: 15px; color: var(--white); line-height: 1.3; }
 .sidebar-user span:not(.avatar) { font-size: 13px; color: var(--slate); }
+.sidebar-user > div { min-width: 0; }
+.sidebar-user .sidebar-school { display: block; color: var(--on-navy-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mobile-bar, .tab-bar { display: none; }
 
 .app-main { min-width: 0; padding: 36px 40px 72px; }

@@ -4,7 +4,7 @@ import { database } from "@/lib/db";
 
 const scrypt = promisify(scryptCallback) as (password: string, salt: Buffer, keylen: number) => Promise<Buffer>;
 
-export type LearnerProfile = { id: string; name: string; classLevel: string };
+export type LearnerProfile = { id: string; name: string; classLevel: string; school: string | null };
 
 export const MAX_PROFILES = 6;
 export const PIN_PATTERN = /^\d{4}$/;
@@ -25,32 +25,32 @@ async function pinMatches(pin: string, stored: string) {
 }
 
 function toProfile(row: Record<string, unknown>): LearnerProfile {
-  return { id: row.id as string, name: row.name as string, classLevel: row.class_level as string };
+  return { id: row.id as string, name: row.name as string, classLevel: row.class_level as string, school: (row.school as string | null) ?? null };
 }
 
 export async function listProfiles(parentId: string): Promise<LearnerProfile[]> {
-  const rows = await database()`select id, name, class_level from public.learner_profiles where parent_id = ${parentId} order by created_at`;
+  const rows = await database()`select id, name, class_level, school from public.learner_profiles where parent_id = ${parentId} order by created_at`;
   return rows.map(toProfile);
 }
 
 export async function getProfile(parentId: string, profileId: string): Promise<LearnerProfile | null> {
   if (!UUID_PATTERN.test(profileId)) return null;
-  const rows = await database()`select id, name, class_level from public.learner_profiles where id = ${profileId} and parent_id = ${parentId}`;
+  const rows = await database()`select id, name, class_level, school from public.learner_profiles where id = ${profileId} and parent_id = ${parentId}`;
   return rows[0] ? toProfile(rows[0]) : null;
 }
 
-export async function createProfile(parentId: string, name: string, pin: string, classLevel: string): Promise<LearnerProfile> {
-  const rows = await database()`insert into public.learner_profiles (parent_id, name, pin_hash, class_level)
-    select ${parentId}, ${name}, ${await hashPin(pin)}, ${classLevel}
+export async function createProfile(parentId: string, name: string, pin: string, classLevel: string, school: string): Promise<LearnerProfile> {
+  const rows = await database()`insert into public.learner_profiles (parent_id, name, pin_hash, class_level, school)
+    select ${parentId}, ${name}, ${await hashPin(pin)}, ${classLevel}, ${school}
     where (select count(*) from public.learner_profiles where parent_id = ${parentId}) < ${MAX_PROFILES}
-    returning id, name, class_level`;
+    returning id, name, class_level, school`;
   if (!rows[0]) throw new Error(`A parent account can have at most ${MAX_PROFILES} learners.`);
   return toProfile(rows[0]);
 }
 
 export async function checkPin(parentId: string, profileId: string, pin: string): Promise<LearnerProfile | null> {
   if (!UUID_PATTERN.test(profileId) || !PIN_PATTERN.test(pin)) return null;
-  const rows = await database()`select id, name, class_level, pin_hash from public.learner_profiles where id = ${profileId} and parent_id = ${parentId}`;
+  const rows = await database()`select id, name, class_level, school, pin_hash from public.learner_profiles where id = ${profileId} and parent_id = ${parentId}`;
   if (!rows[0] || !(await pinMatches(pin, rows[0].pin_hash as string))) return null;
   return toProfile(rows[0]);
 }

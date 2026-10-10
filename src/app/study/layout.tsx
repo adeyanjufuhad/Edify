@@ -8,7 +8,7 @@ export default async function StudyLayout({ children }: { children: React.ReactN
   const learner = await requireLearner();
   return (
     <div className="app">
-      <AppSidebar learnerName={learner.name} classLevel={learner.classLevel} />
+      <AppSidebar learnerName={learner.name} classLevel={learner.classLevel} school={learner.school} />
       <main id="main" className="app-main">{children}</main>
     </div>
   );

@@ -39,8 +39,8 @@ export default function SignupPage() {
       <div className="account-intro">
         <span className="kicker">FOR PARENTS AND GUARDIANS</span>
         <h1>Create your <span className="hl">family account.</span></h1>
-        <p>One account for the whole family. Add each child as a learner with their own PIN, progress and notes.</p>
-        <ol className="account-steps"><li><b>1</b>Create your account</li><li><b>2</b>Confirm your email with a 6-digit code</li><li><b>3</b>Add your children and start studying</li></ol>
+        <p>One account for the whole family. Add each child as a learner with their class, school and own PIN, so their progress and notes stay separate.</p>
+        <ol className="account-steps"><li><b>1</b>Create your account</li><li><b>2</b>Confirm your email with a 6-digit code</li><li><b>3</b>Add each child’s class and school</li></ol>
       </div>
       <div className="account-card">
         <h2>Sign up</h2>

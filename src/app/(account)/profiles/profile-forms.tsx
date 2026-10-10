@@ -5,6 +5,7 @@ import { useActionState, useRef, useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import type { LearnerProfile } from "@/lib/profiles";
 import { CLASS_LEVELS } from "@/data/curriculum";
+import { SUGGESTED_SCHOOLS } from "@/data/schools";
 import { addProfile, forgetProfile, openProfile, removeProfile, type FormState } from "./actions";
 
 const digitsOnly = (value: string) => value.replace(/\D/g, "").slice(0, 4);
@@ -26,7 +27,7 @@ export function ProfilePicker({ profiles }: { profiles: LearnerProfile[] }) {
             <button type="button" className="profile-select" aria-pressed={profile.id === selected} onClick={() => { setSelected(profile.id); setPin(""); setConfirmRemove(null); requestAnimationFrame(() => pinRef.current?.focus()); }}>
               <span className="avatar" aria-hidden="true">{profile.name[0]?.toUpperCase()}</span>
               <strong>{profile.name}</strong>
-              <small>{profile.classLevel}</small>
+              <small>{profile.classLevel}{profile.school && <> · <span className="profile-school">{profile.school}</span></>}</small>
             </button>
             {confirmRemove === profile.id ? (
               <form action={removeProfile} className="remove-confirm">
@@ -73,6 +74,7 @@ export function AddProfileForm() {
           {CLASS_LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
         </select>
       </div>
+      <SchoolField />
       <div className="field">
         <label htmlFor="learner-pin">4-digit PIN</label>
         <input id="learner-pin" name="pin" type="password" inputMode="numeric" autoComplete="off" pattern="\d{4}" title="4 digits" maxLength={4} required placeholder="••••" />
@@ -85,6 +87,24 @@ export function AddProfileForm() {
       {state.addedAt && <p role="status" className="form-success full">Learner added. Pick their name above to start.</p>}
       <button className="pill-button full" type="submit" disabled={pending}>{pending ? "Adding…" : "Add learner"}</button>
     </form>
+  );
+}
+
+// A free-text school field: the suggestions fill it in one tap, and any other school can be typed.
+function SchoolField() {
+  const [school, setSchool] = useState("");
+  return (
+    <div className="field full">
+      <label htmlFor="learner-school">School</label>
+      <input id="learner-school" name="school" list="school-suggestions" autoComplete="off" required minLength={2} maxLength={80} value={school} onChange={(event) => setSchool(event.target.value)} placeholder="Start typing your child’s school…" aria-describedby="learner-school-help" />
+      <datalist id="school-suggestions">{SUGGESTED_SCHOOLS.map((name) => <option key={name} value={name} />)}</datalist>
+      <div className="school-chips" id="learner-school-help">
+        <span>Pick one, or type any other school:</span>
+        {SUGGESTED_SCHOOLS.map((name) => (
+          <button key={name} type="button" className={`school-chip ${school === name ? "is-on" : ""}`} aria-pressed={school === name} onClick={() => setSchool(name)}>{name}</button>
+        ))}
+      </div>
+    </div>
   );
 }
 

@@ -17,7 +17,7 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href);
 }
 
-export default function AppSidebar({ learnerName, classLevel }: { learnerName: string; classLevel: string }) {
+export default function AppSidebar({ learnerName, classLevel, school }: { learnerName: string; classLevel: string; school: string | null }) {
   const pathname = usePathname();
 
   return (
@@ -36,7 +36,7 @@ export default function AppSidebar({ learnerName, classLevel }: { learnerName: s
         </nav>
         <div className="sidebar-user">
           <span className="avatar small" aria-hidden="true">{learnerName[0]?.toUpperCase()}</span>
-          <div><strong>{learnerName}</strong><span>{classLevel} learner</span></div>
+          <div><strong>{learnerName}</strong><span>{classLevel} learner</span>{school && <span className="sidebar-school" title={school}>{school}</span>}</div>
         </div>
       </aside>
 

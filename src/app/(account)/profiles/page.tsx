@@ -10,14 +10,15 @@ export default async function ProfilesPage() {
   let profiles: LearnerProfile[] = [];
   let loadFailed = false;
   try { profiles = await listProfiles(parent.id); } catch { loadFailed = true; }
+  const onboarding = !profiles.length && !loadFailed;
 
   return (
     <div className="profiles-page">
       <div className="profiles-head">
         <div>
-          <span className="kicker">SIGNED IN AS {parent.name.toUpperCase()}</span>
-          <h1>{profiles.length ? <>Who’s studying <span className="hl">today?</span></> : <>Add your first <span className="hl">learner.</span></>}</h1>
-          <p>{profiles.length ? "Pick your name and enter your 4-digit PIN to open your study space." : "Add each child who will study on Edify. They’ll use their PIN to open their own progress and notes."}</p>
+          <span className="kicker">{onboarding ? "STEP 3 OF 3" : `SIGNED IN AS ${parent.name.toUpperCase()}`}</span>
+          <h1>{onboarding ? <>Add your first <span className="hl">learner.</span></> : <>Who’s studying <span className="hl">today?</span></>}</h1>
+          <p>{onboarding ? "Tell us their class and school, then choose a 4-digit PIN they’ll use to open their own progress and notes. You can add brothers and sisters next." : "Pick your name and enter your 4-digit PIN to open your study space."}</p>
         </div>
         <SignOutButton />
       </div>
@@ -25,7 +26,7 @@ export default async function ProfilesPage() {
       {profiles.length > 0 && <ProfilePicker profiles={profiles} />}
       {profiles.length < MAX_PROFILES && !loadFailed && (
         <section className="account-card add-card" aria-labelledby="add-learner">
-          <h2 id="add-learner">{profiles.length ? "Add another learner" : "Add a learner"}</h2>
+          <h2 id="add-learner">{profiles.length ? "Add another learner" : "Learner details"}</h2>
           <AddProfileForm />
         </section>
       )}

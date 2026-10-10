@@ -6,6 +6,7 @@ import { refresh } from "next/cache";
 import { PROFILE_COOKIE, PROFILE_COOKIE_MAX_AGE, requireParent } from "@/lib/account";
 import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile } from "@/lib/profiles";
 import { isClassLevel } from "@/data/curriculum";
+import { normalizeSchool } from "@/data/schools";
 
 export type FormState = { error?: string; addedAt?: number };
 
@@ -15,12 +16,14 @@ export async function addProfile(_state: FormState, formData: FormData): Promise
   const pin = String(formData.get("pin") ?? "");
   const confirm = String(formData.get("confirmPin") ?? "");
   const classLevel = String(formData.get("classLevel") ?? "");
+  const school = normalizeSchool(String(formData.get("school") ?? ""));
   if (!name || name.length > 40) return { error: "Enter the learner’s first name (up to 40 letters)." };
   if (!isClassLevel(classLevel)) return { error: "Choose the learner’s class (JSS1 to SS3)." };
+  if (school.length < 2 || school.length > 80) return { error: "Enter the learner’s school (pick one from the list or type its name)." };
   if (!PIN_PATTERN.test(pin)) return { error: "Choose a PIN of exactly 4 digits." };
   if (pin !== confirm) return { error: "The two PINs don’t match. Type the same 4 digits twice." };
   try {
-    await createProfile(parent.id, name, pin, classLevel);
+    await createProfile(parent.id, name, pin, classLevel, school);
   } catch (error) {
     const limit = error instanceof Error && error.message.includes(String(MAX_PROFILES));
     return { error: limit ? `You can add up to ${MAX_PROFILES} learners.` : "Could not add the learner. Check your connection and try again." };
