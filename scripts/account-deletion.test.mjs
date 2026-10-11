@@ -3,11 +3,14 @@
 // columns and foreign keys that production has (checked against the production schema).
 //
 //   node --experimental-strip-types --test scripts/account-deletion.test.mjs
+// PGlite is not an app dependency: `npm i --no-save @electric-sql/pglite`, or set PGLITE_DIR (see scripts/pglite.mjs).
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
-import { PGlite } from "@electric-sql/pglite";
 import { accountDeletionStatements } from "../src/lib/account-deletion-sql.ts";
+import { loadPGlite } from "./pglite.mjs";
+
+const PGlite = await loadPGlite();
 
 const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 const PARENT_A = "aaaaaaaa-0000-4000-8000-000000000001";
