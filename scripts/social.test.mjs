@@ -598,6 +598,135 @@ test("every query's parameters are all used and ids are never part of the SQL te
   }
 });
 
+// ---------------------------------------------------------------- presence and chat
+
+async function linkedPair(db, { x = A1, y = B1, xOn = {}, yOn = {} } = {}) {
+  const base = { challenges: true, presence: false, chat: false, voice: false };
+  for (const [parent, learner, on] of [[x === A1 || x === A2 ? P1 : x === B1 ? P2 : P3, x, xOn], [y === A1 || y === A2 ? P1 : y === B1 ? P2 : P3, y, yOn]]) {
+    await run(db, qq.saveSettingsQuery(parent, learner, { ...base, ...on }));
+  }
+  const [a, b] = link(x, y);
+  return (await db.query("insert into public.classmate_links (learner_a, learner_b) values ($1, $2) returning id", [a, b])).rows[0].id;
+}
+
+test("presence: a heartbeat is ignored if it comes too soon, and only counts as online within the window", async () => {
+  const db = await freshDatabase();
+  assert.equal((await run(db, qq.heartbeatQuery(A1, 20))).rows.length, 1, "the first heartbeat is stored");
+  assert.equal((await run(db, qq.heartbeatQuery(A1, 20))).rows.length, 0, "one right after changes nothing");
+  await db.query("update public.learner_presence set last_seen_at = now() - interval '30 seconds'");
+  assert.equal((await run(db, qq.heartbeatQuery(A1, 20))).rows.length, 1, "after the gap it updates");
+  assert.equal(await count(db, "select count(*) n from public.learner_presence"), 1, "one row per learner, overwritten");
+});
+
+test("online status: shown only when both parents switched presence on, only online or not, never for blocked or unlinked", async () => {
+  const db = await freshDatabase();
+  const linkId = await linkedPair(db, { xOn: { presence: true }, yOn: { presence: true } });
+  const online = async (learner = A1) => (await run(db, qq.onlineQuery(learner, 75))).rows;
+  assert.deepEqual(await online(), [{ link_id: linkId, online: false }], "no heartbeat yet: offline");
+  await run(db, qq.heartbeatQuery(B1, 20));
+  assert.deepEqual(await online(), [{ link_id: linkId, online: true }]);
+  assert.deepEqual(await online(B1), [{ link_id: linkId, online: false }], "Ada has never been seen");
+  await db.query("update public.learner_presence set last_seen_at = now() - interval '2 minutes'");
+  assert.deepEqual(await online(), [{ link_id: linkId, online: false }], "older than the window is offline");
+  await run(db, qq.heartbeatQuery(C1, 20));
+
+  await run(db, qq.saveSettingsQuery(P2, B1, { challenges: true, presence: false, chat: false, voice: false }));
+  assert.deepEqual(await online(), [], "Chi's parent switched presence off: nothing about Chi");
+  await run(db, qq.saveSettingsQuery(P2, B1, { challenges: true, presence: true, chat: false, voice: false }));
+  await run(db, qq.saveSettingsQuery(P1, A1, { challenges: true, presence: false, chat: false, voice: false }));
+  assert.deepEqual(await online(), [], "and Ada cannot see others without sharing her own status");
+  await run(db, qq.saveSettingsQuery(P1, A1, { challenges: true, presence: true, chat: false, voice: false }));
+  await run(db, qq.blockLinkQuery(null, A1, linkId));
+  assert.deepEqual(await online(), [], "a blocked classmate is not shown");
+});
+
+test("chat: both parents must have switched it on; messages come back oldest first; the newest are kept when there are many", async () => {
+  const db = await freshDatabase();
+  const linkId = await linkedPair(db, { xOn: { chat: true }, yOn: { chat: true } });
+  const send = async (who, text) => (await run(db, qq.sendTextQuery(who, linkId, text))).rows[0];
+  const first = await send(A1, "hello");
+  await send(B1, "hi back");
+  assert.ok(first.id && first.seq && first.created_at);
+  assert.equal(await send(C1, "intruder"), undefined, "someone not on the link cannot send");
+  const list = async (who = A1, after = 0, limit = 60) => (await run(db, qq.chatListQuery(who, linkId, after, 14, 7, limit))).rows;
+  assert.deepEqual((await list()).map((m) => m.body), ["hello", "hi back"]);
+  assert.deepEqual((await list(C1)).length, 0, "an outsider reads nothing");
+  assert.deepEqual((await list(A1, 0, 1)).map((m) => m.body), ["hi back"], "the limit keeps the newest");
+  assert.deepEqual(Object.keys((await list())[0]).sort(), ["audio_seconds", "body", "created_at", "id", "kind", "sender_id", "seq"], "no audio and nothing about the sender but the id");
+
+  // Chat off on one side stops sending and reading for both.
+  await run(db, qq.saveSettingsQuery(P2, B1, { challenges: true, presence: false, chat: false, voice: false }));
+  assert.equal(await send(A1, "still there?"), undefined);
+  assert.equal((await list()).length, 0);
+  await run(db, qq.saveSettingsQuery(P2, B1, { challenges: true, presence: false, chat: true, voice: false }));
+  assert.equal((await list()).length, 2, "and it comes back when it is switched on again");
+  await run(db, qq.blockLinkQuery(null, B1, linkId));
+  assert.equal(await send(A1, "blocked?"), undefined, "a blocked link cannot chat");
+});
+
+test("chat: the 'after' cursor gives newer messages plus the last 15 seconds, and retention hides old messages", async () => {
+  const db = await freshDatabase();
+  const linkId = await linkedPair(db, { xOn: { chat: true }, yOn: { chat: true } });
+  const insert = async (body, ageDays, ageSeconds = 0) => (await db.query(`insert into public.chat_messages (link_id, sender_id, body, created_at) values ($1, $2, $3, now() - make_interval(days => $4, secs => $5)) returning seq::text seq`, [linkId, A1, body, ageDays, ageSeconds])).rows[0].seq;
+  const old = await insert("too old", 20);
+  const older = await insert("a minute ago", 0, 60);
+  const recent = await insert("just now", 0, 3);
+  const newest = await insert("newest", 0, 0);
+  const list = async (after) => (await run(db, qq.chatListQuery(B1, linkId, after, 14, 7, 100))).rows.map((m) => m.body);
+  assert.deepEqual(await list(0), ["a minute ago", "just now", "newest"], "older than the retention period is hidden even before the purge runs");
+  assert.deepEqual(await list(Number(older)), ["just now", "newest"]);
+  assert.deepEqual(await list(Number(newest)), ["just now", "newest"], "the last 15 seconds are repeated, so a late-arriving message is never missed");
+  assert.equal(Number(old) < Number(recent), true);
+});
+
+test("chat: unread counts only count messages from the classmate that this learner has not opened", async () => {
+  const db = await freshDatabase();
+  const linkId = await linkedPair(db, { xOn: { chat: true }, yOn: { chat: true } });
+  for (const [who, text] of [[B1, "one"], [B1, "two"], [A1, "mine"]]) await run(db, qq.sendTextQuery(who, linkId, text));
+  const unread = async (who) => Object.fromEntries((await run(db, qq.unreadQuery(who, 14, 7))).rows.map((r) => [r.link_id, r.n]));
+  assert.deepEqual(await unread(A1), { [linkId]: 2 });
+  assert.deepEqual(await unread(B1), { [linkId]: 1 });
+  await run(db, qq.markReadQuery(A1, linkId));
+  assert.deepEqual(await unread(A1), {});
+  assert.deepEqual(await unread(B1), { [linkId]: 1 }, "reading is per learner");
+  await run(db, qq.sendTextQuery(B1, linkId, "three"));
+  assert.deepEqual(await unread(A1), { [linkId]: 1 });
+  await run(db, qq.markReadQuery(C1, linkId));
+  assert.equal(await count(db, `select count(*) n from public.chat_reads where learner_id = '${C1}'`), 0, "an outsider cannot mark anything read");
+  assert.deepEqual(await unread(C1), {});
+});
+
+test("parents: read every message of their own child's conversations, delete any of them, and nothing of other families", async () => {
+  const db = await freshDatabase();
+  const linkId = await linkedPair(db, { xOn: { chat: true }, yOn: { chat: true } });
+  const sent = [];
+  for (const [who, text] of [[A1, "hello"], [B1, "hi"]]) sent.push((await run(db, qq.sendTextQuery(who, linkId, text))).rows[0].id);
+  await db.query(`insert into public.chat_messages (id, link_id, sender_id, kind, audio_seconds, audio_bytes) values ('33333333-0000-4000-8000-000000000001', $1, $2, 'voice', 4, 3)`, [linkId, B1]);
+  await db.query(`insert into public.chat_voice_clips (message_id, content_type, audio) values ('33333333-0000-4000-8000-000000000001', 'audio/webm', '\\x1a45dfa3')`);
+  const read = async (parent, learner) => (await run(db, qq.parentConversationQuery(parent, learner, linkId, 14, 7, 200))).rows;
+  assert.deepEqual((await read(P1, A1)).map((m) => m.sender_name), ["Ada", "Chi", "Chi"]);
+  assert.equal((await read(P2, B1)).length, 3, "the other child's parent reads it too");
+  assert.equal((await read(P3, C1)).length, 0, "another family reads nothing");
+  assert.equal((await read(P2, A1)).length, 0, "and a parent cannot read through someone else's learner");
+  await run(db, qq.saveSettingsQuery(P1, A1, { challenges: true, presence: false, chat: false, voice: false }));
+  assert.equal((await read(P1, A1)).length, 3, "reading still works after chat is switched off");
+
+  assert.equal((await run(db, qq.deleteMessageQuery(P3, sent[0]))).rows.length, 0, "another family cannot delete");
+  assert.equal((await run(db, qq.deleteMessageQuery(P1, sent[1]))).rows.length, 1, "a parent can delete the classmate's message to their child");
+  assert.equal((await run(db, qq.deleteMessageQuery(P2, "33333333-0000-4000-8000-000000000001"))).rows.length, 1);
+  assert.equal(await count(db, "select count(*) n from public.chat_voice_clips"), 0, "the recording went with the message");
+  assert.equal(await count(db, "select count(*) n from public.chat_messages"), 1);
+});
+
+test("a message can only be reported by the learner who received it", async () => {
+  const db = await freshDatabase();
+  const linkId = await linkedPair(db, { xOn: { chat: true }, yOn: { chat: true } });
+  const sent = (await run(db, qq.sendTextQuery(A1, linkId, "rude words"))).rows[0].id;
+  assert.equal((await run(db, qq.receivedMessageQuery(A1, sent))).rows.length, 0, "not your own message");
+  assert.equal((await run(db, qq.receivedMessageQuery(C1, sent))).rows.length, 0, "not an outsider");
+  assert.deepEqual((await run(db, qq.receivedMessageQuery(B1, sent))).rows[0], { id: sent, link_id: linkId, kind: "text", body: "rude words" });
+});
+
 // ---------------------------------------------------------------- deletion
 
 async function seedSocial(db) {

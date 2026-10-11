@@ -9,6 +9,7 @@ import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@
 import { listParentLinks, listPendingInvites, listReportsByParent, type ParentLink, type PendingInvite, type SentReport } from "@/lib/social/links";
 import { getSettingsFor, NOTHING_ON, type SocialSettings } from "@/lib/social/settings";
 import { cancelInviteAction } from "./actions";
+import Conversation from "./conversation";
 import { InviteMaker, LinkActions, RedeemForm, SettingsForm } from "./forms";
 import "./classmates.css";
 
@@ -20,7 +21,7 @@ const WHEN = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", t
 export default async function ClassmatesPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   if (!challengesEnabled()) notFound();
   const parent = await requireConsentedParent();
-  const { learner: wanted } = await searchParams;
+  const { learner: wanted, chat: wantedChat } = await searchParams;
 
   let profiles: LearnerProfile[] = [];
   let settings = new Map<string, SocialSettings>();
@@ -38,6 +39,7 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
   const mine = learner ? settings.get(learner.id) ?? NOTHING_ON : NOTHING_ON;
   const myLinks = learner ? links.filter((link) => link.learnerId === learner.id) : [];
   const myInvites = learner ? invites.filter((invite) => invite.learnerId === learner.id) : [];
+  const reading = chatEnabled() && typeof wantedChat === "string" ? myLinks.find((link) => link.linkId === wantedChat) : undefined;
 
   return (
     <div className="classmates-page">
@@ -95,13 +97,15 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
                 {myLinks.map((link) => (
                   <li key={link.linkId}>
                     <span className="avatar small" aria-hidden="true">{link.other.name[0]?.toUpperCase()}</span>
-                    <span className="link-who"><strong>{link.other.name}</strong><small>{link.other.classLevel}{link.status === "blocked" && (link.blocked === "by-us" ? " · blocked by you" : " · not available")}</small></span>
+                    <span className="link-who"><strong>{link.other.name}</strong><small>{link.other.classLevel}{link.status === "blocked" && (link.blocked === "by-us" ? " · blocked by you" : " · not available")}{chatEnabled() && <> · <Link href={`/profiles/classmates?learner=${learner.id}&chat=${link.linkId}#conversation`} className="text-link small">Read chat</Link></>}</small></span>
                     <LinkActions linkId={link.linkId} learnerId={learner.id} other={link.other.name} mode={link.status === "active" ? "active" : link.blocked === "by-us" ? "blocked-by-us" : "blocked-by-them"} />
                   </li>
                 ))}
               </ul>
             ) : <p className="empty">No classmates yet.</p>}
           </section>
+
+          {reading && <Conversation parentId={parent.id} learnerId={learner.id} learnerName={learner.name} linkId={reading.linkId} otherName={reading.other.name} voice={voiceEnabled()} />}
         </>
       )}
 

@@ -6,6 +6,7 @@ import { requireConsentedParent } from "@/lib/account";
 import { challengesEnabled } from "@/lib/social/flags";
 import { blockAsParent, cancelInvite, createInvite, redeemInvite, removeAsParent, unblockAsParent } from "@/lib/social/links";
 import { saveSettings } from "@/lib/social/settings";
+import { deleteMessageAsParent } from "@/lib/social/chat";
 
 // Every action here is for the signed-in parent. The parent comes from the session; the learner and the link in the
 // form are only references, and each query checks that they belong to this parent.
@@ -68,5 +69,12 @@ export async function unblockLinkAction(formData: FormData) {
 export async function removeLinkAction(formData: FormData) {
   const parent = await parentOrNotFound();
   await removeAsParent(parent.id, field(formData, "learnerId"), field(formData, "linkId"));
+  refresh();
+}
+
+// Deletes one message (and its voice recording) from a conversation one of the parent's learners is in.
+export async function deleteMessageAction(formData: FormData) {
+  const parent = await parentOrNotFound();
+  await deleteMessageAsParent(parent.id, field(formData, "messageId"));
   refresh();
 }

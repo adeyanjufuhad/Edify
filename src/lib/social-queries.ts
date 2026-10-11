@@ -280,3 +280,122 @@ export function purgeQueries(days: RetentionDays, includeChat: boolean): { name:
   }
   return list;
 }
+
+// ---------- Presence (phase 2, db/migrations/011) ----------
+// Overwrites the learner's "last seen" time, but not more often than every `minGapSeconds` (a faster heartbeat changes nothing).
+export function heartbeatQuery(learnerId: string, minGapSeconds: number): Query {
+  return {
+    text: `insert into public.learner_presence (learner_id, last_seen_at) values ($1::uuid, now())
+      on conflict (learner_id) do update set last_seen_at = now()
+      where public.learner_presence.last_seen_at < now() - make_interval(secs => $2::int)
+      returning learner_id`,
+    params: [learnerId, minGapSeconds],
+  };
+}
+
+// For each active link: is the classmate online right now? Only when BOTH learners' parents switched presence on (you
+// can't see someone's status unless you share yours), and only "online or not": never a time, a place or an activity.
+export function onlineQuery(learnerId: string, withinSeconds: number): Query {
+  return {
+    text: `select l.id as link_id, coalesce(p.last_seen_at > now() - make_interval(secs => $2::int), false) as online
+      from public.classmate_links l
+      join public.learner_social_settings me on me.learner_id = $1::uuid and me.challenges_on and me.presence_on
+      join public.learner_social_settings s on s.learner_id = case when l.learner_a = $1::uuid then l.learner_b else l.learner_a end and s.challenges_on and s.presence_on
+      left join public.learner_presence p on p.learner_id = s.learner_id
+      where l.status = 'active' and $1::uuid in (l.learner_a, l.learner_b)`,
+    params: [learnerId, withinSeconds],
+  };
+}
+
+// ---------- Chat (phase 3, db/migrations/012) ----------
+// Chat on a link needs the link active and BOTH learners' parents to have switched challenges and chat on.
+const CHAT_OK = `l.status = 'active' and (select count(*) from public.learner_social_settings s where s.learner_id in (l.learner_a, l.learner_b) and s.challenges_on and s.chat_on) = 2`;
+const WITHIN_RETENTION = `((m.kind = 'text' and m.created_at > now() - make_interval(days => $4::int)) or (m.kind = 'voice' and m.created_at > now() - make_interval(days => $5::int)))`;
+
+// The newest messages of a conversation, oldest first. With `after` > 0 only newer ones (plus anything from the last 15
+// seconds, because two messages saved at nearly the same moment can become visible out of order; the browser skips repeats).
+export function chatListQuery(learnerId: string, linkId: string, after: number, textDays: number, voiceDays: number, limit: number): Query {
+  return {
+    text: `select * from (
+        select m.id as id, m.seq::text as seq, m.sender_id as sender_id, m.kind as kind, m.body as body, m.audio_seconds as audio_seconds, m.created_at as created_at
+        from public.chat_messages m join public.classmate_links l on l.id = m.link_id
+        where m.link_id = $2::uuid and $1::uuid in (l.learner_a, l.learner_b) and ${CHAT_OK} and ${WITHIN_RETENTION}
+          and ($3::bigint = 0 or m.seq > $3::bigint or m.created_at > now() - interval '15 seconds')
+        order by m.seq desc limit $6::int
+      ) recent order by seq::bigint asc`,
+    params: [learnerId, linkId, after, textDays, voiceDays, limit],
+  };
+}
+
+export function sendTextQuery(learnerId: string, linkId: string, body: string): Query {
+  return {
+    text: `insert into public.chat_messages (link_id, sender_id, kind, body)
+      select l.id, $1::uuid, 'text', $3::text from public.classmate_links l
+      where l.id = $2::uuid and $1::uuid in (l.learner_a, l.learner_b) and ${CHAT_OK}
+      returning id, seq::text as seq, created_at`,
+    params: [learnerId, linkId, body],
+  };
+}
+
+export function markReadQuery(learnerId: string, linkId: string): Query {
+  return {
+    text: `insert into public.chat_reads (link_id, learner_id, last_read_seq)
+      select l.id, $1::uuid, coalesce((select max(seq) from public.chat_messages where link_id = l.id), 0) from public.classmate_links l
+      where l.id = $2::uuid and $1::uuid in (l.learner_a, l.learner_b)
+      on conflict (link_id, learner_id) do update set last_read_seq = excluded.last_read_seq`,
+    params: [learnerId, linkId],
+  };
+}
+
+// Unread messages from classmates, per link, for the learner's own open conversations.
+export function unreadQuery(learnerId: string, textDays: number, voiceDays: number): Query {
+  return {
+    text: `select m.link_id as link_id, count(*)::int as n
+      from public.chat_messages m
+      join public.classmate_links l on l.id = m.link_id
+      left join public.chat_reads r on r.link_id = m.link_id and r.learner_id = $1::uuid
+      where $1::uuid in (l.learner_a, l.learner_b) and ${CHAT_OK} and m.sender_id <> $1::uuid and m.seq > coalesce(r.last_read_seq, 0)
+        and ((m.kind = 'text' and m.created_at > now() - make_interval(days => $2::int)) or (m.kind = 'voice' and m.created_at > now() - make_interval(days => $3::int)))
+      group by m.link_id`,
+    params: [learnerId, textDays, voiceDays],
+  };
+}
+
+// A message the learner received (never one they sent) on a link they belong to, for reporting it.
+export function receivedMessageQuery(learnerId: string, messageId: string): Query {
+  return {
+    text: `select m.id as id, m.link_id as link_id, m.kind as kind, m.body as body
+      from public.chat_messages m join public.classmate_links l on l.id = m.link_id
+      where m.id = $2::uuid and $1::uuid in (l.learner_a, l.learner_b) and m.sender_id <> $1::uuid`,
+    params: [learnerId, messageId],
+  };
+}
+
+// ---------- Parents reading and deleting their child's chat ----------
+// A parent sees every message of a conversation their learner is in, newest last, for as long as it is kept. This works
+// even if chat has since been switched off, so a parent can always read and delete what is there.
+export function parentConversationQuery(parentId: string, learnerId: string, linkId: string, textDays: number, voiceDays: number, limit: number): Query {
+  return {
+    text: `select * from (
+        select m.id as id, m.seq::text as seq, m.sender_id as sender_id, p.name as sender_name, m.kind as kind, m.body as body, m.audio_seconds as audio_seconds, m.created_at as created_at
+        from public.chat_messages m
+        join public.classmate_links l on l.id = m.link_id
+        join public.learner_profiles p on p.id = m.sender_id
+        where m.link_id = $3::uuid and $2::uuid in (l.learner_a, l.learner_b) and exists (select 1 from public.learner_profiles o where o.id = $2::uuid and o.parent_id = $1::uuid)
+          and ((m.kind = 'text' and m.created_at > now() - make_interval(days => $4::int)) or (m.kind = 'voice' and m.created_at > now() - make_interval(days => $5::int)))
+        order by m.seq desc limit $6::int
+      ) recent order by seq::bigint asc`,
+    params: [parentId, learnerId, linkId, textDays, voiceDays, limit],
+  };
+}
+
+// Deleting a message deletes its voice recording with it (foreign key). Only for a conversation one of the parent's learners is in.
+export function deleteMessageQuery(parentId: string, messageId: string): Query {
+  return {
+    text: `delete from public.chat_messages m using public.classmate_links l
+      where m.id = $2::uuid and l.id = m.link_id
+        and exists (select 1 from public.learner_profiles p where p.parent_id = $1::uuid and p.id in (l.learner_a, l.learner_b))
+      returning m.id`,
+    params: [parentId, messageId],
+  };
+}

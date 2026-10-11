@@ -5,6 +5,7 @@ import { isReportReason } from "@/data/challenges";
 import { actionActor } from "@/lib/social/guard";
 import { cancelChallenge, createChallenge, declineChallenge, startChallenge, submitChallenge } from "@/lib/social/challenges";
 import { blockAsLearner, reportAsLearner } from "@/lib/social/links";
+import { receivedMessage } from "@/lib/social/chat";
 
 // Every action starts by finding out who is asking from the signed-in session and learner cookie (never from the
 // form), and checks that the challenge or classmate in the form really belongs to that learner.
@@ -65,6 +66,20 @@ export async function reportClassmateAction(_state: ActionState, formData: FormD
   const reason = field(formData, "reason");
   if (!isReportReason(reason)) return { error: "Choose what went wrong." };
   const result = await reportAsLearner(actor.learner.id, field(formData, "linkId"), reason, field(formData, "note"));
+  if ("error" in result) return { error: result.error };
+  redirect("/study/challenges?notice=reported");
+}
+
+// Reports one message the learner received (never one they sent). The text is copied into the report because the message
+// may be deleted later; the classmate is blocked straight away.
+export async function reportMessageAction(_state: ActionState, formData: FormData): Promise<ActionState> {
+  const actor = await actionActor();
+  if (!actor.ok) return { error: actor.error };
+  const reason = field(formData, "reason");
+  if (!isReportReason(reason)) return { error: "Choose what went wrong." };
+  const message = await receivedMessage(actor.learner.id, field(formData, "messageId"));
+  if (!message) return { error: "That message isn’t available to report." };
+  const result = await reportAsLearner(actor.learner.id, message.linkId, reason, field(formData, "note"), { id: message.id, text: message.text });
   if ("error" in result) return { error: result.error };
   redirect("/study/challenges?notice=reported");
 }

@@ -19,7 +19,7 @@ const NOTICES: Record<string, string> = {
 };
 
 export default async function ChallengesPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const { learner, blocked } = await pageActor();
+  const { learner, settings, blocked } = await pageActor();
   if (blocked) return <Gate blocked={blocked} learnerId={learner.id} />;
   const { notice } = await searchParams;
 
@@ -49,7 +49,7 @@ export default async function ChallengesPage({ searchParams }: { searchParams: P
       <div className="challenge-layout">
         <section className="panel" aria-labelledby="classmates-title">
           <header className="panel-head"><h2 id="classmates-title">Your classmates</h2></header>
-          {classmates.length ? <ClassmateList classmates={classmates} /> : (
+          {classmates.length ? <ClassmateList classmates={classmates} features={{ presence: settings.presence, chat: settings.chat, voice: settings.voice }} /> : (
             <div className="empty">
               <Users size={22} />
               <p>You aren’t linked with a classmate yet. A link needs both parents: one makes a one-time classmate code and sends it to the other. Only learners in your school and class can be linked.</p>
