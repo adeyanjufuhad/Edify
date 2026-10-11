@@ -5,7 +5,7 @@ export const week3: Lesson = {
   week: "Week 03",
   title: "Nature of Matter",
   subtitle: "What matter is, the states it exists in, how it changes, and how chemists sort it into elements, compounds and mixtures.",
-  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘Matter and Separation Techniques’ (printed pp. 4–5) and its past WAEC, NECO and NABTEB questions (pp. 11–16). The explanations and practice questions below are newly written for Edify.",
+  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘Matter and Separation Techniques’ (printed pp. 4–5) and its past examination questions (pp. 11–16). The explanations and practice questions below are newly written for Edify.",
   objectives: [
     "Define matter and mass, and describe the three states of matter.",
     "Distinguish physical properties from chemical properties, with examples.",

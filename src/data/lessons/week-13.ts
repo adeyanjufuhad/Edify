@@ -5,7 +5,7 @@ export const week13: Lesson = {
   week: "Week 13",
   title: "Revision & Examination",
   subtitle: "The whole of First Term Chemistry in one place: the highest-value points from Weeks 1–12, every formula you need, the book’s errors corrected, and a 60-question mock examination.",
-  source: "Original revision notes compiled from Edify’s Weeks 1–12, which are based chiefly on Hidden Facts in SSCE Chemistry and its past WAEC, NECO and UME questions. The revision notes and all 60 mock-examination questions are newly written for Edify.",
+  source: "Original revision notes compiled from Edify’s Weeks 1–12, which are based chiefly on Hidden Facts in SSCE Chemistry and its past examination questions. The revision notes and all 60 mock-examination questions are newly written for Edify.",
   objectives: [
     "Recall the key definitions, facts and rules from every topic of First Term Chemistry.",
     "Use the calculation toolkit: atomic and mass numbers, ions, relative atomic and molecular mass, Rf values, Graham’s law, empirical and molecular formulae.",

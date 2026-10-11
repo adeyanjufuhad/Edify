@@ -5,7 +5,7 @@ export const week12: Lesson = {
   week: "Week 12",
   title: "Electronic Configuration",
   subtitle: "Shells, sub-shells and orbitals: how to write the electronic configuration of an atom or ion, and the three rules that decide where each electron goes.",
-  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘Atomic Structure’ and ‘The Four Quantum Numbers’, ‘Principles or Rules Governing the Filling of Electrons into Orbitals’ and the electronic-configuration questions (printed pp. 60–64), with their past WAEC, NECO and UME questions. The explanations and practice questions below are newly written for Edify.",
+  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘Atomic Structure’ and ‘The Four Quantum Numbers’, ‘Principles or Rules Governing the Filling of Electrons into Orbitals’ and the electronic-configuration questions (printed pp. 60–64), with their past examination questions. The explanations and practice questions below are newly written for Edify.",
   objectives: [
     "Distinguish between a shell, a sub-shell (s, p, d, f) and an orbital.",
     "State the number of orbitals and the maximum number of electrons in the s, p, d and f sub-shells.",
@@ -59,7 +59,7 @@ export const week12: Lesson = {
         "Elements 21 to 30 (extension): after calcium, the 3d sub-shell fills. Iron (26): 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶. Zinc (30): 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d¹⁰. Two atoms are exceptions because a half-full or full 3d sub-shell is extra stable: chromium (24) is 4s¹ 3d⁵ (not 4s² 3d⁴) and copper (29) is 4s¹ 3d¹⁰ (not 4s² 3d⁹).",
         "Noble-gas shorthand: the inner electrons can be shown with the symbol of the previous noble gas in square brackets. Sodium is [Ne] 3s¹, calcium is [Ar] 4s², and iron is [Ar] 4s² 3d⁶.",
         "Linking to shell arrangement: add the electrons in each shell. For calcium: shell 1 has 2 (1s²), shell 2 has 2 + 6 = 8, shell 3 has 2 + 6 = 8, shell 4 has 2, so the arrangement is 2, 8, 8, 2.",
-        "Reading information from a configuration: the highest shell number is the period; the number of electrons in the outermost shell is the group (for main-group elements). Example (past WAEC 2009): element Y is 1s² 2s² 2p⁵ and element Z is 1s² 2s² 2p⁶ 3s¹. Y has 7 electrons in its second shell, so it is in group VII (it is fluorine). Z has 3 shells, so it is in period 3 (it is sodium). Z has 2 + 2 + 6 + 1 = 11 electrons, so 11 protons. Y has one unpaired electron (in the 2p sub-shell). The compound of Z and Y is sodium fluoride, ZY (Na⁺ and F⁻).",
+        "Reading information from a configuration: the highest shell number is the period; the number of electrons in the outermost shell is the group (for main-group elements). Example (past exam question, 2009): element Y is 1s² 2s² 2p⁵ and element Z is 1s² 2s² 2p⁶ 3s¹. Y has 7 electrons in its second shell, so it is in group VII (it is fluorine). Z has 3 shells, so it is in period 3 (it is sodium). Z has 2 + 2 + 6 + 1 = 11 electrons, so 11 protons. Y has one unpaired electron (in the 2p sub-shell). The compound of Z and Y is sodium fluoride, ZY (Na⁺ and F⁻).",
       ],
     },
     {
@@ -68,8 +68,8 @@ export const week12: Lesson = {
         "To write the configuration of an ion, first write the configuration of the atom, then remove electrons (for a cation) or add electrons (for an anion). For a positive ion, remove the electrons from the highest shell first. For the transition metals this means the 4s electrons are lost before the 3d electrons.",
         "Cations of the first 20 elements: sodium atom 1s² 2s² 2p⁶ 3s¹; Na⁺ 1s² 2s² 2p⁶ (it has lost the 3s electron; this is the same as neon). Mg²⁺ and Al³⁺ are also 1s² 2s² 2p⁶. Ca²⁺ is 1s² 2s² 2p⁶ 3s² 3p⁶ and K⁺ is the same (both are like argon).",
         "Anions: chlorine atom 1s² 2s² 2p⁶ 3s² 3p⁵; Cl⁻ is 1s² 2s² 2p⁶ 3s² 3p⁶ (like argon). Oxygen atom 1s² 2s² 2p⁴; O²⁻ is 1s² 2s² 2p⁶ (like neon). S²⁻ is 1s² 2s² 2p⁶ 3s² 3p⁶.",
-        "Transition-metal ions: iron atom 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶. Fe²⁺ loses the two 4s electrons: 1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁶ (24 electrons). Fe³⁺ loses one more, from 3d: 1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁵ (23 electrons); this is a past WAEC question, and the half-full 3d⁵ makes Fe³⁺ fairly stable. Zn²⁺ is 1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ (28 electrons). Cu²⁺ is 1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁹ (27 electrons).",
-        "Working back from an ion to the element (past WAEC 2008): the ion Y⁺ has the configuration 1s² 2s² 2p⁶, which is 10 electrons, so the atom Y had 11 electrons: atomic number 11 and configuration 1s² 2s² 2p⁶ 3s¹ (sodium). A past WAEC 2016 question asked for the number of electrons in Be²⁺ (atomic number 4): 4 − 2 = 2 electrons.",
+        "Transition-metal ions: iron atom 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶. Fe²⁺ loses the two 4s electrons: 1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁶ (24 electrons). Fe³⁺ loses one more, from 3d: 1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁵ (23 electrons); this is a past exam question, and the half-full 3d⁵ makes Fe³⁺ fairly stable. Zn²⁺ is 1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ (28 electrons). Cu²⁺ is 1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁹ (27 electrons).",
+        "Working back from an ion to the element (past exam question, 2008): the ion Y⁺ has the configuration 1s² 2s² 2p⁶, which is 10 electrons, so the atom Y had 11 electrons: atomic number 11 and configuration 1s² 2s² 2p⁶ 3s¹ (sodium). A past exam question, 2016 question asked for the number of electrons in Be²⁺ (atomic number 4): 4 − 2 = 2 electrons.",
       ],
     },
     {
@@ -103,7 +103,7 @@ export const week12: Lesson = {
   ],
   hiddenFacts: [
     "Shell → sub-shell → orbital. Sub-shells: s (1 orbital, 2 electrons), p (3, 6), d (5, 10), f (7, 14). An orbital holds at most 2 electrons.",
-    "Filling order (Aufbau): 1s 2s 2p 3s 3p 4s 3d 4p 5s. Note 4s before 3d. A past WAEC question asks for this order.",
+    "Filling order (Aufbau): 1s 2s 2p 3s 3p 4s 3d 4p 5s. Note 4s before 3d. A past exam question asks for this order.",
     "Pauli: no two electrons in an atom have the same four quantum numbers, so an orbital holds only two electrons with opposite spins.",
     "Hund: fill the p (or d) orbitals singly first, then pair. Nitrogen 2p³ has 3 unpaired electrons; oxygen 2p⁴ has 2.",
     "Always check that the superscripts add up to the atomic number (or to the number of electrons for an ion).",

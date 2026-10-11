@@ -5,7 +5,7 @@ export const week9: Lesson = {
   week: "Week 09",
   title: "Dalton’s Atomic Theory & Its Modifications",
   subtitle: "How the idea of the atom began, what John Dalton proposed, which parts of his theory had to be corrected, and the models that came after it.",
-  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘History of the Atom’, ‘Concept of Atoms, Molecules and Ions’, ‘Dalton’s Atomic Theory’ and ‘Modifications of Dalton’s Atomic Theory’ (printed pp. 17–19) and ‘Atomic Structure’ (pp. 60–61), with their past WAEC, NECO and NABTEB questions. The explanations and practice questions below are newly written for Edify.",
+  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘History of the Atom’, ‘Concept of Atoms, Molecules and Ions’, ‘Dalton’s Atomic Theory’ and ‘Modifications of Dalton’s Atomic Theory’ (printed pp. 17–19) and ‘Atomic Structure’ (pp. 60–61), with their past examination questions. The explanations and practice questions below are newly written for Edify.",
   objectives: [
     "Describe how the idea of the atom developed, from the Greek word ‘atomos’ to Dalton.",
     "Define atom, molecule, ion and atomicity, and describe how ions are formed.",
@@ -115,7 +115,7 @@ export const week9: Lesson = {
   hiddenFacts: [
     "State Dalton’s five postulates exactly: indivisible atoms; neither created nor destroyed; atoms of one element alike and different from other elements; combine in simple ratios; chemical change = combination or separation of atoms.",
     "Learn the modifications as pairs: (1) indivisible → sub-atomic particles; (2) not created or destroyed → true only for chemical reactions, not nuclear reactions; (3) all atoms alike → isotopes; (4) simple ratios → large organic molecules and silicates.",
-    "A past NECO question asks for ‘three postulates and their modifications’. Give each postulate AND the modification for full marks. Examples: Rutherford (sub-atomic particles), uranium-235 fission, chlorine isotopes.",
+    "A past exam question asks for ‘three postulates and their modifications’. Give each postulate AND the modification for full marks. Examples: Rutherford (sub-atomic particles), uranium-235 fission, chlorine isotopes.",
     "Atoms are electrically neutral because they have equal numbers of protons and electrons.",
     "When an atom forms an ion only its electrons change, never its protons. Metals lose electrons to form cations; non-metals gain electrons to form anions.",
     "Isoelectronic means the same number of electrons. Na⁺, Mg²⁺, Al³⁺, F⁻ and O²⁻ all have 10 electrons (like Ne).",

@@ -5,7 +5,7 @@ export const week8: Lesson = {
   week: "Week 08",
   title: "Particulate Nature of Matter",
   subtitle: "Matter is made of tiny moving particles. This one idea explains states of matter, changes of state, Brownian motion, diffusion and gas pressure.",
-  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘Kinetic Theory of Matter and Gas Laws’ (printed pp. 75–80, 89–90) and its past WAEC, NECO and UME questions. The explanations and practice questions below are newly written for Edify.",
+  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘Kinetic Theory of Matter and Gas Laws’ (printed pp. 75–80, 89–90) and its past examination questions. The explanations and practice questions below are newly written for Edify.",
   objectives: [
     "State the kinetic theory of matter and describe the arrangement and movement of particles in solids, liquids and gases.",
     "Use the kinetic theory to explain the properties of the three states, gas pressure and changes of state.",

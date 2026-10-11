@@ -5,7 +5,7 @@ export const week11: Lesson = {
   week: "Week 11",
   title: "Electronic Structure & Isotopy",
   subtitle: "How electrons are arranged in shells around the nucleus, why that arrangement decides how an atom behaves, and why atoms of one element can have different masses.",
-  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘The Arrangement of Electrons around the Nucleus’, ‘Isotopes’ and ‘Relative Atomic Mass’ (printed pp. 19–26) and their past WAEC, NECO, NABTEB and UME questions. The explanations and practice questions below are newly written for Edify.",
+  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Chemistry, ‘The Arrangement of Electrons around the Nucleus’, ‘Isotopes’ and ‘Relative Atomic Mass’ (printed pp. 19–26) and their past examination questions. The explanations and practice questions below are newly written for Edify.",
   objectives: [
     "State how electrons are arranged in shells (K, L, M, N) and write the electron arrangement of the first 20 elements.",
     "Use the outer (valence) electrons to find an element’s group, valency and whether it is a metal, non-metal or noble gas.",
@@ -52,7 +52,7 @@ export const week11: Lesson = {
         "The noble gases (helium 2, neon 2, 8, argon 2, 8, 8) have a full outer shell: 2 electrons for helium (a duplet) and 8 for the others (an octet). This arrangement is very stable, so the noble gases are chemically unreactive and exist as single atoms. All other atoms react in order to reach the same stable arrangement.",
         "Valency from valence electrons: atoms with 1, 2 or 3 outer electrons are metals and lose these electrons, so their valency is 1, 2 or 3 (Na = 1, Mg = 2, Al = 3). Atoms with 5, 6 or 7 outer electrons are non-metals and gain electrons to reach 8, so their valency is 8 minus the number of outer electrons (N = 3, O = 2, Cl = 1). Atoms with 4 outer electrons (carbon, silicon) usually share electrons, with valency 4. Atoms with 8 outer electrons have valency 0.",
         "Metals or non-metals? Elements with 1, 2 or 3 outer electrons are generally metals; with 4 to 7 are generally non-metals (with silicon, in between, a metalloid); with a full outer shell are noble gases. Hydrogen (1 electron) and helium (2) are special cases.",
-        "Worked example 1 (past WAEC): which atom has the highest number of electrons in its outermost shell: oxygen (8), neon (10), phosphorus (15) or potassium (19)? Arrangements: O 2, 6 (6 outer); Ne 2, 8 (8 outer); P 2, 8, 5 (5 outer); K 2, 8, 8, 1 (1 outer). Neon has the most.",
+        "Worked example 1 (past exam question): which atom has the highest number of electrons in its outermost shell: oxygen (8), neon (10), phosphorus (15) or potassium (19)? Arrangements: O 2, 6 (6 outer); Ne 2, 8 (8 outer); P 2, 8, 5 (5 outer); K 2, 8, 8, 1 (1 outer). Neon has the most.",
         "Worked example 2: element X has arrangement 2, 8, 3. Atomic number = 2 + 8 + 3 = 13. It has 3 shells (period 3) and 3 outer electrons (group 3). It is a metal with valency 3 and forms X³⁺ (this is aluminium). Element Y has arrangement 2, 8, 6: atomic number 16, group 6, a non-metal with valency 2, forming Y²⁻ (sulphur).",
       ],
       points: [
@@ -69,7 +69,7 @@ export const week11: Lesson = {
         "Sodium (2, 8, 1) loses its one outer electron: Na → Na⁺ + e⁻. The ion Na⁺ has arrangement 2, 8, the same as neon. Magnesium (2, 8, 2) loses two: Mg → Mg²⁺ + 2e⁻, giving 2, 8 (neon). Aluminium (2, 8, 3) loses three: Al³⁺ is 2, 8 (neon). Calcium (2, 8, 8, 2) loses two: Ca²⁺ is 2, 8, 8 (argon). Potassium (2, 8, 8, 1) loses one: K⁺ is 2, 8, 8 (argon).",
         "Chlorine (2, 8, 7) gains one electron: Cl + e⁻ → Cl⁻, giving 2, 8, 8 (argon). Oxygen (2, 6) gains two: O + 2e⁻ → O²⁻, giving 2, 8 (neon). Fluorine (2, 7) gains one: F⁻ is 2, 8 (neon). Sulphur (2, 8, 6) gains two: S²⁻ is 2, 8, 8 (argon).",
         "Isoelectronic species have the same electron arrangement. N³⁻, O²⁻, F⁻, Na⁺, Mg²⁺ and Al³⁺ are all 2, 8 (like neon). P³⁻, S²⁻, Cl⁻, K⁺ and Ca²⁺ are all 2, 8, 8 (like argon). A positive ion is always smaller than its atom (it has lost its outer shell, and the same protons now hold fewer electrons); a negative ion is larger than its atom.",
-        "Worked example (past WAEC 2007): when a sodium atom forms Na⁺ it loses one electron and achieves the noble-gas arrangement of neon (2, 8 from 2, 8, 1). Its atomic number does not change (the number of protons is still 11).",
+        "Worked example (past exam question, 2007): when a sodium atom forms Na⁺ it loses one electron and achieves the noble-gas arrangement of neon (2, 8 from 2, 8, 1). Its atomic number does not change (the number of protons is still 11).",
         "Worked example: the formula of a compound of calcium and chlorine. Ca: 2, 8, 8, 2, loses 2 electrons → Ca²⁺. Cl: 2, 8, 7, gains 1 → Cl⁻. Two chloride ions are needed to take two electrons: CaCl₂. In the same way, sodium and oxygen give Na₂O, and magnesium and oxygen give MgO.",
       ],
       diagram: "Draw two atoms side by side. Left: sodium (+11) with shells 2, 8, 1 and an arrow showing the single outer electron moving to the right. Right: chlorine (+17) with shells 2, 8, 7 receiving the electron to make 8. Beneath, draw the resulting ions in square brackets: [Na]⁺ with 2, 8 and [Cl]⁻ with 2, 8, 8.",
@@ -96,7 +96,7 @@ export const week11: Lesson = {
       paragraphs: [
         "The relative atomic mass of an element with isotopes is the weighted average of the mass numbers: relative atomic mass = (mass₁ × % abundance₁ + mass₂ × % abundance₂ + …) ÷ 100. If the isotopes are given in a ratio instead of percentages, use: (mass₁ × parts₁ + mass₂ × parts₂) ÷ total parts.",
         "Worked example 1 (the book’s chlorine example): chlorine has isotopes ³⁵Cl (75%) and ³⁷Cl (25%). RAM = (35 × 75 + 37 × 25) ÷ 100 = (2625 + 925) ÷ 100 = 35.5. Using the ratio 3 : 1: (3 × 35 + 1 × 37) ÷ 4 = (105 + 37) ÷ 4 = 142 ÷ 4 = 35.5.",
-        "Worked example 2 (past WAEC 1997): an element X has 90% of ³⁹₁₉X and 10% of ⁴¹₁₉X. (a) Neutrons in ⁴¹X: 41 − 19 = 22. (b) RAM = (39 × 90 + 41 × 10) ÷ 100 = (3510 + 410) ÷ 100 = 39.2.",
+        "Worked example 2 (past exam question, 1997): an element X has 90% of ³⁹₁₉X and 10% of ⁴¹₁₉X. (a) Neutrons in ⁴¹X: 41 − 19 = 22. (b) RAM = (39 × 90 + 41 × 10) ÷ 100 = (3510 + 410) ÷ 100 = 39.2.",
         "Worked example 3: 100 atoms of element X contain 70 atoms of ⁹X and 30 atoms of ¹¹X. RAM = (70 × 9 + 30 × 11) ÷ 100 = (630 + 330) ÷ 100 = 9.6. Boron is 20% ¹⁰B and 80% ¹¹B: RAM = (10 × 20 + 11 × 80) ÷ 100 = (200 + 880) ÷ 100 = 10.8.",
         "Worked example 4 (finding a mass number): an element has relative atomic mass 16.2 and two isotopes: ¹⁶₈X (90%) and ᵐ₈X (10%). Find m. (16 × 90 + m × 10) ÷ 100 = 16.2, so 1440 + 10m = 1620, then 10m = 180, so m = 18.",
         "Worked example 5 (finding an abundance): an element has isotopes of mass 20 and 22, and relative atomic mass 21.5. Let x be the % of the 20 isotope: (20x + 22(100 − x)) ÷ 100 = 21.5. So 20x + 2200 − 22x = 2150, then 2200 − 2x = 2150, so x = 25. The mass-20 isotope is 25% and the mass-22 isotope is 75% (the element is neon). If the question gives a ratio 1 : 3 of the isotopes ²⁰X and ²²X, then RAM = (1 × 20 + 3 × 22) ÷ 4 = 86 ÷ 4 = 21.5.",
@@ -123,7 +123,7 @@ export const week11: Lesson = {
   hiddenFacts: [
     "Shell capacity is 2n²: K = 2, L = 8, M = 18. For the first 20 elements the outer shell never exceeds 8.",
     "Learn the first 20 arrangements: Li 2,1 · Be 2,2 · B 2,3 · C 2,4 · N 2,5 · O 2,6 · F 2,7 · Ne 2,8 · Na 2,8,1 · Mg 2,8,2 · Al 2,8,3 · Si 2,8,4 · P 2,8,5 · S 2,8,6 · Cl 2,8,7 · Ar 2,8,8 · K 2,8,8,1 · Ca 2,8,8,2.",
-    "Outer electrons = group number; number of shells = period number. Neon has the most outer electrons among O, Ne, P and K (past WAEC).",
+    "Outer electrons = group number; number of shells = period number. Neon has the most outer electrons among O, Ne, P and K (past exam question).",
     "Metals (1, 2, 3 outer electrons) lose electrons to form cations; non-metals (5, 6, 7) gain electrons to form anions; both are trying to reach the arrangement of a noble gas.",
     "When an atom becomes an ion, only electrons change. Na⁺, Mg²⁺, Al³⁺, O²⁻ and F⁻ all have the arrangement 2, 8 (like neon).",
     "To find an atomic number from an ion, undo the charge and add the arrangement: a cation Y⁺ with 2, 8 came from an atom with 11 electrons (Z = 11).",

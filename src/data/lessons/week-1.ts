@@ -12,7 +12,7 @@ export const week1: Lesson = {
     "Explain at least six ways chemistry helps people and three ways chemicals can cause harm.",
     "Put the stages of a simple scientific investigation in order and distinguish a hypothesis, theory and scientific law.",
     "Name careers that use chemistry and describe the work done in one of them.",
-    "Answer WAEC-style objective and theory questions using clear examples and reasons.",
+    "Answer exam-style objective and theory questions using clear examples and reasons.",
   ],
   sections: [
     {

@@ -103,7 +103,7 @@ export const week2: Lesson = {
     {
       heading: "8. Apparatus for titration (preview)",
       paragraphs: [
-        "Titration is used to find the concentration of a solution, and it is a regular WAEC practical. The book lists the materials: pipette, burette, beakers, conical flask, volumetric flask, funnel, white tile, retort stand, chemical balance, weighing bottle and dropping bottles.",
+        "Titration is used to find the concentration of a solution, and it is a regular practical in school and exam work. The book lists the materials: pipette, burette, beakers, conical flask, volumetric flask, funnel, white tile, retort stand, chemical balance, weighing bottle and dropping bottles.",
         "Set-up: the acid goes into the burette, which is clamped upright on the retort stand. The base is measured with the pipette into the conical flask, which stands on a white tile so the colour change is easy to see. Two or three drops of indicator are added from the dropping bottle. The acid is run in, while the flask is swirled, until the indicator just changes colour; this is the end point.",
         "The book’s precautions for accurate titration: do not blow the last drop out of the pipette; do not use the rough titre when calculating the average; do not run in the acid too fast; do not use more than 3 drops of indicator; rinse the burette with the acid and the pipette with the alkali; add the acid drop by drop near the end point. Also remove the funnel from the top of the burette before reading, and make sure there is no air bubble in the burette tip.",
       ],
@@ -112,7 +112,7 @@ export const week2: Lesson = {
   ],
   hiddenFacts: [
     "‘Exactly’ or ‘accurately’ means pipette (fixed volume) or burette (variable volume). A measuring cylinder is only approximate, and a beaker is rougher still. In one past answer the book gives measuring cylinder for ‘measure exactly 10.0 cm³’; the safer answer is a pipette.",
-    "Past WAEC (2005): keep a salt dry → desiccator; separate palm oil from water → separating funnel; obtain a solid from its suspension → filtration with a filter funnel.",
+    "Past exam question (2005): keep a salt dry → desiccator; separate palm oil from water → separating funnel; obtain a solid from its suspension → filtration with a filter funnel.",
     "Rinse the burette with the acid and the pipette with the alkali (the solutions they will hold). Rinse the conical flask with distilled water only.",
     "Never use the rough titre in the average. Use concordant titres (values that agree closely, within about 0.10–0.20 cm³).",
     "Always show the initial and final burette readings; marks are deducted if you write only the titre. Give units (cm³) and never answer in pencil.",
