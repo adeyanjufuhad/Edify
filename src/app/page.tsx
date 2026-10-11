@@ -26,7 +26,7 @@ const TICKER: { text: string; kind: "class" | "feature" }[] = [
   { text: "JSS2", kind: "class" }, { text: "Self-marking practice", kind: "feature" },
   { text: "JSS3", kind: "class" }, { text: "Timed CBT tests", kind: "feature" },
   { text: "SS1", kind: "class" }, { text: "A1–F9 grades", kind: "feature" },
-  { text: "SS2", kind: "class" }, { text: "Hidden facts", kind: "feature" },
+  { text: "SS2", kind: "class" }, { text: "Exam traps", kind: "feature" },
   { text: "SS3", kind: "class" }, { text: "Your own notes", kind: "feature" },
   { text: "Family accounts", kind: "feature" }, { text: "Works on any phone", kind: "feature" },
 ];
@@ -34,7 +34,7 @@ const TICKER: { text: string; kind: "class" | "feature" }[] = [
 const LESSON_PARTS = [
   { title: "Quick exam notes", text: "The must-know points for the week on one screen, with memory aids and “Watch out” boxes for common traps.", icon: Bolt },
   { title: "Full notes", text: "The whole topic explained in plain English, with worked examples and diagrams to draw.", icon: Layers },
-  { title: "Hidden facts & book checks", text: "Exam tips, and the places where the textbook or past-question answers are wrong.", icon: Flag },
+  { title: "Exam traps & tips", text: "The slips that cost students marks, spotted and explained, plus quick exam tips.", icon: Flag },
   { title: "Exam-style practice", text: "Objective questions that mark themselves when you tap, and theory questions with model answers.", icon: Target },
   { title: "My notes", text: "A box at the end of every lesson for your own notes. They save to your account automatically.", icon: Note },
 ];
@@ -56,7 +56,7 @@ const PLAYBOOK = [
   { title: "Read the question twice", text: "Underline what is actually asked. Many marks are lost answering a different question." },
   { title: "Never leave an objective blank", text: "Unless your paper takes marks away for wrong answers, a reasoned guess can only help." },
   { title: "Show every step", text: "In theory answers, method marks count. Write the formula, the substitution and the unit." },
-  { title: "Watch the traps", text: "Each Edify lesson flags the textbook mistakes and common slips so they don’t catch you out." },
+  { title: "Watch the traps", text: "Each Edify lesson flags the common slips and tricky wording so they don’t catch you out." },
 ];
 
 const FAQS = [
@@ -243,8 +243,8 @@ export default function Home() {
           </article>
           <article className="tile tile-navy">
             <div className="tile-icon"><Flag size={20} /></div>
-            <h3>Hidden facts</h3>
-            <p>Exam tips, plus the places where the textbook gets it wrong, corrected.</p>
+            <h3>Exam traps</h3>
+            <p>The mistakes that cost marks, spotted and explained, plus quick exam tips.</p>
           </article>
           <article className="tile">
             <div className="tile-icon"><Pencil size={20} /></div>
