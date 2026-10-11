@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { SWITCHES, type SwitchId } from "@/data/challenges";
+import { LIMITS } from "@/lib/social-rules";
 import {
   blockLinkAction, createInviteAction, linkSiblingAction, redeemInviteAction, removeLinkAction, saveSettingsAction, unblockLinkAction,
   type InviteState, type RedeemState, type SettingsState, type SiblingState,
@@ -57,11 +58,11 @@ export function InviteMaker({ learnerId, name, disabled }: { learnerId: string; 
   return (
     <form action={action} className="code-form">
       <input type="hidden" name="learnerId" value={learnerId} />
-      <p>Make a code for {name} and send it to the other parent. It works once, for 7 days.</p>
+      <p>Make a code for {name} and send it to the other parent. It works once, for {LIMITS.codeValidDays} days.</p>
       {state.code ? (
         <div className="code-box" role="status">
           <strong aria-label={`Code ${state.code.split("").join(" ")}`}>{state.code}</strong>
-          <small>Shown once, so copy it now. It works one time, for the next 7 days.</small>
+          <small>Shown once, so copy it now. It works one time, for the next {LIMITS.codeValidDays} days.</small>
           <button type="button" className="pill-outline small" onClick={() => { void navigator.clipboard?.writeText(state.code ?? "").then(() => setCopied(true)).catch(() => setCopied(false)); }}>{copied ? "Copied" : "Copy code"}</button>
         </div>
       ) : null}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Brand from "@/components/brand";
 import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Message, Monitor, Note, Pencil, Shield, Target, Trophy, Users } from "@/components/icons";
 import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@/lib/social/flags";
-import { catalog, totals } from "@/data/catalog";
+import { catalog, listWords, readySubjects, totals } from "@/data/catalog";
 import { PLANS, naira, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
 import ScrollMotion from "@/components/scroll-motion";
@@ -51,8 +51,8 @@ const STEPS = [
 const PARENT_POINTS = [
   { title: "One account, every child", text: "Brothers and sisters each get their own profile, progress and notes on the same phone.", icon: Users },
   { title: "A PIN for each learner", text: "Each child opens their own space with a 4-digit PIN, so nobody ticks off someone else’s lessons.", icon: Shield },
-  { title: "Progress you can see", text: "Every finished lesson is ticked off, so you can see how far through the term each child is.", icon: Check },
-  { title: "Only what’s needed", text: "We store your email, each child’s first name and their study progress. PINs are stored scrambled.", icon: Note },
+  { title: "Progress you can see", text: "Every finished lesson is ticked off in each child’s own space, so you can see how far through the term they are.", icon: Check },
+  { title: "Only what’s needed", text: "We store your email and each child’s first name, class, school and study progress. PINs are stored scrambled.", icon: Note },
 ];
 
 const PLAYBOOK = [
@@ -67,11 +67,11 @@ const SOCIAL_FAQ = { q: "Can my child talk to strangers on Edify?", a: "No. Chil
 const FAQS = [
   { q: "How much does Edify cost?", a: "Creating a family account is free. Study access costs ₦1,000 for Bronze, ₦3,000 for Silver or ₦5,000 for Gold per learner for 105 days (3½ months). Pay through Paystack, with no automatic renewal. Valid partner-school referral codes still unlock sponsored Gold." },
   { q: "Which classes is Edify for?", a: "Every secondary school class in Nigeria, from JSS1 to SS3. SS1 lessons are ready first; other classes are added as their lessons are written and checked." },
-  { q: "Which subjects are covered?", a: "Edify is built for every school subject. Chemistry and Biology are ready first, and more subjects are added one by one." },
+  { q: "Which subjects are covered?", a: `Edify is built for every school subject. ${listWords(readySubjects)} ${readySubjects.length === 1 ? "is" : "are"} ready first, and more subjects are added one by one.` },
   { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the Nigerian scheme of work for each class, term by term and week by week, so what you read matches what was taught in class." },
   { q: "Who creates the account?", a: "A parent or guardian. They add each child as a learner, so one family account covers brothers and sisters." },
   { q: "Does it work on a phone?", a: "Yes. Edify is a website that works in any phone or computer browser. There’s nothing to install." },
-  { q: "What if a PIN is forgotten?", a: "A parent can remove that learner and add them again with a new PIN. Ask for help first, because removing a learner also clears their progress." },
+  { q: "What if a PIN is forgotten?", a: "A parent can choose a new PIN on the Learners page with Change PIN on that child’s card. Their progress and notes stay." },
 ];
 
 // Confetti around Edi in the closing banner: [left %, top %, width px, height px, colour, rotation deg, delay s].
@@ -200,7 +200,7 @@ export default function Home() {
         <div className="shell stat-band-inner" data-stagger>
           <div><strong><b className="num" data-count={totals.questions}>{totals.questions}</b>+</strong><span>practice questions with answers</span></div>
           <div><strong><b className="num" data-count={totals.readyTopics}>{totals.readyTopics}</b></strong><span>lessons ready to study</span></div>
-          <div><strong><b className="num" data-count={12}>12</b></strong><span>likely exam questions per lesson</span></div>
+          <div><strong><b className="num" data-count={totals.likelyQuestions}>{totals.likelyQuestions}</b></strong><span>likely exam questions, answered</span></div>
           <div><strong>JSS1–SS3</strong><span>one account for every class</span></div>
         </div>
       </section>
@@ -450,7 +450,7 @@ function Classmates({ online, chat, voice }: { online: boolean; chat: boolean; v
         <article className="tile">
           <div className="tile-icon"><Trophy size={20} /></div>
           <h3>Class leaderboard</h3>
-          <p>See who has won the most challenges among your classmates this term.</p>
+          <p>See who has won the most challenges among the classmates you are linked with.</p>
           <ol className="tile-demo board-demo" aria-hidden="true"><li><b>1</b>Kehinde<span>5 wins</span></li><li><b>2</b>Taiwo<span>4 wins</span></li><li><b>3</b>Chiamaka<span>2 wins</span></li></ol>
         </article>
         {extras}

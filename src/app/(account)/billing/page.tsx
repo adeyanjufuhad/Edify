@@ -5,12 +5,15 @@ import { database } from "@/lib/db";
 import { paymentSettings } from "@/lib/paystack";
 import { PLANS, PLAN_NAMES, PLAN_RANK, naira, isPlanId } from "@/data/plans";
 import { CURRICULUM_CLASS } from "@/data/curriculum";
+import { catalog, listWords } from "@/data/catalog";
 import CheckoutForm from "./checkout-form";
 import "./billing.css";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Learner plans and payments — Edify" };
 
+// "Chemistry (First Term) and Biology (First Term)": every subject with published lessons, from the catalog.
+const available = listWords(catalog.filter((entry) => entry.ready > 0).map((entry) => `${entry.subject.name} (${entry.term.name})`));
 const date = (value: string) => new Intl.DateTimeFormat("en-NG", { day: "numeric", month: "long", year: "numeric", timeZone: "Africa/Lagos" }).format(new Date(value));
 
 export default async function BillingPage({ searchParams }: { searchParams: Promise<{ learner?: string; cancelled?: string }> }) {
@@ -30,7 +33,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
     {!selected ? <p><Link href="/profiles">Add a learner</Link> before choosing a plan.</p> : <>
       <nav className="billing-learners" aria-label="Choose a learner">{profiles.map((profile) => <Link key={profile.id} className="pill-outline small" href={`/billing?learner=${profile.id}`} aria-current={selected.id === profile.id ? "page" : undefined}>{profile.name}</Link>)}</nav>
       <section className="account-card"><h2>{selected.name}’s plan</h2><p>{PLAN_NAMES[selected.plan]}{selected.sponsored ? " · sponsored by your school" : selected.expiresAt ? ` · until ${date(selected.expiresAt)}` : " · choose a plan below to start studying"}</p>
-        <p>Currently available: {CURRICULUM_CLASS} Chemistry, First Term. Other classes and subjects will be added as their lessons are ready. Only buy if the available content suits your learner.</p>
+        <p>Currently available: {CURRICULUM_CLASS} {available}. Other classes and subjects will be added as their lessons are ready. Only buy if the available content suits your learner.</p>
         {selected.sponsored && <Link href="/profiles" className="text-link">Open your learner’s study space</Link>}
       </section>
       {!selected.sponsored && <>

@@ -16,7 +16,12 @@ export const totals = {
   readyTopics: catalog.reduce((sum, entry) => sum + entry.ready, 0),
   readySubjects: catalog.filter((entry) => entry.ready > 0).length,
   questions: Object.values(lessons).reduce((sum, lesson) => sum + lesson.questions.length, 0),
+  likelyQuestions: Object.values(lessons).reduce((sum, lesson) => sum + (lesson.quick?.likely.length ?? 0), 0),
 };
+
+// The subjects that have at least one published lesson, for copy that names them.
+export const readySubjects = [...new Set(catalog.filter((entry) => entry.ready > 0).map((entry) => entry.subject.name))];
+export const listWords = (items: string[]) => new Intl.ListFormat("en-GB", { style: "long", type: "conjunction" }).format(items);
 
 export function plural(count: number, word: string) {
   return `${count} ${word}${count === 1 ? "" : "s"}`;
