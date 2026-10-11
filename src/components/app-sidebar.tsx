@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Brand from "@/components/brand";
 import { streamLabel } from "@/data/streams";
-import { Grid, Layers, Monitor, Note, Swap, Users } from "@/components/icons";
+import { Grid, Layers, Monitor, Note, Swap, Target, Users } from "@/components/icons";
 import PlanBadge from "@/components/plan-badge";
 import type { LearnerProfile } from "@/lib/profiles";
 
@@ -15,16 +15,20 @@ const STUDY_LINKS = [
   { href: "/study/notes", label: "My notes", short: "Notes", icon: Note },
 ];
 
+const CHALLENGE_LINK = { href: "/study/challenges", label: "Challenges", short: "Challenge", icon: Target };
+
 function isActive(pathname: string, href: string) {
   if (href === "/study") return pathname === "/study";
   if (href === "/study/subjects") return pathname.startsWith("/study/subjects") || pathname.startsWith("/study/ss1");
   return pathname.startsWith(href);
 }
 
-export default function AppSidebar({ learner }: { learner: LearnerProfile }) {
+export default function AppSidebar({ learner, challenges = false }: { learner: LearnerProfile; challenges?: boolean }) {
   const pathname = usePathname();
   const { name: learnerName, classLevel, school } = learner;
   const stream = streamLabel(learner.stream);
+  // Classmate challenges only appear once the owner has switched the feature on.
+  const links = challenges ? [...STUDY_LINKS, CHALLENGE_LINK] : STUDY_LINKS;
 
   return (
     <>
@@ -32,7 +36,7 @@ export default function AppSidebar({ learner }: { learner: LearnerProfile }) {
         <div className="sidebar-brand"><Brand /></div>
         <nav className="sidebar-nav">
           <span className="sidebar-label">Study</span>
-          {STUDY_LINKS.map(({ href, label, icon: Icon }) => {
+          {links.map(({ href, label, icon: Icon }) => {
             const active = isActive(pathname, href);
             return <Link key={href} href={href} className={`sidebar-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}><Icon size={18} />{label}</Link>;
           })}
@@ -50,8 +54,8 @@ export default function AppSidebar({ learner }: { learner: LearnerProfile }) {
         <Brand />
         <a href="/leave" className="mobile-user" aria-label={`Switch learner (now ${learnerName})`}><span className="avatar small" aria-hidden="true">{learnerName[0]?.toUpperCase()}</span></a>
       </header>
-      <nav className="tab-bar" aria-label="Study navigation">
-        {STUDY_LINKS.map(({ href, short, icon: Icon }) => {
+      <nav className="tab-bar" aria-label="Study navigation" style={{ gridTemplateColumns: `repeat(${links.length + 1}, 1fr)` }}>
+        {links.map(({ href, short, icon: Icon }) => {
           const active = isActive(pathname, href);
           return <Link key={href} href={href} className={active ? "active" : ""} aria-current={active ? "page" : undefined}><Icon size={20} /><span>{short}</span></Link>;
         })}

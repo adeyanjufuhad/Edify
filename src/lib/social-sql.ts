@@ -41,13 +41,15 @@ export function claimInviteQuery(inviteId: string, redeemerLearnerId: string): Q
 
 // ---------- Challenges ----------
 // A player starts (which also accepts). The clock starts now; starting twice changes nothing. Nothing is inserted when
-// the challenge is declined, cancelled, finished, expired, or the learner is not one of its two players.
+// the challenge is declined, cancelled, finished, expired, the learner is not one of its two players, or the two are no
+// longer linked.
 export function startEntryQuery(challengeId: string, learnerId: string): Query {
   return {
     text: `insert into public.challenge_entries (challenge_id, learner_id)
       select c.id, $2::uuid from public.challenges c
       where c.id = $1::uuid and c.status = 'open' and c.finished_at is null and c.expires_at > now()
         and $2::uuid in (c.challenger_id, c.opponent_id)
+        and exists (select 1 from public.classmate_links l where l.status = 'active' and l.learner_a = least(c.challenger_id, c.opponent_id) and l.learner_b = greatest(c.challenger_id, c.opponent_id))
       on conflict (challenge_id, learner_id) do nothing`,
     params: [challengeId, learnerId],
   };

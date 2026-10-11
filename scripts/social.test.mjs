@@ -9,6 +9,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import * as rules from "../src/lib/social-rules.ts";
 import * as q from "../src/lib/social-sql.ts";
+import * as qq from "../src/lib/social-queries.ts";
 import { PRESENT_SOCIAL_TABLES_QUERY, SOCIAL_TABLES, accountDeletionStatements, learnerDeletionStatements } from "../src/lib/account-deletion-sql.ts";
 import { loadPGlite } from "./pglite.mjs";
 
@@ -245,6 +246,8 @@ const PAPER = JSON.stringify([
 ]);
 
 async function makeChallenge(db, { challenger = A1, opponent = B1, subject = "chemistry", expires = "now() + interval '3 days'", minutes = 10, status = "open" } = {}) {
+  const [a, b] = link(challenger, opponent);
+  await db.query("insert into public.classmate_links (learner_a, learner_b) values ($1, $2) on conflict do nothing", [a, b]);
   const row = await db.query(
     `insert into public.challenges (challenger_id, opponent_id, subject_slug, subject_name, term_slug, term_name, question_count, minutes, paper, status, expires_at)
      values ($1, $2, $3, $4, null, 'All terms', 5, $5, $6::jsonb, $7, ${expires}) returning id`,
@@ -367,6 +370,232 @@ test("leaderboard: wins, draws, losses, averages, subject filter and the time wi
   ]);
   assert.deepEqual((await run(db, q.leaderboardQuery([A1], 90, null))).rows.map((r) => r.name), ["Ada"], "only people in the circle are listed");
   assert.equal((await run(db, q.leaderboardQuery([], 90, null))).rows.length, 0);
+});
+
+// ---------------------------------------------------------------- links, settings, lists
+
+test("settings: a parent can only save them for their own learner", async () => {
+  const db = await freshDatabase();
+  const on = { challenges: true, presence: false, chat: false, voice: false };
+  assert.equal((await run(db, qq.saveSettingsQuery(P2, A1, on))).rows.length, 0, "Parent 2 cannot change Parent 1's learner");
+  assert.equal((await run(db, qq.saveSettingsQuery(P1, A1, on))).rows.length, 1);
+  assert.equal((await run(db, qq.saveSettingsQuery(P1, A1, { ...on, presence: true }))).rows.length, 1, "saving again updates");
+  assert.equal(await count(db, "select count(*) n from public.learner_social_settings"), 1);
+  assert.deepEqual((await run(db, qq.settingsQuery(A1))).rows[0], { challenges_on: true, presence_on: true, chat_on: false, voice_on: false });
+  assert.equal((await run(db, qq.settingsQuery(B1))).rows.length, 0, "no row means everything off");
+  assert.equal((await run(db, qq.settingsForQuery([A1, B1]))).rows.length, 1);
+  await assert.rejects(run(db, qq.saveSettingsQuery(P1, A1, { challenges: false, presence: false, chat: true, voice: false })), /check/i, "the database refuses chat without challenges");
+});
+
+test("classmate list: only active links to learners whose parents switched challenges on, first name and class only", async () => {
+  const db = await freshDatabase();
+  const on = { challenges: true, presence: true, chat: true, voice: false };
+  for (const [parent, learner] of [[P1, A1], [P2, B1]]) await run(db, qq.saveSettingsQuery(parent, learner, on));
+  const [ab1, ab2] = link(A1, B1);
+  const [ac1, ac2] = link(A1, C1);
+  await db.query("insert into public.classmate_links (learner_a, learner_b) values ($1, $2), ($3, $4)", [ab1, ab2, ac1, ac2]);
+  let list = (await run(db, qq.classmatesQuery(A1))).rows;
+  assert.deepEqual(list.map((r) => r.name), ["Chi"], "Dayo's parent has not switched challenges on");
+  assert.deepEqual(Object.keys(list[0]).sort(), ["chat_on", "class_level", "learner_id", "link_id", "name", "presence_on", "voice_on"], "no school, stream, plan or parent");
+  await run(db, qq.saveSettingsQuery(P3, C1, on));
+  assert.deepEqual((await run(db, qq.classmatesQuery(A1))).rows.map((r) => r.name), ["Chi", "Dayo"]);
+  await run(db, qq.blockLinkQuery(null, A1, list[0].link_id));
+  assert.deepEqual((await run(db, qq.classmatesQuery(A1))).rows.map((r) => r.name), ["Dayo"], "a blocked classmate disappears");
+  assert.deepEqual((await run(db, qq.classmatesQuery(B1))).rows.map((r) => r.name), [], "and the block works both ways");
+  assert.deepEqual((await run(db, qq.classmatesQuery(A2))).rows, [], "a learner with no links sees nobody");
+});
+
+test("block, unblock, remove: only members can act; a parent only for their own learner; only the blocker can unblock", async () => {
+  const db = await freshDatabase();
+  const id = await makeChallenge(db);
+  const linkId = (await one(db, "select id from public.classmate_links")).id;
+  await start(db, id, A1);
+  const blocked = async (...args) => (await run(db, qq.blockLinkQuery(...args))).rows.length;
+  assert.equal(await blocked(null, C1, linkId), 0, "a learner who is not on the link cannot block it");
+  assert.equal(await blocked(P3, A1, linkId), 0, "a parent cannot act for someone else's learner");
+  assert.equal(await blocked(P2, A1, linkId), 0, "or for a learner on the link who is not theirs");
+  assert.equal((await one(db, "select status from public.classmate_links")).status, "active");
+  assert.equal(await blocked(P1, A1, linkId), 1, "a parent can block for their own learner");
+  assert.equal(await blocked(null, A1, linkId), 0, "already blocked");
+
+  await run(db, qq.cancelOpenForLinkQuery(P1, A1, linkId));
+  assert.equal((await one(db, "select status from public.challenges")).status, "cancelled", "blocking ends the open challenge");
+  await start(db, id, B1);
+  assert.equal((await entries(db, id)).length, 1, "and it cannot be started afterwards");
+
+  assert.equal((await run(db, qq.unblockLinkQuery(P2, B1, linkId))).rows.length, 0, "the blocked side cannot lift the block");
+  assert.equal((await run(db, qq.removeLinkQuery(P2, B1, linkId))).rows.length, 0, "or remove the link to escape it");
+  assert.equal((await run(db, qq.unblockLinkQuery(P1, A1, linkId))).rows.length, 1, "the blocker's parent can");
+  assert.equal((await one(db, "select blocked_by from public.classmate_links")).blocked_by, null);
+
+  await db.query(`insert into public.chat_messages (link_id, sender_id, kind, body) values ($1, $2, 'text', 'hello')`, [linkId, A1]);
+  assert.equal((await run(db, qq.removeLinkQuery(P3, C1, linkId))).rows.length, 0, "an outsider cannot remove it");
+  assert.equal((await run(db, qq.removeLinkQuery(P2, B1, linkId))).rows.length, 1, "either side's parent can remove an active link");
+  assert.equal(await count(db, "select count(*) n from public.classmate_links"), 0);
+  assert.equal(await count(db, "select count(*) n from public.chat_messages"), 0, "the conversation goes with the link");
+});
+
+test("reports: stored about the other learner on a link the reporter belongs to, never for an outsider", async () => {
+  const db = await freshDatabase();
+  const [a, b] = link(A1, B1);
+  const linkId = (await db.query("insert into public.classmate_links (learner_a, learner_b) values ($1, $2) returning id", [a, b])).rows[0].id;
+  assert.equal((await run(db, qq.reportQuery(C1, linkId, "unkind", null, null, null))).rows.length, 0);
+  assert.equal((await run(db, qq.reportQuery(B1, linkId, "unkind", "rude to me", null, "the words"))).rows.length, 1);
+  const row = await one(db, "select reporter_id, reported_id, reason, note, message_excerpt from public.classmate_reports");
+  assert.deepEqual(row, { reporter_id: B1, reported_id: A1, reason: "unkind", note: "rude to me", message_excerpt: "the words" });
+  await assert.rejects(run(db, qq.reportQuery(A1, linkId, "not-a-reason", null, null, null)), /check/i);
+  assert.equal((await run(db, qq.reportsByParentQuery(P2))).rows.length, 1);
+  assert.equal((await run(db, qq.reportsByParentQuery(P1))).rows.length, 0, "the reported family does not see the report");
+});
+
+test("classmate codes: created for the parent's own learner, found by hash only while usable, can be cancelled by their parent only", async () => {
+  const db = await freshDatabase();
+  const hash = "f".repeat(64);
+  assert.equal((await run(db, qq.createInviteQuery(P2, A1, hash, 7))).rows.length, 0, "not for someone else's learner");
+  const made = (await run(db, qq.createInviteQuery(P1, A1, hash, 7))).rows[0];
+  assert.ok(made.id);
+  assert.equal((await run(db, qq.pendingInviteCountQuery(A1))).rows[0].n, 1);
+  assert.equal((await run(db, qq.pendingInvitesQuery(P1))).rows.length, 1);
+  assert.equal((await run(db, qq.pendingInvitesQuery(P2))).rows.length, 0);
+  const found = (await run(db, qq.inviteByHashQuery(hash))).rows[0];
+  assert.deepEqual({ learner_id: found.learner_id, name: found.name, class_level: found.class_level, school: found.school }, { learner_id: A1, name: "Ada", class_level: "SS1", school: "Brainfield School" });
+  assert.equal((await run(db, qq.inviteByHashQuery("0".repeat(64)))).rows.length, 0);
+  assert.equal((await run(db, qq.cancelInviteQuery(P2, made.id))).rows.length, 0);
+  await run(db, q.claimInviteQuery(made.id, B1));
+  assert.equal((await run(db, qq.inviteByHashQuery(hash))).rows.length, 0, "a used code cannot be found");
+  assert.equal((await run(db, qq.pendingInviteCountQuery(A1))).rows[0].n, 0);
+  const other = (await run(db, qq.createInviteQuery(P1, A1, "e".repeat(64), 7))).rows[0];
+  assert.equal((await run(db, qq.cancelInviteQuery(P1, other.id))).rows.length, 1);
+  await assert.rejects(run(db, qq.createInviteQuery(P1, A1, "e".repeat(64), 7)).then(() => run(db, qq.createInviteQuery(P1, A1, "e".repeat(64), 7))), /unique|duplicate/i, "two codes can never share a hash");
+});
+
+test("challenge lists never show the classmate's score or the answers before the challenge is finished", async () => {
+  const db = await freshDatabase();
+  const id = await makeChallenge(db);
+  await start(db, id, A1);
+  await start(db, id, B1);
+  await submit(db, id, B1, 4);
+  const early = (await run(db, qq.challengeListQuery(A1, 180, 30))).rows[0];
+  assert.equal(early.their_score, null);
+  assert.equal(early.their_duration, null);
+  assert.ok(early.their_submitted_at, "that they have finished may be shown, not their score");
+  const detail = (await run(db, qq.challengeDetailQuery(A1, id))).rows[0];
+  assert.equal(detail.paper, null);
+  assert.equal(detail.their_answers, null);
+  assert.equal(detail.my_answers, null);
+  assert.equal((await run(db, qq.challengeDetailQuery(C1, id))).rows.length, 0, "an outsider sees nothing");
+
+  await submit(db, id, A1, 2);
+  const done = (await run(db, qq.challengeDetailQuery(A1, id))).rows[0];
+  assert.equal(done.their_score, 4);
+  assert.equal(done.my_score, 2);
+  assert.equal(done.paper.length, 5);
+  assert.deepEqual(Object.keys(done).filter((key) => /school|email|stream|plan|parent/.test(key)), [], "nothing beyond first name and class about the other learner");
+});
+
+test("challenge lists need an active link; the questions are only given to a player who started and has not handed in", async () => {
+  const db = await freshDatabase();
+  const id = await makeChallenge(db);
+  assert.equal((await run(db, qq.playQuery(A1, id))).rows.length, 0, "not started yet");
+  await start(db, id, A1);
+  const play = (await run(db, qq.playQuery(A1, id))).rows[0];
+  assert.ok(play.seconds_left > 590 && play.seconds_left <= 600, `seconds left ${play.seconds_left}`);
+  assert.equal(play.paper.length, 5);
+  assert.equal((await run(db, qq.playQuery(B1, id))).rows.length, 0, "the other player has not started");
+  assert.equal((await run(db, qq.playQuery(C1, id))).rows.length, 0);
+  await db.query("update public.challenge_entries set started_at = now() - interval '20 minutes'");
+  assert.equal((await run(db, qq.playQuery(A1, id))).rows[0].seconds_left, 0, "never negative");
+  await submit(db, id, A1, 3);
+  assert.equal((await run(db, qq.playQuery(A1, id))).rows.length, 0, "handed in");
+
+  const linkId = (await one(db, "select id from public.classmate_links")).id;
+  assert.equal((await run(db, qq.challengeListQuery(A1, 180, 30))).rows.length, 1);
+  await run(db, qq.removeLinkQuery(null, A1, linkId));
+  assert.equal((await run(db, qq.challengeListQuery(A1, 180, 30))).rows.length, 0, "unlinked classmates' challenges disappear from view");
+  assert.equal((await run(db, qq.challengeDetailQuery(A1, id))).rows.length, 0);
+});
+
+test("decline and cancel: only the right player, and not once the other has started", async () => {
+  const db = await freshDatabase();
+  const id = await makeChallenge(db);
+  assert.equal((await run(db, qq.declineChallengeQuery(A1, id))).rows.length, 0, "the challenger cannot decline their own challenge");
+  assert.equal((await run(db, qq.declineChallengeQuery(C1, id))).rows.length, 0);
+  assert.equal((await run(db, qq.cancelChallengeQuery(B1, id))).rows.length, 0, "the opponent cannot cancel");
+  await start(db, id, B1);
+  assert.equal((await run(db, qq.cancelChallengeQuery(A1, id))).rows.length, 0, "the challenger cannot withdraw once the opponent started");
+  assert.equal((await run(db, qq.declineChallengeQuery(B1, id))).rows.length, 0, "the opponent cannot decline after starting");
+  const second = await makeChallenge(db);
+  await start(db, second, A1);
+  assert.equal((await run(db, qq.cancelChallengeQuery(A1, second))).rows.length, 1, "the challenger may withdraw after starting their own");
+  const third = await makeChallenge(db);
+  assert.equal((await run(db, qq.declineChallengeQuery(B1, third))).rows.length, 1);
+  assert.equal((await run(db, qq.openBetweenQuery(A1, B1))).rows[0].n, 1, "only the first is still open");
+});
+
+test("creating a challenge stores the paper and sets the deadline", async () => {
+  const db = await freshDatabase();
+  await db.query("insert into public.classmate_links (learner_a, learner_b) values ($1, $2)", link(A1, B1));
+  const made = (await run(db, qq.createChallengeQuery({ challengerId: A1, opponentId: B1, subjectSlug: "chemistry", subjectName: "Chemistry", termSlug: null, termName: "All terms", count: 5, minutes: 5, paperJson: PAPER, validDays: 3 }))).rows[0];
+  const row = await one(db, `select question_count, minutes, jsonb_array_length(paper) n, expires_at > now() + interval '71 hours' as long_enough, term_slug from public.challenges where id = '${made.id}'`);
+  assert.deepEqual(row, { question_count: 5, minutes: 5, n: 5, long_enough: true, term_slug: null });
+});
+
+test("retention: old data is removed, recent data and reported messages stay", async () => {
+  const db = await freshDatabase();
+  const linkId = (await db.query("insert into public.classmate_links (learner_a, learner_b) values ($1, $2) returning id", link(A1, B1))).rows[0].id;
+  const message = async (kind, age) => (await db.query(
+    `insert into public.chat_messages (link_id, sender_id, kind, body, audio_seconds, audio_bytes, created_at) values ($1, $2, $3, $4, $5, $6, now() - make_interval(days => $7)) returning id`,
+    [linkId, A1, kind, kind === "text" ? "hello" : null, kind === "voice" ? 5 : null, kind === "voice" ? 4 : null, age],
+  )).rows[0].id;
+  await message("text", 20);
+  const newText = await message("text", 2);
+  const oldVoice = await message("voice", 9);
+  const newVoice = await message("voice", 3);
+  const reported = await message("text", 40);
+  for (const id of [oldVoice, newVoice]) await db.query("insert into public.chat_voice_clips (message_id, content_type, audio) values ($1, 'audio/webm', '\\x1a45dfa3')", [id]);
+  await db.query("insert into public.classmate_reports (reporter_id, reported_id, reason, message_id) values ($1, $2, 'unkind', $3)", [B1, A1, reported]);
+
+  const finishedOld = await makeChallenge(db);
+  const finishedNew = await makeChallenge(db);
+  await makeChallenge(db, { expires: "now() - interval '40 days'" });
+  const endedNew = await makeChallenge(db, { expires: "now() - interval '1 day'" });
+  await db.query("update public.challenges set finished_at = now() - interval '200 days' where id = $1", [finishedOld]);
+  await db.query("update public.challenges set finished_at = now() - interval '10 days' where id = $1", [finishedNew]);
+  await db.query("insert into public.social_events (learner_id, kind, created_at) values ($1, 'msg', now() - interval '3 days'), ($1, 'msg', now())", [A1]);
+  await makeInvite(db, { hash: "a".repeat(64), expires: "now() - interval '40 days'" });
+  await makeInvite(db, { hash: "b".repeat(64) });
+  await db.query("insert into public.classmate_reports (reporter_id, reported_id, reason, created_at) values ($1, $2, 'other', now() - interval '400 days')", [B1, A1]);
+
+  const days = rules.RETENTION_DAYS;
+  const removed = {};
+  for (const { name, query } of qq.purgeQueries(days, true)) removed[name] = (await run(db, query)).rows[0].n;
+  assert.deepEqual(removed, { "finished challenges": 1, "ended challenges": 1, "rate-limit events": 1, "classmate codes": 1, "reports": 1, "voice notes": 1, "text messages": 1 });
+  const ids = async (table) => (await db.query(`select id from public.${table}`)).rows.map((r) => r.id).sort();
+  assert.deepEqual(await ids("chat_messages"), [newText, newVoice, reported].sort(), "recent messages stay, and so does a message with an open report");
+  assert.deepEqual(await ids("challenges"), [finishedNew, endedNew].sort());
+  assert.equal(await count(db, "select count(*) n from public.chat_voice_clips"), 1, "the old voice file went with its message");
+  assert.equal(removed["text messages"], 1);
+  // Without chat switched on, the chat tables are not touched (they may not exist yet).
+  assert.equal(qq.purgeQueries(days, false).length, 5);
+  assert.ok(!qq.purgeQueries(days, false).some(({ query }) => query.text.includes("chat_messages")));
+});
+
+test("every query's parameters are all used and ids are never part of the SQL text", () => {
+  const ids = [A1, B1, P1, "f".repeat(64)];
+  const queries = [
+    q.rateLimitQuery({ learnerId: A1 }, "msg", 3, 60), q.rateLimitQuery({ parentId: P1 }, "invite", 3, 60), q.claimInviteQuery(A1, B1), q.startEntryQuery(A1, B1),
+    q.submitEntryQuery(A1, B1, 3, 5, "[]", 60), q.finishChallengeQuery(A1), q.settleOverdueQuery(A1, 60), q.finishSettledQuery(A1), q.leaderboardQuery([A1], 90, null),
+    qq.settingsQuery(A1), qq.settingsForQuery([A1]), qq.saveSettingsQuery(P1, A1, { challenges: true, presence: false, chat: false, voice: false }), qq.classmatesQuery(A1),
+    qq.parentLinksQuery(P1), qq.linkBetweenQuery(A1, B1), qq.linkCountQuery(A1), qq.linkForLearnerQuery(A1, B1), qq.createInviteQuery(P1, A1, "f".repeat(64), 7),
+    qq.pendingInviteCountQuery(A1), qq.pendingInvitesQuery(P1), qq.cancelInviteQuery(P1, A1), qq.inviteByHashQuery("f".repeat(64)), qq.blockLinkQuery(P1, A1, B1),
+    qq.unblockLinkQuery(P1, A1, B1), qq.removeLinkQuery(null, A1, B1), qq.cancelOpenForLinkQuery(P1, A1, B1), qq.reportQuery(A1, B1, "other", null, null, null),
+    qq.reportsByParentQuery(P1), qq.openBetweenQuery(A1, B1), qq.challengeListQuery(A1, 180, 30), qq.challengeDetailQuery(A1, B1), qq.playQuery(A1, B1),
+    qq.declineChallengeQuery(A1, B1), qq.cancelChallengeQuery(A1, B1), ...qq.purgeQueries(rules.RETENTION_DAYS, true).map((entry) => entry.query),
+  ];
+  for (const { text, params } of queries) {
+    for (const id of ids) assert.ok(!text.includes(id), `an id is in the SQL text: ${text.slice(0, 80)}`);
+    params.forEach((_, index) => assert.ok(text.includes(`$${index + 1}`), `parameter $${index + 1} unused in: ${text.slice(0, 120)}`));
+  }
 });
 
 // ---------------------------------------------------------------- deletion

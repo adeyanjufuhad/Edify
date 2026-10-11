@@ -120,3 +120,5 @@
 .danger-zone p { font-size: 16px; color: var(--ink-2); margin: 0 0 12px; max-width: 62ch; }
 .danger-zone .account-form { margin-top: 18px; max-width: 420px; }
 .danger-zone .account-form .pill-button:disabled { box-shadow: none; }
+
+.profiles-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }

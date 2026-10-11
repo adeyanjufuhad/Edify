@@ -27,3 +27,10 @@ export const Clock = (props: IconProps) => <Svg {...props}><circle cx="12" cy="1
 export const Flag = (props: IconProps) => <Svg {...props}><path d="M5 21V4" /><path d="M5 4h11l-2 4 2 4H5" /></Svg>;
 export const Plus = (props: IconProps) => <Svg {...props}><path d="M12 5v14M5 12h14" /></Svg>;
 export const Monitor = (props: IconProps) => <Svg {...props}><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /><path d="m8.5 10 2 2 4-4" /></Svg>;
+export const Trophy = (props: IconProps) => <Svg {...props}><path d="M8 4h8v6a4 4 0 0 1-8 0V4Z" /><path d="M8 6H4v1.5A3.5 3.5 0 0 0 7.5 11M16 6h4v1.5a3.5 3.5 0 0 1-3.5 3.5" /><path d="M12 14v4M8 20h8" /></Svg>;
+export const Message = (props: IconProps) => <Svg {...props}><path d="M4 5h16v11H9l-5 4V5Z" /><path d="M8 9.5h8M8 12.5h5" /></Svg>;
+export const Mic = (props: IconProps) => <Svg {...props}><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6" /></Svg>;
+export const Send = (props: IconProps) => <Svg {...props}><path d="m4 12 16-8-6 16-3-7-7-1Z" /><path d="m11 13 4-4" /></Svg>;
+export const Stop = (props: IconProps) => <Svg {...props}><rect x="6" y="6" width="12" height="12" rx="2" /></Svg>;
+export const PlayIcon = (props: IconProps) => <Svg {...props}><path d="M8 5v14l11-7L8 5Z" /></Svg>;
+export const Trash = (props: IconProps) => <Svg {...props}><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /><path d="M10 11v6M14 11v6" /></Svg>;

@@ -7,8 +7,11 @@ import { ArrowLeft, ArrowRight, Clock, Flag } from "@/components/icons";
 import Mascot from "@/components/mascot";
 import type { Letter, PaperQuestion } from "@/lib/cbt";
 import { submitCbt } from "../actions";
+import { submitChallengeAction } from "../../challenges/actions";
 
-type Props = { title: string; subject: string; questions: PaperQuestion[]; minutes: number; params: string; storageKey: string };
+// A challenge uses the same screen: its timer comes from the server (seconds left), and handing in goes to the challenge.
+export type ChallengeExam = { id: string; secondsLeft: number };
+type Props = { title: string; subject: string; questions: Pick<PaperQuestion, "key" | "prompt" | "options">[]; minutes: number; params: string; storageKey: string; challenge?: ChallengeExam };
 type Saved = { picks: Record<string, Letter>; flags: string[]; current: number; startedAt: number; deadline: number };
 type Phase = "running" | "confirm" | "quit" | "saving" | "failed";
 
@@ -45,9 +48,15 @@ export default function CbtExam(props: Props) {
   return <ExamRunner {...props} />;
 }
 
-function ExamRunner({ title, subject, questions, minutes, params, storageKey }: Props) {
+function ExamRunner({ title, subject, questions, minutes, params, storageKey, challenge }: Props) {
   const router = useRouter();
-  const [initial] = useState(() => loadSession(storageKey, minutes));
+  const [initial] = useState(() => {
+    const saved = loadSession(storageKey, minutes);
+    if (!challenge) return saved;
+    // A challenge's clock was started by the server, so it is the same after a reload and on any device.
+    const deadline = Date.now() + challenge.secondsLeft * 1000;
+    return { ...saved, deadline, startedAt: deadline - minutes * 60_000 };
+  });
   const [picks, setPicks] = useState(initial.picks);
   const [flags, setFlags] = useState<string[]>(initial.flags);
   const [current, setCurrent] = useState(Math.min(Math.max(initial.current, 0), questions.length - 1));
@@ -72,6 +81,14 @@ function ExamRunner({ title, subject, questions, minutes, params, storageKey }: 
     setError("");
     const durationSeconds = Math.round((Math.min(Date.now(), initial.deadline) - initial.startedAt) / 1000);
     try {
+      if (challenge) {
+        // The server marks the paper from its own frozen copy and takes the time from its own clock.
+        const result = await submitChallengeAction({ challengeId: challenge.id, picks });
+        if (result.error) { setError(result.error); setPhase("failed"); return; }
+        try { localStorage.removeItem(storageKey); } catch {}
+        router.push(`/study/challenges/${challenge.id}`);
+        return;
+      }
       const result = await submitCbt({ params, picks, flags, durationSeconds });
       if (!result.id) { setError(result.error ?? "Your answers could not be saved."); setPhase("failed"); return; }
       try { localStorage.removeItem(storageKey); } catch {}
@@ -80,7 +97,7 @@ function ExamRunner({ title, subject, questions, minutes, params, storageKey }: 
       setError("Your answers could not be sent. Check your connection and try again; they are kept on this device.");
       setPhase("failed");
     }
-  }, [flags, initial.deadline, initial.startedAt, params, picks, router, storageKey]);
+  }, [challenge, flags, initial.deadline, initial.startedAt, params, picks, router, storageKey]);
 
   const submitRef = useRef(submit);
   useEffect(() => { submitRef.current = submit; }, [submit]);
@@ -217,14 +234,21 @@ function ExamRunner({ title, subject, questions, minutes, params, storageKey }: 
           </ul>
           <div className="cbt-palette-actions">
             <button type="button" className="pill-button small" disabled={locked} onClick={() => setPhase("confirm")}>Submit test</button>
-            <button type="button" className="text-button small" disabled={locked} onClick={() => setPhase("quit")}>Quit without submitting</button>
+            <button type="button" className="text-button small" disabled={locked} onClick={() => setPhase("quit")}>{challenge ? "Leave for now" : "Quit without submitting"}</button>
           </div>
         </aside>
       </div>
 
       <dialog ref={dialogRef} className="cbt-dialog" aria-labelledby="cbt-dialog-title" onClose={() => setPhase((value) => (value === "confirm" || value === "quit" ? "running" : value))}>
         <Mascot pose="think" className="cbt-dialog-mascot" />
-        {phase === "quit" ? <>
+        {phase === "quit" && challenge ? <>
+          <h2 id="cbt-dialog-title">Leave this challenge?</h2>
+          <p>Your clock keeps running while you are away, and your answers stay on this device. Come back before time runs out, or this paper will be handed in blank.</p>
+          <div className="cbt-dialog-actions">
+            <button type="button" className="btn-navy small" onClick={() => setPhase("running")} autoFocus>Keep going</button>
+            <Link href={`/study/challenges/${challenge.id}`} className="pill-outline small">Leave for now</Link>
+          </div>
+        </> : phase === "quit" ? <>
           <h2 id="cbt-dialog-title">Quit this test?</h2>
           <p>Your answers won’t be marked or saved. You can start a new test any time.</p>
           <div className="cbt-dialog-actions">

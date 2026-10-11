@@ -5,6 +5,7 @@ import { MAX_PROFILES, listProfiles, type LearnerProfile } from "@/lib/profiles"
 import { AddProfileForm, ProfilePicker, SignOutButton } from "./profile-forms";
 import ConsentForm from "./consent-form";
 import DeleteAccount from "./delete-account";
+import { challengesEnabled } from "@/lib/social/flags";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Who’s studying? — Edify" };
@@ -53,7 +54,7 @@ export default async function ProfilesPage() {
         <SignOutButton />
       </div>
       {loadFailed && <p role="alert" className="form-error">Your learners could not be loaded. Refresh the page to try again.</p>}
-      {profiles.length > 0 && <><p><Link href="/billing" className="pill-outline small">Plans and payments</Link></p><ProfilePicker profiles={profiles} /></>}
+      {profiles.length > 0 && <><p className="profiles-links"><Link href="/billing" className="pill-outline small">Plans and payments</Link>{challengesEnabled() && <Link href="/profiles/classmates" className="pill-outline small">Classmates and safety</Link>}</p><ProfilePicker profiles={profiles} /></>}
       {profiles.length < MAX_PROFILES && !loadFailed && (
         <section className="account-card add-card" aria-labelledby="add-learner">
           <h2 id="add-learner">{profiles.length ? "Add another learner" : "Learner details"}</h2>
