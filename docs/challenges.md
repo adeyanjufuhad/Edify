@@ -179,8 +179,8 @@ Deleting a learner (Remove on their card) or the whole account removes, in the s
   history and leaderboard);
 * their reports and reports about them.
 
-This is done twice on purpose: by explicit `delete` statements (`src/lib/social-deletion-sql.ts`, used by
-`src/lib/account-deletion-sql.ts` and `deleteProfile`) and by `on delete cascade` foreign keys in the migrations. The
+This is done twice on purpose: by explicit `delete` statements (`src/lib/account-deletion-sql.ts`, used by
+`deleteParentAccount` and `deleteProfile`) and by `on delete cascade` foreign keys in the migrations. The
 explicit statements are only built for tables that exist, so deleting an account still works on a database where the
 new SQL has not been applied yet. `scripts/social.test.mjs` (in-memory Postgres) checks that both routes leave nothing
 behind and that other families are untouched.

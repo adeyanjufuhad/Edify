@@ -4,6 +4,7 @@ import { database } from "@/lib/db";
 import { isPlanId, type PlanId } from "@/data/plans";
 import { isStreamId, type StreamId } from "@/data/streams";
 import { paidAccess } from "@/lib/access";
+import { deleteLearnerData } from "@/lib/account-deletion";
 
 const scrypt = promisify(scryptCallback) as (password: string, salt: Buffer, keylen: number) => Promise<Buffer>;
 
@@ -81,9 +82,17 @@ export async function setStream(parentId: string, profileId: string, stream: Str
   return rows.length > 0;
 }
 
+// Removes the learner and everything held for them (progress, notes, CBT attempts, challenges, chat and voice
+// notes, presence, reports) in one transaction. Payment records stay, unlinked from the learner.
 export async function deleteProfile(parentId: string, profileId: string) {
   if (!UUID_PATTERN.test(profileId)) return;
-  const sql = database();
-  const deleted = await sql`delete from public.learner_profiles where id = ${profileId} and parent_id = ${parentId} returning id`;
-  if (deleted[0]) await sql`delete from public.lesson_progress where user_id = ${profileId}`;
+  await deleteLearnerData(parentId, profileId);
+}
+
+// The plan a learner has right now (paid access, or the sponsored Gold from a referral code).
+// The caller must already know the id from a trusted place, such as a classmate link.
+export async function planForLearner(profileId: string): Promise<PlanId> {
+  if (!UUID_PATTERN.test(profileId)) return "free";
+  const rows = await database()`select id, name, class_level, school, stream, plan, referral_code from public.learner_profiles where id = ${profileId}`;
+  return rows[0] ? (await toProfile(rows[0])).plan : "free";
 }
