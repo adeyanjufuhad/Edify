@@ -105,7 +105,8 @@
 /* ---------- Phones: one pane at a time; an open chat fills the screen ---------- */
 @media (max-width: 860px) {
   .app:has(.chats) .app-main { padding: 0; }
-  .chats { grid-template-columns: minmax(0, 1fr); height: calc(100dvh - 60px - 66px - env(safe-area-inset-bottom)); border: 0; border-radius: 0; }
+  .chats { grid-template-columns: minmax(0, 1fr); height: calc(100dvh - 60px - 64px - env(safe-area-inset-bottom)); border: 0; border-radius: 0; }
+  .chats:not(.has-open) .chat-list { padding-bottom: 28px; } /* room to scroll the last chat clear of the raised menu button */
   .chats.has-open { height: 100dvh; }
   .chats.has-open .chat-list-pane, .chats:not(.has-open) .chat-pane { display: none; }
   .app:has(.chats.has-open) .mobile-bar, .app:has(.chats.has-open) .tab-bar { display: none; }

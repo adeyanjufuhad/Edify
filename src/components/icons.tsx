@@ -35,4 +35,6 @@ export const Stop = (props: IconProps) => <Svg {...props}><rect x="6" y="6" widt
 export const PlayIcon = (props: IconProps) => <Svg {...props}><path d="M8 5v14l11-7L8 5Z" /></Svg>;
 export const Calendar = (props: IconProps) => <Svg {...props}><rect x="3.5" y="5" width="17" height="15" rx="2" /><path d="M3.5 10h17M8 3v4M16 3v4" /></Svg>;
 export const Link2 = (props: IconProps) => <Svg {...props}><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" /><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></Svg>;
+export const Menu = (props: IconProps) => <Svg {...props}><path d="M4 7h16M4 12h16M4 17h16" /></Svg>;
+export const Close = (props: IconProps) => <Svg {...props}><path d="M6 6l12 12M18 6 6 18" /></Svg>;
 export const Trash = (props: IconProps) => <Svg {...props}><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /><path d="M10 11v6M14 11v6" /></Svg>;

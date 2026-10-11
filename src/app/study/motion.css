@@ -3,21 +3,23 @@
    Shared keyframes and easing tokens come from src/app/motion.css. Only transform and opacity move. */
 
 @keyframes low-pulse { 50% { scale: 1.07; } }
+@keyframes menu-pop { from { opacity: 0; scale: 0.82; translate: 0 18px; } }
+@keyframes menu-turn { from { opacity: 0; rotate: -90deg; } }
 
 /* Position of each child in a list, so rows can enter one after another. */
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(1) { --i: 0; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(2) { --i: 1; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(3) { --i: 2; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(4) { --i: 3; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(5) { --i: 4; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(6) { --i: 5; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(7) { --i: 6; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(8) { --i: 7; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(9) { --i: 8; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(10) { --i: 9; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(11) { --i: 10; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(12) { --i: 11; }
-:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(n + 13) { --i: 12; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(1) { --i: 0; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(2) { --i: 1; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(3) { --i: 2; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(4) { --i: 3; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(5) { --i: 4; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(6) { --i: 5; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(7) { --i: 6; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(8) { --i: 7; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(9) { --i: 8; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(10) { --i: 9; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(11) { --i: 10; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(12) { --i: 11; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav, .tab-menu-grid) > :nth-child(n + 13) { --i: 12; }
 
 @media (prefers-reduced-motion: no-preference) {
   /* ---- Page entrance: header first, then each block. Grids below animate their own children instead. ---- */
@@ -41,6 +43,16 @@
   .sidebar-nav > .sidebar-link { animation: slide-in-left 0.5s var(--ease-out) calc(0.1s + var(--i) * 50ms) backwards; }
   .sidebar-link { transition: background-color 0.15s, color 0.15s, translate 0.25s var(--ease-out); }
   .sidebar-link svg { transition: scale 0.25s var(--ease-spring); }
+
+  /* ---- Phone tab bar: the menu pops up from the button, tiles follow; the X turns in ---- */
+  .tab-menu:not([hidden]) { transform-origin: 50% 100%; animation: menu-pop 0.3s var(--ease-spring) backwards; }
+  .tab-menu-grid > li { animation: rise-in 0.35s var(--ease-out) calc(0.05s + var(--i, 0) * 30ms) backwards; }
+  .tab-scrim { animation: fade-in 0.2s ease-out backwards; }
+  .tab-menu-button.is-open .tab-menu-circle svg { animation: menu-turn 0.25s var(--ease-out); }
+  .tab-menu-circle { transition: scale 0.2s var(--ease-spring); }
+  .tab-menu-button:active .tab-menu-circle { scale: 0.92; }
+  .tab-bar > a svg { transition: scale 0.2s var(--ease-spring); }
+  .tab-bar > a:active svg { scale: 0.88; }
 
   /* ---- Dashboard ---- */
   .hello-mascot { transform-origin: 50% 100%; animation: bob 5s ease-in-out infinite; }

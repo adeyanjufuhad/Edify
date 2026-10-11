@@ -59,7 +59,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 
 ## Layout
 - Marketing: `.shell` = `min(1160px, 100% - 64px)`; sections 88px tall padding on desktop, 56px on phones. Bento feature grid on 6 columns (4+2, 2+2+2, 3+3).
-- App: 256px navy sidebar + content (max 1120px). Below 860px the sidebar becomes a navy top bar and a 5-item bottom tab bar (Home, Subjects, CBT, Notes, Family). The CBT exam screen hides the sidebar and tab bar (`.app:has(.cbt-exam)`) so the test fills the screen.
+- App: 256px navy sidebar + content (max 1120px). Below 860px the sidebar becomes a navy top bar and a bottom tab bar (64px plus the safe area) with four links (Home, Subjects, CBT, and Chats when chat is on, otherwise Notes) around a raised round white menu button with a navy hamburger. The button opens a white square panel above the bar (navy-tint scrim behind it) with the learner's name and class and the other pages as large icon tiles (Notes, Challenges, Leaderboard, Learners, Classmate settings, Switch learner); the current page's tile is navy, and a red dot on the button shows when the current page lives in the menu. The CBT exam screen hides the sidebar and tab bar (`.app:has(.cbt-exam)`) so the test fills the screen.
 - Breakpoints: 1100/1024px (stack two-column areas), 860px (app shell), 680/600px (phone).
 
 ## Components
