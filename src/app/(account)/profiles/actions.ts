@@ -6,7 +6,7 @@ import { refresh } from "next/cache";
 import { PROFILE_COOKIE, PROFILE_COOKIE_MAX_AGE, requireConsentedParent, requireParent } from "@/lib/account";
 import { deleteParentAccount } from "@/lib/account-deletion";
 import { getAuth } from "@/lib/auth/server";
-import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile } from "@/lib/profiles";
+import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile, setStream } from "@/lib/profiles";
 import { isClassLevel } from "@/data/curriculum";
 import { normalizeSchool } from "@/data/schools";
 import { isSeniorClass, isStreamId } from "@/data/streams";
@@ -74,6 +74,15 @@ export async function removeProfile(formData: FormData) {
   await deleteProfile(parent.id, profileId);
   const store = await cookies();
   if (store.get(PROFILE_COOKIE)?.value === profileId) store.delete(PROFILE_COOKIE);
+  refresh();
+}
+
+// Lets a parent give a senior learner, added before streams existed, the stream they study.
+export async function setStreamFor(formData: FormData) {
+  const parent = await requireConsentedParent();
+  const profileId = String(formData.get("profileId") ?? "");
+  const stream = String(formData.get("stream") ?? "");
+  if (isStreamId(stream)) await setStream(parent.id, profileId, stream);
   refresh();
 }
 

@@ -8,7 +8,7 @@ import { CLASS_LEVELS } from "@/data/curriculum";
 import { SUGGESTED_SCHOOLS } from "@/data/schools";
 import { STREAMS, isSeniorClass, streamLabel } from "@/data/streams";
 import PlanBadge from "@/components/plan-badge";
-import { addProfile, forgetProfile, openProfile, removeProfile, type FormState } from "./actions";
+import { addProfile, forgetProfile, openProfile, removeProfile, setStreamFor, type FormState } from "./actions";
 
 const digitsOnly = (value: string) => value.replace(/\D/g, "").slice(0, 4);
 
@@ -32,6 +32,17 @@ export function ProfilePicker({ profiles }: { profiles: LearnerProfile[] }) {
               <small>{profile.classLevel}{profile.stream && <> · {streamLabel(profile.stream)}</>}{profile.school && <> · <span className="profile-school">{profile.school}</span></>}</small>
               <PlanBadge plan={profile.plan} sponsored={profile.sponsored} />
             </button>
+            {isSeniorClass(profile.classLevel) && !profile.stream && (
+              <form action={setStreamFor} className="stream-fix">
+                <input type="hidden" name="profileId" value={profile.id} />
+                <label htmlFor={`stream-${profile.id}`}>Set {profile.name}’s stream</label>
+                <select id={`stream-${profile.id}`} name="stream" defaultValue="" required>
+                  <option value="" disabled>Choose…</option>
+                  {STREAMS.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
+                </select>
+                <button type="submit" className="pill-button small">Save</button>
+              </form>
+            )}
             {confirmRemove === profile.id ? (
               <form action={removeProfile} className="remove-confirm">
                 <input type="hidden" name="profileId" value={profile.id} />

@@ -71,6 +71,16 @@ export async function checkPin(parentId: string, profileId: string, pin: string)
   return toProfile(rows[0]);
 }
 
+// For senior learners added before streams existed. Only fills a stream that is still empty, so it cannot silently change one.
+// The class list matches isSeniorClass() in src/data/streams.ts.
+export async function setStream(parentId: string, profileId: string, stream: StreamId): Promise<boolean> {
+  if (!UUID_PATTERN.test(profileId)) return false;
+  const rows = await database()`update public.learner_profiles set stream = ${stream}
+    where id = ${profileId} and parent_id = ${parentId} and stream is null and class_level in ('SS1', 'SS2', 'SS3')
+    returning id`;
+  return rows.length > 0;
+}
+
 export async function deleteProfile(parentId: string, profileId: string) {
   if (!UUID_PATTERN.test(profileId)) return;
   const sql = database();
