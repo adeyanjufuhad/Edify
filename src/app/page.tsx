@@ -1,7 +1,8 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import Brand from "@/components/brand";
-import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Note, Pencil, Shield, Target, Users } from "@/components/icons";
+import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Message, Monitor, Note, Pencil, Shield, Target, Trophy, Users } from "@/components/icons";
+import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@/lib/social/flags";
 import { catalog, totals } from "@/data/catalog";
 import { PLANS, naira, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
@@ -13,6 +14,7 @@ import "./home-motion.css";
 
 const NAV = [
   { href: "#features", label: "Features" },
+  { href: "#classmates", label: "Classmates", social: true },
   { href: "#how", label: "How it works" },
   { href: "#subjects", label: "Subjects" },
   { href: "#parents", label: "For parents" },
@@ -30,6 +32,7 @@ const TICKER: { text: string; kind: "class" | "feature" }[] = [
   { text: "SS3", kind: "class" }, { text: "Your own notes", kind: "feature" },
   { text: "Family accounts", kind: "feature" }, { text: "Works on any phone", kind: "feature" },
 ];
+const SOCIAL_TICKER: typeof TICKER = [{ text: "Classmate challenges", kind: "feature" }, { text: "Class leaderboard", kind: "feature" }];
 
 const LESSON_PARTS = [
   { title: "Quick exam notes", text: "The must-know points for the week on one screen, with memory aids and “Watch out” boxes for common traps.", icon: Bolt },
@@ -58,6 +61,8 @@ const PLAYBOOK = [
   { title: "Show every step", text: "In theory answers, method marks count. Write the formula, the substitution and the unit." },
   { title: "Watch the traps", text: "Each Edify lesson flags the common slips and tricky wording so they don’t catch you out." },
 ];
+
+const SOCIAL_FAQ = { q: "Can my child talk to strangers on Edify?", a: "No. Children only ever see classmates in their own school and class, and only after a parent has switched it on. Parents choose whether their child can be seen by the class, show when they are online, chat or send voice notes, can read and delete every message, and can remove or block any classmate. Children can block or report anyone, and other families only ever see a first name and class." };
 
 const FAQS = [
   { q: "How much does Edify cost?", a: "Creating a family account is free. Study access costs ₦1,000 for Bronze, ₦3,000 for Silver or ₦5,000 for Gold per learner for 105 days (3½ months). Pay through Paystack, with no automatic renewal. Valid partner-school referral codes still unlock sponsored Gold." },
@@ -145,13 +150,18 @@ function HeroArt() {
 }
 
 export default function Home() {
+  // The classmate features only appear on this page while the owner has them switched on (docs/challenges.md).
+  const social = { on: challengesEnabled(), online: presenceEnabled(), chat: chatEnabled(), voice: voiceEnabled() };
+  const nav = NAV.filter((item) => !("social" in item) || social.on);
+  const ticker = social.on ? [...TICKER, ...SOCIAL_TICKER] : TICKER;
+  const faqs = social.on ? [...FAQS.slice(0, 3), SOCIAL_FAQ, ...FAQS.slice(3)] : FAQS;
   return <>
     <div className="top-sentinel" data-sentinel aria-hidden="true" />
     <ScrollMotion />
     <header className="home-header" data-header>
       <div className="shell home-header-inner">
         <Brand />
-        <nav className="home-nav" aria-label="Main navigation" data-spy>{NAV.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
+        <nav className="home-nav" aria-label="Main navigation" data-spy>{nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
         <div className="home-header-actions"><Link href="/profiles" className="home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up</Link></div>
       </div>
       <span className="scroll-progress" aria-hidden="true" />
@@ -199,7 +209,7 @@ export default function Home() {
         <div className="ticker-track">
           {[0, 1].map((copy) => (
             <ul className="ticker-group" key={copy}>
-              {TICKER.map((item, index) => <li key={item.text} className={`ticker-${item.kind}`}>{item.text}<Star className="ticker-star" color={index % 2 ? "#669bbc" : "#c1121f"} /></li>)}
+              {ticker.map((item, index) => <li key={item.text} className={`ticker-${item.kind}`}>{item.text}<Star className="ticker-star" color={index % 2 ? "#669bbc" : "#c1121f"} /></li>)}
             </ul>
           ))}
         </div>
@@ -257,19 +267,27 @@ export default function Home() {
             <h3>Your own notes</h3>
             <p>Write notes in any lesson and find them all on one revision page.</p>
           </article>
-          <article className="tile tile-half">
+          <article className="tile">
             <div className="tile-icon"><Users size={20} /></div>
             <h3>Family accounts</h3>
             <p>One parent account for every child, each with their own PIN, progress and notes.</p>
           </article>
-          <article className="tile tile-half tile-navy">
+          <article className="tile tile-navy">
             <div className="tile-icon"><Clock size={20} /></div>
             <h3>Pick up where you stopped</h3>
             <p>Your dashboard shows the next lesson, what’s coming up and how far through the term you are.</p>
             <div className="tile-demo progress-demo"><span /></div>
           </article>
+          <article className="tile">
+            <div className="tile-icon"><Monitor size={20} /></div>
+            <h3>Timed CBT tests</h3>
+            <p>Practise on screen like the real exam: one question at a time, a countdown, then every answer explained.</p>
+            <div className="tile-demo timer-demo" aria-hidden="true"><Clock size={16} /><strong>18:42</strong><span>Question 7 of 40</span></div>
+          </article>
         </div>
       </section>
+
+      {social.on && <Classmates online={social.online} chat={social.chat} voice={social.voice} />}
 
       <section className="lesson-anatomy" aria-labelledby="anatomy-title">
         <div className="shell anatomy-inner">
@@ -370,7 +388,7 @@ export default function Home() {
 
       <section className="shell faq" id="faq" aria-labelledby="faq-title">
         <div className="faq-intro" data-reveal="left"><span className="kicker">Questions</span><h2 id="faq-title">Things parents often ask.</h2><p>Create a family account, add your learners, then choose the right plan for each one.</p></div>
-        <dl className="faq-list" data-stagger="fast">{FAQS.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
+        <dl className="faq-list" data-stagger="fast">{faqs.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
       </section>
 
       <Wave fill="#c1121f" className="wave-into" />
@@ -389,4 +407,54 @@ export default function Home() {
 
     <SiteFooter />
   </>;
+}
+
+// "Learn with your classmates": challenges, the leaderboard and, when switched on, online status and chats. Only shown
+// while the owner has the classmate features on. The pictures are drawn in HTML and hidden from screen readers.
+function Classmates({ online, chat, voice }: { online: boolean; chat: boolean; voice: boolean }) {
+  const extras = [
+    online && (
+      <article className="tile" key="online">
+        <div className="tile-icon"><Users size={20} /></div>
+        <h3>See who’s online in your class</h3>
+        <p>Classmates in your school and class show up with an “Online now” mark, so you can challenge them straight away.</p>
+        <div className="tile-demo online-demo" aria-hidden="true"><span><b>T</b><i /></span><span><b>C</b><i /></span><span><b>D</b></span><em>2 online now</em></div>
+      </article>
+    ),
+    chat && (
+      <article className="tile tile-slate" key="chat">
+        <div className="tile-icon"><Message size={20} /></div>
+        <h3>Chat with classmates</h3>
+        <p>Message the classmates you study with{voice ? " and send short voice notes" : ""}. Parents can read every chat.</p>
+        <div className="tile-demo chat-demo" aria-hidden="true"><span>Did you finish Week 3?</span><span className="mine">Yes! Challenge me now</span></div>
+      </article>
+    ),
+    (
+      <article className="tile tile-navy" key="safe">
+        <div className="tile-icon"><Shield size={20} /></div>
+        <h3>Parents stay in control</h3>
+        <p>Every classmate feature is off until a parent switches it on. No strangers: only children in the same school and class, and they can block or report anyone.</p>
+      </article>
+    ),
+  ].filter(Boolean);
+  return (
+    <section className="shell features together" id="classmates" aria-labelledby="classmates-title">
+      <div className="section-head doodled" data-reveal><Star className="head-doodle left" color="#c1121f" /><Sparkle className="head-doodle right" color="#669bbc" /><span className="kicker">Learn with your classmates</span><h2 id="classmates-title">Revise together. <span className="hl">Win together.</span></h2><p>Challenge a classmate on any subject and term, or just the weeks you have both studied.</p></div>
+      <div className={`bento extras-${extras.length}`} data-stagger>
+        <article className="tile tile-wide tile-red">
+          <div className="tile-icon"><Target size={20} /></div>
+          <h3>Classmate challenges</h3>
+          <p>You and a classmate answer the same exam-style questions, each in your own time. The higher score wins, and a tie goes to the faster finish.</p>
+          <div className="tile-demo versus-demo" aria-hidden="true"><span><b>You</b><strong>7</strong></span><i>vs</i><span><b>Taiwo</b><strong>5</strong></span><em>You won</em></div>
+        </article>
+        <article className="tile">
+          <div className="tile-icon"><Trophy size={20} /></div>
+          <h3>Class leaderboard</h3>
+          <p>See who has won the most challenges among your classmates this term.</p>
+          <ol className="tile-demo board-demo" aria-hidden="true"><li><b>1</b>Kehinde<span>5 wins</span></li><li><b>2</b>Taiwo<span>4 wins</span></li><li><b>3</b>Chiamaka<span>2 wins</span></li></ol>
+        </article>
+        {extras}
+      </div>
+    </section>
+  );
 }

@@ -81,6 +81,39 @@
 .grade-demo { display: flex; align-items: center; gap: 14px; }
 .grade-demo strong { display: grid; place-items: center; width: 64px; height: 64px; border-radius: var(--r); background: var(--navy); color: var(--white); font-family: var(--display); font-size: 26px; font-weight: 800; }
 .grade-demo span { font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.timer-demo { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+.timer-demo svg { color: var(--red); }
+.timer-demo strong { font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--ink); }
+.timer-demo span { font-size: 13px; font-weight: 600; color: var(--ink-3); }
+
+/* Learn with your classmates */
+.together { padding-top: 0; }
+/* On the six-column desktop grid the last row is filled however many tiles are switched on. */
+@media (min-width: 1025px) {
+  .together .bento.extras-1 > .tile:last-child { grid-column: span 6; }
+  .together .bento.extras-2 > .tile:nth-last-child(-n+2) { grid-column: span 3; }
+}
+@media (max-width: 1024px) and (min-width: 681px) { .together .bento.extras-2 > .tile:last-child, .together .bento.extras-0 > .tile:last-child { grid-column: span 2; } }
+.versus-demo { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.versus-demo span { display: grid; justify-items: center; min-width: 76px; padding: 8px 12px; border-radius: var(--r-sm); background: rgba(255, 255, 255, 0.16); color: var(--white); }
+.versus-demo span:first-child { background: var(--white); color: var(--ink); }
+.versus-demo b { font-size: 13px; font-weight: 700; }
+.versus-demo strong { font-family: var(--display); font-size: 28px; font-weight: 700; line-height: 1.1; }
+.versus-demo i { font-style: normal; font-family: var(--display); font-weight: 700; color: rgba(255, 255, 255, 0.8); }
+.versus-demo em { margin-left: auto; padding: 4px 12px; border-radius: 999px; background: var(--navy); color: var(--white); font-size: 13px; font-style: normal; font-weight: 700; }
+.board-demo { list-style: none; padding: 0; display: grid; gap: 6px; }
+.board-demo li { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 6px 10px; border-radius: var(--r-sm); background: var(--mist); font-size: 14px; font-weight: 600; }
+.board-demo li:first-child { background: var(--tint-red); }
+.board-demo b { font-family: var(--display); font-size: 16px; }
+.board-demo span { font-size: 13px; color: var(--ink-3); }
+.online-demo { display: flex; align-items: center; gap: 8px; }
+.online-demo span { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--red); color: var(--white); font-family: var(--display); font-weight: 700; }
+.online-demo i { position: absolute; right: -1px; bottom: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--navy); border: 2px solid var(--white); }
+.online-demo em { margin-left: 4px; font-size: 13px; font-style: normal; font-weight: 700; color: var(--navy); }
+.chat-demo { display: grid; gap: 6px; }
+.chat-demo span { justify-self: start; max-width: 90%; padding: 6px 10px; border-radius: 0 10px 10px 10px; background: var(--white); color: var(--ink); font-size: 14px; }
+.chat-demo span.mine { justify-self: end; border-radius: 10px 0 10px 10px; background: var(--navy); color: var(--white); }
+
 .progress-demo { height: 10px; border-radius: 999px; background: rgba(253, 240, 213, 0.16); overflow: hidden; }
 .progress-demo span { display: block; width: 62%; height: 100%; background: var(--red); }
 

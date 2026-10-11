@@ -66,7 +66,7 @@ svg { flex: none; }
 .pill-outline:hover { background: var(--ink); color: var(--white); }
 .btn-navy { background: var(--navy); color: var(--white); box-shadow: 0 4px 0 #001826; }
 .btn-navy:hover { background: #003d5c; }
-.pill-button.small, .pill-outline.small, .btn-navy.small { min-height: 42px; padding: 0 18px; font-size: 15px; }
+.pill-button.small, .pill-outline.small, .btn-navy.small { min-height: 44px; padding: 0 18px; font-size: 15px; }
 .pill-button:disabled, .pill-outline:disabled { opacity: 0.55; cursor: not-allowed; }
 .pill-button:active:not(:disabled), .pill-outline:active:not(:disabled), .btn-navy:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--red-deep); }
 .pill-outline:active:not(:disabled) { box-shadow: 0 1px 0 var(--ink); }
