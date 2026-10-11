@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { Mic, Send, Stop, Trash } from "@/components/icons";
 import type { Message } from "./chat-room";
 
-type Props = { linkId: string; maxSeconds: number; onSent: (message: Message) => void };
+type Props = { linkId: string; maxSeconds: number; onSent: (message: Message) => void; onCancel: () => void };
 type Phase = "idle" | "recording" | "recorded" | "sending";
 
 // The best format this browser can record: Chrome and Android give webm, iPhone Safari gives mp4, Firefox gives ogg.
@@ -12,7 +12,8 @@ const noSubscribe = () => () => {};
 const FORMATS = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
 
 // Record in the browser, listen back, then choose to send or throw it away. Nothing leaves the device until Send.
-export default function VoiceRecorder({ linkId, maxSeconds, onSent }: Props) {
+// Opened from the mic button, so it starts recording straight away; Cancel goes back to typing.
+export default function VoiceRecorder({ linkId, maxSeconds, onSent, onCancel }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [seconds, setSeconds] = useState(0);
   const [error, setError] = useState("");
@@ -73,6 +74,10 @@ export default function VoiceRecorder({ linkId, maxSeconds, onSent }: Props) {
     }
   }
 
+  const startRef = useRef(start);
+  useEffect(() => { startRef.current = start; });
+  useEffect(() => { void startRef.current(); }, []);
+
   function discard() {
     setPreview(null);
     setPhase("idle");
@@ -99,7 +104,8 @@ export default function VoiceRecorder({ linkId, maxSeconds, onSent }: Props) {
 
   return (
     <div className="voice-bar" aria-label="Voice note">
-      {phase === "idle" && <button type="button" className="pill-outline small" onClick={() => void start()}><Mic size={16} /> Record a voice note</button>}
+      {phase === "idle" && <button type="button" className="pill-outline small" onClick={() => void start()}><Mic size={16} /> Record again</button>}
+      {phase !== "sending" && <button type="button" className="text-button small" onClick={() => { if (recorder.current?.state === "recording") { recorder.current.onstop = null; recorder.current.stop(); } release(); onCancel(); }}>Cancel</button>}
       {phase === "recording" && <>
         <span className="rec-dot" aria-hidden="true" />
         <span className="rec-time" role="timer" aria-label={`Recording, ${seconds} seconds of ${maxSeconds}`}>{seconds}s / {maxSeconds}s</span>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Brand from "@/components/brand";
 import { streamLabel } from "@/data/streams";
-import { Grid, Layers, Monitor, Note, Shield, Swap, Target, Trophy, Users } from "@/components/icons";
+import { Grid, Layers, Message, Monitor, Note, Shield, Swap, Target, Trophy, Users } from "@/components/icons";
 import PlanBadge from "@/components/plan-badge";
 import type { LearnerProfile } from "@/lib/profiles";
 
@@ -17,7 +17,8 @@ const STUDY_LINKS = [
 
 const CHALLENGE_LINK = { href: "/study/challenges", label: "Challenges", short: "Challenge", icon: Target };
 // The sidebar groups them under "Classmates"; the phone tab bar only has room for Challenges.
-const CLASSMATE_LINKS = [CHALLENGE_LINK, { href: "/study/challenges/leaderboard", label: "Leaderboard", short: "Leaders", icon: Trophy }];
+const CHATS_LINK = { href: "/study/chats", label: "Chats", short: "Chats", icon: Message };
+const LEADERBOARD_LINK = { href: "/study/challenges/leaderboard", label: "Leaderboard", short: "Leaders", icon: Trophy };
 
 function isActive(pathname: string, href: string) {
   if (href === "/study") return pathname === "/study";
@@ -26,12 +27,13 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href);
 }
 
-export default function AppSidebar({ learner, challenges = false }: { learner: LearnerProfile; challenges?: boolean }) {
+export default function AppSidebar({ learner, challenges = false, chat = false }: { learner: LearnerProfile; challenges?: boolean; chat?: boolean }) {
   const pathname = usePathname();
   const { name: learnerName, classLevel, school } = learner;
   const stream = streamLabel(learner.stream);
   // Classmate challenges only appear once the owner has switched the feature on.
-  const links = challenges ? [...STUDY_LINKS, CHALLENGE_LINK] : STUDY_LINKS;
+  const links = challenges ? [...STUDY_LINKS, CHALLENGE_LINK, ...(chat ? [CHATS_LINK] : [])] : STUDY_LINKS;
+  const classmateLinks = chat ? [CHALLENGE_LINK, CHATS_LINK, LEADERBOARD_LINK] : [CHALLENGE_LINK, LEADERBOARD_LINK];
 
   return (
     <>
@@ -45,7 +47,7 @@ export default function AppSidebar({ learner, challenges = false }: { learner: L
           })}
           {challenges && <>
             <span className="sidebar-label">Classmates</span>
-            {CLASSMATE_LINKS.map(({ href, label, icon: Icon }) => {
+            {classmateLinks.map(({ href, label, icon: Icon }) => {
               const active = isActive(pathname, href);
               return <Link key={href} href={href} className={`sidebar-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}><Icon size={18} />{label}</Link>;
             })}
@@ -65,7 +67,7 @@ export default function AppSidebar({ learner, challenges = false }: { learner: L
         <Brand />
         <a href="/leave" className="mobile-user" aria-label={`Switch learner (now ${learnerName})`}><span className="avatar small" aria-hidden="true">{learnerName[0]?.toUpperCase()}</span></a>
       </header>
-      <nav className="tab-bar" aria-label="Study navigation" style={{ gridTemplateColumns: `repeat(${links.length + 1}, 1fr)` }}>
+      <nav className="tab-bar" aria-label="Study navigation" data-count={links.length + 1} style={{ gridTemplateColumns: `repeat(${links.length + 1}, 1fr)` }}>
         {links.map(({ href, short, icon: Icon }) => {
           const active = isActive(pathname, href);
           return <Link key={href} href={href} className={active ? "active" : ""} aria-current={active ? "page" : undefined}><Icon size={20} /><span>{short}</span></Link>;

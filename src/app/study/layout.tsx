@@ -15,7 +15,7 @@ export default async function StudyLayout({ children }: { children: React.ReactN
   const social = challenges ? await getEffectiveSettings(learner.id).catch(() => NOTHING_ON) : NOTHING_ON;
   return (
     <div className="app">
-      <AppSidebar learner={learner} challenges={challenges} />
+      <AppSidebar learner={learner} challenges={challenges} chat={social.chat} />
       <main id="main" className="app-main">{children}</main>
       {social.presence && <PresenceBeat />}
     </div>

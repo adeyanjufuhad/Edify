@@ -597,7 +597,7 @@ test("every query's parameters are all used and ids are never part of the SQL te
     q.rateLimitQuery({ learnerId: A1 }, "msg", 3, 60), q.rateLimitQuery({ parentId: P1 }, "invite", 3, 60), q.claimInviteQuery(A1, B1), q.startEntryQuery(A1, B1),
     q.submitEntryQuery(A1, B1, 3, 5, "[]", 60), q.finishChallengeQuery(A1), q.settleOverdueQuery(A1, 60), q.finishSettledQuery(A1), q.leaderboardQuery([A1], 90, null),
     qq.settingsQuery(A1), qq.settingsForQuery([A1]), qq.saveSettingsQuery(P1, A1, { challenges: true, presence: false, chat: false, voice: false }), qq.classmatesQuery(A1),
-    qq.parentLinksQuery(P1), qq.linkOwnLearnersQuery(P1, A1, A2), qq.classDirectoryQuery(A1, 75, 100), qq.requestLinkQuery(A1, B1), qq.pendingLinksQuery(A1), qq.acceptLinkQuery(A1, B1), qq.acceptByChallengeQuery(A1, B1), qq.declineLinkQuery(A1, B1), qq.linkBetweenQuery(A1, B1), qq.linkCountQuery(A1), qq.linkForLearnerQuery(A1, B1), qq.createInviteQuery(P1, A1, "f".repeat(64), 7),
+    qq.parentLinksQuery(P1), qq.linkOwnLearnersQuery(P1, A1, A2), qq.classDirectoryQuery(A1, 75, 100), qq.conversationsQuery(A1, 14, 7, 75), qq.theirReadQuery(A1, B1), qq.requestLinkQuery(A1, B1), qq.pendingLinksQuery(A1), qq.acceptLinkQuery(A1, B1), qq.acceptByChallengeQuery(A1, B1), qq.declineLinkQuery(A1, B1), qq.linkBetweenQuery(A1, B1), qq.linkCountQuery(A1), qq.linkForLearnerQuery(A1, B1), qq.createInviteQuery(P1, A1, "f".repeat(64), 7),
     qq.pendingInviteCountQuery(A1), qq.pendingInvitesQuery(P1), qq.cancelInviteQuery(P1, A1), qq.inviteByHashQuery("f".repeat(64)), qq.blockLinkQuery(P1, A1, B1),
     qq.unblockLinkQuery(P1, A1, B1), qq.removeLinkQuery(null, A1, B1), qq.cancelOpenForLinkQuery(P1, A1, B1), qq.reportQuery(A1, B1, "other", null, null, null),
     qq.reportsByParentQuery(P1), qq.openBetweenQuery(A1, B1), qq.challengeListQuery(A1, 180, 30), qq.challengeDetailQuery(A1, B1), qq.playQuery(A1, B1),
@@ -777,6 +777,25 @@ test("voice notes: saved only when both parents allow them, stored with the mess
 
   await db.query("update public.chat_messages set created_at = now() - interval '8 days'");
   assert.equal(await play(qq.voiceForParentQuery(P2, sent.id, 7)), undefined, "after the retention period it is gone for everyone");
+});
+
+test("chat list: newest conversation first, last message, unread, online only when both share it, nobody without chat on both sides", async () => {
+  const db = await freshDatabase();
+  const chi = await linkedPair(db, { xOn: { chat: true, presence: true }, yOn: { chat: true, presence: true } });
+  const dayo = await linkedPair(db, { x: A1, y: C1, xOn: { chat: true, presence: true }, yOn: { chat: true } });
+  await run(db, qq.sendTextQuery(B1, chi, "hello Ada"));
+  await db.query("update public.chat_messages set created_at = now() - interval '1 hour'");
+  await run(db, qq.sendTextQuery(A1, dayo, "hi Dayo"));
+  await run(db, qq.heartbeatQuery(B1, 20));
+  const list = (await run(db, qq.conversationsQuery(A1, 14, 7, 75))).rows;
+  assert.deepEqual(list.map((r) => [r.name, r.last_body, r.last_mine, r.unread, r.online]), [["Dayo", "hi Dayo", true, 0, null], ["Chi", "hello Ada", false, 1, true]]);
+  await run(db, qq.markReadQuery(A1, chi));
+  assert.equal((await run(db, qq.conversationsQuery(A1, 14, 7, 75))).rows.find((r) => r.name === "Chi").unread, 0);
+  assert.equal((await run(db, qq.theirReadQuery(B1, chi))).rows[0].seq !== "0", true, "Chi can see Ada has read up to the latest message");
+  assert.equal((await run(db, qq.theirReadQuery(C1, chi))).rows.length, 0, "an outsider learns nothing");
+  await run(db, qq.saveSettingsQuery(P3, C1, { challenges: true, presence: false, chat: false, voice: false }));
+  assert.deepEqual((await run(db, qq.conversationsQuery(A1, 14, 7, 75))).rows.map((r) => r.name), ["Chi"], "Dayo's parent switched chat off");
+  assert.equal((await run(db, qq.conversationsQuery(C1, 14, 7, 75))).rows.length, 0);
 });
 
 test("a message can only be reported by the learner who received it", async () => {

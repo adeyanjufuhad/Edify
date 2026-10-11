@@ -76,3 +76,28 @@ export async function parentConversation(parentId: string, learnerId: string, li
 export async function deleteMessageAsParent(parentId: string, messageId: string): Promise<boolean> {
   return isUuid(messageId) && (await run(sq.deleteMessageQuery(parentId, messageId))).length > 0;
 }
+
+// ---------- The chat list ----------
+export type Conversation = {
+  linkId: string; name: string; classLevel: string; unread: number; online: boolean | null;
+  last: { kind: "text" | "voice"; text: string | null; seconds: number | null; mine: boolean; at: string } | null;
+};
+
+// Every classmate this learner can chat with right now, newest conversation first.
+export async function listConversations(learnerId: string): Promise<Conversation[]> {
+  const rows = await run(sq.conversationsQuery(learnerId, RETENTION_DAYS.textMessages, RETENTION_DAYS.voiceNotes, LIMITS.onlineWithinSeconds));
+  return rows.map((row) => ({
+    linkId: row.link_id as string, name: row.name as string, classLevel: row.class_level as string,
+    unread: (row.unread as number) ?? 0, online: typeof row.online === "boolean" ? row.online : null,
+    last: row.last_at ? {
+      kind: row.last_kind === "voice" ? "voice" : "text", text: (row.last_body as string | null) ?? null, seconds: (row.last_seconds as number | null) ?? null,
+      mine: row.last_mine === true, at: toIso(row.last_at),
+    } : null,
+  }));
+}
+
+// How far the classmate has read, so the learner's own messages can show "read" ticks.
+export async function theirReadSeq(learnerId: string, linkId: string): Promise<string> {
+  if (!isUuid(linkId)) return "0";
+  return String((await run(sq.theirReadQuery(learnerId, linkId)))[0]?.seq ?? "0");
+}

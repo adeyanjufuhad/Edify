@@ -1,5 +1,5 @@
 import { actionActor, sameOrigin } from "@/lib/social/guard";
-import { listMessages, markRead, openChat, sendText } from "@/lib/social/chat";
+import { listMessages, markRead, openChat, sendText, theirReadSeq } from "@/lib/social/chat";
 import { isUuid } from "@/lib/social/data";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ link
   try {
     const messages = await listMessages(actor.learner.id, linkId, Number.isFinite(after) ? after : 0);
     if (messages.length || !after) await markRead(actor.learner.id, linkId);
-    return Response.json({ messages }, { headers: NO_STORE });
+    return Response.json({ messages, theirRead: await theirReadSeq(actor.learner.id, linkId) }, { headers: NO_STORE });
   } catch {
     return Response.json({ error: "Temporarily unavailable" }, { status: 503 });
   }

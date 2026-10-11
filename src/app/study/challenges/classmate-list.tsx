@@ -28,7 +28,7 @@ export default function ClassmateList({ classmates, features }: { classmates: Cl
             </span>
             <span className="classmate-actions">
               {canChat && (
-                <Link href={`/study/challenges/chat/${classmate.linkId}`} className="pill-outline small">
+                <Link href={`/study/chats/${classmate.linkId}`} className="pill-outline small">
                   <Message size={16} /> Chat<span className="sr-only"> with {classmate.name}</span>
                   {unread > 0 && <span className="unread" aria-label={`${unread} unread`}>{unread}</span>}
                 </Link>

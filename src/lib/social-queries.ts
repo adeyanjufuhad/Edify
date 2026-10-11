@@ -466,6 +466,42 @@ export function receivedMessageQuery(learnerId: string, messageId: string): Quer
   };
 }
 
+// The learner's chat list: every classmate they can chat with now (link active, chat on for both), with the newest kept
+// message, unread count and (when both share it) whether the classmate is online. Newest conversation first.
+export function conversationsQuery(learnerId: string, textDays: number, voiceDays: number, onlineWithinSeconds: number): Query {
+  const kept = (alias: string) => `((${alias}.kind = 'text' and ${alias}.created_at > now() - make_interval(days => $2::int)) or (${alias}.kind = 'voice' and ${alias}.created_at > now() - make_interval(days => $3::int)))`;
+  return {
+    text: `select l.id as link_id, o.name as name, o.class_level as class_level,
+        last.kind as last_kind, last.body as last_body, last.audio_seconds as last_seconds, (last.sender_id = $1::uuid) as last_mine, last.created_at as last_at,
+        (select count(*)::int from public.chat_messages u where u.link_id = l.id and u.sender_id <> $1::uuid and u.seq > coalesce(r.last_read_seq, 0) and ${kept("u")}) as unread,
+        case when me.presence_on and s.presence_on then coalesce(p.last_seen_at > now() - make_interval(secs => $4::int), false) end as online
+      from public.classmate_links l
+      join public.learner_profiles o on o.id = case when l.learner_a = $1::uuid then l.learner_b else l.learner_a end
+      join public.learner_social_settings me on me.learner_id = $1::uuid and me.challenges_on and me.chat_on
+      join public.learner_social_settings s on s.learner_id = o.id and s.challenges_on and s.chat_on
+      left join public.chat_reads r on r.link_id = l.id and r.learner_id = $1::uuid
+      left join public.learner_presence p on p.learner_id = o.id
+      left join lateral (
+        select m.kind, m.body, m.audio_seconds, m.sender_id, m.created_at from public.chat_messages m
+        where m.link_id = l.id and ${kept("m")} order by m.seq desc limit 1
+      ) last on true
+      where l.status = 'active' and $1::uuid in (l.learner_a, l.learner_b)
+      order by last.created_at desc nulls last, lower(o.name), l.id`,
+    params: [learnerId, textDays, voiceDays, onlineWithinSeconds],
+  };
+}
+
+// How far the classmate has read this conversation (for the "read" ticks on the learner's own messages).
+export function theirReadQuery(learnerId: string, linkId: string): Query {
+  return {
+    text: `select coalesce(max(r.last_read_seq), 0)::text as seq
+      from public.classmate_links l left join public.chat_reads r on r.link_id = l.id and r.learner_id <> $1::uuid
+      where l.id = $2::uuid and $1::uuid in (l.learner_a, l.learner_b)
+      group by l.id`,
+    params: [learnerId, linkId],
+  };
+}
+
 // ---------- Voice notes (phase 4, db/migrations/013) ----------
 // Voice needs everything chat needs, and voice switched on for both learners too.
 const VOICE_OK = `${CHAT_OK} and (select count(*) from public.learner_social_settings s where s.learner_id in (l.learner_a, l.learner_b) and s.voice_on) = 2`;
