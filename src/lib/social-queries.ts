@@ -371,6 +371,54 @@ export function receivedMessageQuery(learnerId: string, messageId: string): Quer
   };
 }
 
+// ---------- Voice notes (phase 4, db/migrations/013) ----------
+// Voice needs everything chat needs, and voice switched on for both learners too.
+const VOICE_OK = `${CHAT_OK} and (select count(*) from public.learner_social_settings s where s.learner_id in (l.learner_a, l.learner_b) and s.voice_on) = 2`;
+
+// Saves a voice note: the message and its recording in one statement (audio as base64 text, decoded here). Nothing is
+// saved unless the sender is on the link and both parents have voice notes switched on.
+export function sendVoiceQuery(learnerId: string, linkId: string, contentType: string, seconds: number, audioBase64: string, bytes: number): Query {
+  return {
+    text: `with msg as (
+        insert into public.chat_messages (link_id, sender_id, kind, audio_seconds, audio_bytes)
+        select l.id, $1::uuid, 'voice', $4::int, $6::int from public.classmate_links l
+        where l.id = $2::uuid and $1::uuid in (l.learner_a, l.learner_b) and ${VOICE_OK}
+        returning id, seq::text as seq, created_at
+      ), clip as (
+        insert into public.chat_voice_clips (message_id, content_type, audio) select id, $3::text, decode($5::text, 'base64') from msg returning message_id
+      )
+      select id, seq, created_at from msg`,
+    params: [learnerId, linkId, contentType, seconds, audioBase64, bytes],
+  };
+}
+
+// The recording for a learner on the link (with voice on for both), while it is kept.
+export function voiceForLearnerQuery(learnerId: string, messageId: string, voiceDays: number): Query {
+  return {
+    text: `select c.content_type as content_type, encode(c.audio, 'base64') as audio
+      from public.chat_messages m
+      join public.classmate_links l on l.id = m.link_id
+      join public.chat_voice_clips c on c.message_id = m.id
+      where m.id = $2::uuid and m.kind = 'voice' and $1::uuid in (l.learner_a, l.learner_b) and ${VOICE_OK}
+        and m.created_at > now() - make_interval(days => $3::int)`,
+    params: [learnerId, messageId, voiceDays],
+  };
+}
+
+// The recording for a parent of either learner on the link. Works even if voice has since been switched off.
+export function voiceForParentQuery(parentId: string, messageId: string, voiceDays: number): Query {
+  return {
+    text: `select c.content_type as content_type, encode(c.audio, 'base64') as audio
+      from public.chat_messages m
+      join public.classmate_links l on l.id = m.link_id
+      join public.chat_voice_clips c on c.message_id = m.id
+      where m.id = $2::uuid and m.kind = 'voice'
+        and exists (select 1 from public.learner_profiles p where p.parent_id = $1::uuid and p.id in (l.learner_a, l.learner_b))
+        and m.created_at > now() - make_interval(days => $3::int)`,
+    params: [parentId, messageId, voiceDays],
+  };
+}
+
 // ---------- Parents reading and deleting their child's chat ----------
 // A parent sees every message of a conversation their learner is in, newest last, for as long as it is kept. This works
 // even if chat has since been switched off, so a parent can always read and delete what is there.

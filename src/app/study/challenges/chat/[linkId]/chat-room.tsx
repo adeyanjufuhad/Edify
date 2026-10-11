@@ -4,9 +4,10 @@ import { useActionState, useCallback, useEffect, useRef, useState } from "react"
 import { Send } from "@/components/icons";
 import { REPORT_REASONS } from "@/data/challenges";
 import { reportMessageAction, type ActionState } from "../../actions";
+import VoiceRecorder from "./voice-recorder";
 
 export type Message = { id: string; seq: string; mine: boolean; kind: "text" | "voice"; body: string | null; seconds: number | null; at: string };
-type Props = { linkId: string; name: string; initial: Message[]; maxChars: number };
+type Props = { linkId: string; name: string; initial: Message[]; maxChars: number; voiceSeconds: number | null };
 
 const TIME = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" });
 const FAST = 4000;
@@ -21,7 +22,7 @@ export function mergeMessages(current: Message[], incoming: Message[]) {
 
 // The chat with one classmate. New messages arrive by asking the server every few seconds while the page is visible
 // (docs/challenges.md explains why this is polling and not a live connection).
-export default function ChatRoom({ linkId, name, initial, maxChars }: Props) {
+export default function ChatRoom({ linkId, name, initial, maxChars, voiceSeconds }: Props) {
   const [messages, setMessages] = useState<Message[]>(initial);
   const [text, setText] = useState("");
   const [error, setError] = useState("");
@@ -96,7 +97,7 @@ export default function ChatRoom({ linkId, name, initial, maxChars }: Props) {
         {messages.length === 0 && <p className="chat-empty">No messages yet. Say hello, and keep it about school.</p>}
         {messages.map((message) => (
           <div key={message.id} className={`bubble ${message.mine ? "is-mine" : ""}`}>
-            {message.kind === "text" ? <p>{message.body}</p> : <p className="bubble-voice">Voice note · {message.seconds ?? 0} s</p>}
+            {message.kind === "text" ? <p>{message.body}</p> : voiceSeconds !== null ? <><p className="bubble-voice">Voice note · {message.seconds ?? 0} s</p><audio controls preload="none" src={`/api/social/voice/${message.id}`} aria-label={`Voice note from ${message.mine ? "you" : name}`} /></> : <p className="bubble-voice">Voice note · {message.seconds ?? 0} s (voice notes are off)</p>}
             <small>{message.mine ? "You" : name} · {TIME.format(new Date(message.at))}{!message.mine && <> · <button type="button" className="text-button small" onClick={() => setReporting(message)}>Report</button></>}</small>
           </div>
         ))}
@@ -104,6 +105,8 @@ export default function ChatRoom({ linkId, name, initial, maxChars }: Props) {
 
       {offline && <p role="alert" className="form-error">Chat isn’t available right now. A parent may have switched it off.</p>}
       {reporting && <ReportMessage message={reporting} name={name} onClose={() => setReporting(null)} />}
+
+      {voiceSeconds !== null && <VoiceRecorder linkId={linkId} maxSeconds={voiceSeconds} onSent={(message) => { stick.current = true; take([message]); }} />}
 
       <form onSubmit={send} className="chat-form">
         <label htmlFor="chat-text" className="sr-only">Message for {name}</label>

@@ -718,6 +718,42 @@ test("parents: read every message of their own child's conversations, delete any
   assert.equal(await count(db, "select count(*) n from public.chat_messages"), 1);
 });
 
+test("voice notes: saved only when both parents allow them, stored with the message, played back only to the right people, and hidden after the retention period", async () => {
+  const db = await freshDatabase();
+  const linkId = await linkedPair(db, { xOn: { chat: true, voice: true }, yOn: { chat: true, voice: true } });
+  const bytes = Buffer.from([0x1a, 0x45, 0xdf, 0xa3, 1, 2, 3, 4, 5, 6, 7, 8]);
+  const b64 = bytes.toString("base64");
+  const send = async (who) => (await run(db, qq.sendVoiceQuery(who, linkId, "audio/webm", 5, b64, bytes.length))).rows[0];
+
+  assert.equal(await send(C1), undefined, "someone not on the link cannot send");
+  assert.equal(await count(db, "select count(*) n from public.chat_voice_clips"), 0, "and nothing is stored for them");
+  const sent = await send(A1);
+  assert.ok(sent.id);
+  assert.deepEqual(await one(db, `select kind, body, audio_seconds, audio_bytes from public.chat_messages where id = '${sent.id}'`), { kind: "voice", body: null, audio_seconds: 5, audio_bytes: 12 });
+  const clip = await one(db, `select content_type, encode(audio, 'base64') as audio from public.chat_voice_clips where message_id = '${sent.id}'`);
+  assert.deepEqual(clip, { content_type: "audio/webm", audio: b64 }, "the recording round-trips exactly");
+  await assert.rejects(run(db, qq.sendVoiceQuery(A1, linkId, "video/mp4", 5, b64, 12)), /check/i, "the database only accepts audio types");
+
+  const listed = (await run(db, qq.chatListQuery(B1, linkId, 0, 14, 7, 60))).rows;
+  assert.deepEqual(listed.map((m) => [m.kind, m.audio_seconds, m.body]), [["voice", 5, null]], "lists show the length, never the audio");
+
+  const play = async (query) => (await run(db, query)).rows[0]?.audio;
+  assert.equal(await play(qq.voiceForLearnerQuery(B1, sent.id, 7)), b64, "the classmate can listen");
+  assert.equal(await play(qq.voiceForLearnerQuery(A1, sent.id, 7)), b64, "and so can the sender");
+  assert.equal(await play(qq.voiceForLearnerQuery(C1, sent.id, 7)), undefined, "an outsider cannot");
+  assert.equal(await play(qq.voiceForParentQuery(P1, sent.id, 7)), b64, "the sender's parent can");
+  assert.equal(await play(qq.voiceForParentQuery(P2, sent.id, 7)), b64, "and the classmate's parent");
+  assert.equal(await play(qq.voiceForParentQuery(P3, sent.id, 7)), undefined, "another family cannot");
+
+  await run(db, qq.saveSettingsQuery(P2, B1, { challenges: true, presence: false, chat: true, voice: false }));
+  assert.equal(await send(A1), undefined, "voice off on one side stops sending");
+  assert.equal(await play(qq.voiceForLearnerQuery(B1, sent.id, 7)), undefined, "and listening for the learners");
+  assert.equal(await play(qq.voiceForParentQuery(P2, sent.id, 7)), b64, "but a parent can always listen to their child's conversation");
+
+  await db.query("update public.chat_messages set created_at = now() - interval '8 days'");
+  assert.equal(await play(qq.voiceForParentQuery(P2, sent.id, 7)), undefined, "after the retention period it is gone for everyone");
+});
+
 test("a message can only be reported by the learner who received it", async () => {
   const db = await freshDatabase();
   const linkId = await linkedPair(db, { xOn: { chat: true }, yOn: { chat: true } });

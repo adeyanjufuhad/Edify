@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "@/components/icons";
 import { LIMITS } from "@/lib/social-rules";
-import { listMessages, markRead, openChat } from "@/lib/social/chat";
+import { listMessages, markRead, openChat, type ChatMessage } from "@/lib/social/chat";
 import { isUuid } from "@/lib/social/data";
 import { chatEnabled } from "@/lib/social/flags";
 import { pageActor } from "@/lib/social/guard";
@@ -21,6 +21,14 @@ export default async function ChatPage({ params }: { params: Promise<{ linkId: s
   if (!isUuid(linkId)) notFound();
   const opened = await openChat(learner.id, settings, linkId).catch(() => ({ error: "Chat could not be loaded. Refresh to try again.", status: 503 }));
 
+  let initial: ChatMessage[] = [];
+  if (!("error" in opened)) {
+    try {
+      initial = await listMessages(learner.id, linkId, 0);
+      await markRead(learner.id, linkId);
+    } catch { /* the room still opens and keeps asking for messages */ }
+  }
+
   return (
     <div className="page chat-page">
       <Link href="/study/challenges" className="text-link small cbt-back"><ArrowLeft size={14} /> All challenges</Link>
@@ -36,7 +44,13 @@ export default async function ChatPage({ params }: { params: Promise<{ linkId: s
             </div>
           </header>
           <section className="panel chat-panel" aria-label={`Chat with ${opened.link.other.name}`}>
-            <ChatRoom linkId={linkId} name={opened.link.other.name} initial={await listMessages(learner.id, linkId, 0).then(async (messages) => { await markRead(learner.id, linkId); return messages; }).catch(() => [])} maxChars={LIMITS.messageMaxChars} />
+            <ChatRoom
+              linkId={linkId}
+              name={opened.link.other.name}
+              initial={initial}
+              maxChars={LIMITS.messageMaxChars}
+              voiceSeconds={settings.voice && opened.link.otherSwitches.voice ? LIMITS.voiceMaxSeconds : null}
+            />
           </section>
         </>
       )}
