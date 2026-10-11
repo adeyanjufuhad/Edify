@@ -77,7 +77,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - Icons are inline SVGs from `src/components/icons.tsx` (2px stroke, `aria-hidden`). No emoji.
 
 ## Fun layer
-- **Edi** (`src/components/mascot.tsx`, artwork `src/assets/edi.png`, supplied by the owner): an owl in a red graduation cap. The `pose` prop (`wave`, `read`, `cheer`, `think`) only changes extras; `cheer` adds stars. On navy or red backgrounds wrap him in `.mascot-badge` (cream circle) so his navy body and red cap stay visible.
+- **Edi** (`src/components/mascot.tsx`, artwork `src/assets/edi.png`, supplied by the owner): a rounder owl in a red graduation cap, drawn as a sticker with a white outline (720×1047 transparent PNG, aspect ≈ 0.69; the owner's JPG had a checkerboard baked in, so the cut-out and outline were rebuilt from it). Keep the same file name and a similar aspect ratio when swapping the artwork, because every size in the CSS assumes it. The `pose` prop (`wave`, `read`, `cheer`, `think`) only changes extras; `cheer` adds stars. On navy or red backgrounds wrap him in `.mascot-badge` (cream circle) so his navy body and red cap stay visible.
 - **Doodles** (`src/components/doodles.tsx`): Star, Sparkle, Squiggle, Arrow, Atom, Pencil, a speech bubble and a `Wave` edge used where a section changes colour.
 - Buttons are pills with a solid darker 4px bottom edge that presses down on click. Cards use 2px borders and 24–32px corners; a few accents tilt slightly (logo badge, step numbers, grade badge).
 - Gentle `float` and `wiggle` animations only run when the user hasn't asked for reduced motion.
