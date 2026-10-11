@@ -2,7 +2,8 @@ import Link from "next/link";
 import { requireParent } from "@/lib/account";
 import { hasAcceptedLegal } from "@/lib/consent";
 import { MAX_PROFILES, listProfiles, type LearnerProfile } from "@/lib/profiles";
-import { AddProfileForm, ProfilePicker, SignOutButton } from "./profile-forms";
+import SignOutButton from "@/components/sign-out-button";
+import { AddProfileForm, ProfilePicker } from "./profile-forms";
 import ConsentForm from "./consent-form";
 import DeleteAccount from "./delete-account";
 

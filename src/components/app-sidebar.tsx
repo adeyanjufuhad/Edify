@@ -5,8 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Brand from "@/components/brand";
 import { streamLabel } from "@/data/streams";
-import { Close, Grid, Layers, Menu, Message, Monitor, Note, Shield, Swap, Target, Trophy, Users } from "@/components/icons";
+import { Close, Grid, Layers, LogOut, Menu, Message, Monitor, Note, Shield, Swap, Target, Trophy, Users } from "@/components/icons";
 import PlanBadge from "@/components/plan-badge";
+import SignOutButton from "@/components/sign-out-button";
 import type { LearnerProfile } from "@/lib/profiles";
 
 const STUDY_LINKS = [
@@ -103,6 +104,7 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
           <Link href="/profiles" className="sidebar-link"><Users size={18} />Learners</Link>
           {challenges && <Link href={`/study/classmates?learner=${learner.id}`} className={`sidebar-link ${pathname.startsWith("/study/classmates") ? "active" : ""}`} aria-current={pathname.startsWith("/study/classmates") ? "page" : undefined}><Shield size={18} />Classmate settings</Link>}
           <a href="/leave" className="sidebar-link"><Swap size={18} />Switch learner</a>
+          <SignOutButton className="sidebar-link sidebar-button"><LogOut size={18} /></SignOutButton>
         </nav>
         <div className="sidebar-user">
           <span className="avatar small" aria-hidden="true">{learnerName[0]?.toUpperCase()}</span>
@@ -128,6 +130,7 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
           <div className="tab-menu-head">
             <span className="avatar small" aria-hidden="true">{learnerName[0]?.toUpperCase()}</span>
             <div><strong>{learnerName.split(" ")[0]}</strong><span>{classLevel}{stream && <> · {stream}</>}</span></div>
+            <SignOutButton className="pill-outline small tab-menu-signout" />
           </div>
           <ul className={`tab-menu-grid${menuItems.length <= 4 ? " is-two" : ""}`}>
             {menuItems.map(({ href, label, icon: Icon, active, plain }) => {

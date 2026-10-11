@@ -63,6 +63,13 @@
 .profile-select strong { font-family: var(--display); font-size: 20px; font-weight: 700; overflow-wrap: anywhere; }
 .profile-select small { font-size: 14px; color: var(--ink-2); }
 .remove-link { justify-self: start; margin-left: 12px; color: var(--ink-3); }
+.card-links { display: flex; flex-wrap: wrap; gap: 0 16px; margin-left: 12px; }
+.card-links .remove-link { margin-left: 0; }
+.pin-change { display: grid; gap: 6px; margin: 0 6px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--tint-slate); font-size: 14px; }
+.pin-change label { font-weight: 600; }
+.pin-change input { width: 100%; min-height: 44px; padding: 6px 12px; font-size: 16px; color: var(--ink); background: var(--white); border: 2px solid var(--line); border-radius: var(--r-sm); }
+.pin-change div { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.pin-change .form-error { margin: 0; }
 .remove-confirm { display: grid; gap: 8px; margin: 0 6px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--tint-red); font-size: 14px; }
 .stream-fix { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 6px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--tint-slate); font-size: 14px; }
 .stream-fix label { font-weight: 600; }
@@ -72,6 +79,7 @@
 .remove-confirm .text-button { padding: 0; }
 .danger-button { border: 0; border-radius: 6px; background: var(--red); color: var(--white); font-size: 14px; font-weight: 600; padding: 8px 12px; }
 .danger-button:hover { background: var(--red-deep); }
+@media (pointer: coarse) { .danger-button { min-height: 44px; } }
 .pin-card { display: grid; gap: 10px; }
 .pin-card label { font-size: 16px; font-weight: 600; }
 .pin-row { display: flex; gap: 10px; flex-wrap: wrap; }

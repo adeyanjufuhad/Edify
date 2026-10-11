@@ -1,14 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useActionState, useRef, useState } from "react";
-import { authClient } from "@/lib/auth/client";
 import type { LearnerProfile } from "@/lib/profiles";
 import { CLASS_LEVELS } from "@/data/curriculum";
 import { SUGGESTED_SCHOOLS } from "@/data/schools";
 import { STREAMS, isSeniorClass, streamLabel } from "@/data/streams";
 import PlanBadge from "@/components/plan-badge";
-import { addProfile, forgetProfile, openProfile, removeProfile, setStreamFor, type FormState } from "./actions";
+import { addProfile, changePin, openProfile, removeProfile, setStreamFor, type FormState, type PinState } from "./actions";
 
 const digitsOnly = (value: string) => value.replace(/\D/g, "").slice(0, 4);
 
@@ -17,16 +15,17 @@ export function ProfilePicker({ profiles }: { profiles: LearnerProfile[] }) {
   const [state, action, pending] = useActionState<FormState, FormData>(openProfile, {});
   const [pin, setPin] = useState("");
   const pinRef = useRef<HTMLInputElement>(null);
+  // At most one small form is open on the cards at a time: "Remove" or "Change PIN".
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+  const [changingPin, setChangingPin] = useState<string | null>(null);
   const current = profiles.find((profile) => profile.id === selected);
-
 
   return (
     <div className="profile-picker">
       <div className="profile-grid" role="list">
         {profiles.map((profile) => (
           <div role="listitem" key={profile.id} className={`profile-card ${profile.id === selected ? "is-selected" : ""}`}>
-            <button type="button" className="profile-select" aria-pressed={profile.id === selected} onClick={() => { setSelected(profile.id); setPin(""); setConfirmRemove(null); requestAnimationFrame(() => pinRef.current?.focus()); }}>
+            <button type="button" className="profile-select" aria-pressed={profile.id === selected} onClick={() => { setSelected(profile.id); setPin(""); setConfirmRemove(null); setChangingPin(null); requestAnimationFrame(() => pinRef.current?.focus()); }}>
               <span className="avatar" aria-hidden="true">{profile.name[0]?.toUpperCase()}</span>
               <strong>{profile.name}</strong>
               <small>{profile.classLevel}{profile.stream && <> · {streamLabel(profile.stream)}</>}{profile.school && <> · <span className="profile-school">{profile.school}</span></>}</small>
@@ -49,8 +48,13 @@ export function ProfilePicker({ profiles }: { profiles: LearnerProfile[] }) {
                 <span>Remove {profile.name} and all their progress and notes?</span>
                 <div><button type="submit" className="danger-button">Yes, remove</button><button type="button" className="text-button" onClick={() => setConfirmRemove(null)}>Keep</button></div>
               </form>
+            ) : changingPin === profile.id ? (
+              <ChangePinForm profile={profile} onClose={() => setChangingPin(null)} />
             ) : (
-              <button type="button" className="text-button small remove-link" onClick={() => setConfirmRemove(profile.id)}>Remove</button>
+              <div className="card-links">
+                <button type="button" className="text-button small remove-link" onClick={() => { setChangingPin(profile.id); setConfirmRemove(null); }}>Change PIN<span className="sr-only"> for {profile.name}</span></button>
+                <button type="button" className="text-button small remove-link" onClick={() => { setConfirmRemove(profile.id); setChangingPin(null); }}>Remove<span className="sr-only"> {profile.name}</span></button>
+              </div>
             )}
           </div>
         ))}
@@ -64,10 +68,35 @@ export function ProfilePicker({ profiles }: { profiles: LearnerProfile[] }) {
             <button className="pill-button" type="submit" disabled={pending || pin.length !== 4}>{pending ? "Opening…" : `Open ${current.name}’s space`}</button>
           </div>
           {state.error && <p role="alert" className="form-error">{state.error}</p>}
-          <p className="account-note">Forgot the PIN? A parent can remove this learner and add them again with a new PIN. Their progress would be lost, so ask for help first.</p>
+          <p className="account-note">Forgot the PIN? A parent can choose a new one with <b>Change PIN</b> on {current.name}’s card. Their progress and notes stay.</p>
         </form>
       )}
     </div>
+  );
+}
+
+// A new PIN for one learner, typed twice. The parent is signed in, so the old PIN is not asked for.
+function ChangePinForm({ profile, onClose }: { profile: LearnerProfile; onClose: () => void }) {
+  const [state, action, pending] = useActionState<PinState, FormData>(changePin, {});
+  const id = `new-pin-${profile.id}`;
+  if (state.changedAt) {
+    return (
+      <div className="pin-change" role="status">
+        <span>New PIN saved for {profile.name}.</span>
+        <div><button type="button" className="text-button small" onClick={onClose}>Done</button></div>
+      </div>
+    );
+  }
+  return (
+    <form action={action} className="pin-change">
+      <input type="hidden" name="profileId" value={profile.id} />
+      <label htmlFor={id}>New PIN for {profile.name}</label>
+      <input id={id} name="pin" type="password" inputMode="numeric" autoComplete="off" pattern="\d{4}" title="4 digits" maxLength={4} required placeholder="••••" />
+      <label htmlFor={`${id}-again`}>Type it again</label>
+      <input id={`${id}-again`} name="confirmPin" type="password" inputMode="numeric" autoComplete="off" pattern="\d{4}" title="4 digits" maxLength={4} required placeholder="••••" />
+      {state.error && <p role="alert" className="form-error">{state.error}</p>}
+      <div><button type="submit" className="pill-button small" disabled={pending}>{pending ? "Saving…" : "Save PIN"}</button><button type="button" className="text-button" onClick={onClose}>Cancel</button></div>
+    </form>
   );
 }
 
@@ -139,16 +168,5 @@ function SchoolField({ initial }: { initial?: string }) {
       <datalist id="school-suggestions">{SUGGESTED_SCHOOLS.map((name) => <option key={name} value={name} />)}</datalist>
       <span className="field-help" id="learner-school-help">Type the full name of your child’s school.</span>
     </div>
-  );
-}
-
-export function SignOutButton() {
-  const router = useRouter();
-  const [busy, setBusy] = useState(false);
-  return (
-    <button type="button" className="pill-outline small" disabled={busy} onClick={async () => {
-      setBusy(true);
-      try { await forgetProfile(); await authClient.signOut(); } finally { router.push("/"); router.refresh(); }
-    }}>{busy ? "Signing out…" : "Sign out"}</button>
   );
 }

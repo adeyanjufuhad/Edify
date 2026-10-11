@@ -82,6 +82,13 @@ export async function setStream(parentId: string, profileId: string, stream: Str
   return rows.length > 0;
 }
 
+// A parent sets a new PIN for one of their own learners (for a forgotten PIN). Progress and notes stay.
+export async function setPin(parentId: string, profileId: string, pin: string): Promise<boolean> {
+  if (!UUID_PATTERN.test(profileId) || !PIN_PATTERN.test(pin)) return false;
+  const rows = await database()`update public.learner_profiles set pin_hash = ${await hashPin(pin)} where id = ${profileId} and parent_id = ${parentId} returning id`;
+  return rows.length > 0;
+}
+
 // Removes the learner and everything held for them (progress, notes, CBT attempts, challenges, chat and voice
 // notes, presence, reports) in one transaction. Payment records stay, unlinked from the learner.
 export async function deleteProfile(parentId: string, profileId: string) {

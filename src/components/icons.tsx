@@ -37,4 +37,5 @@ export const Calendar = (props: IconProps) => <Svg {...props}><rect x="3.5" y="5
 export const Link2 = (props: IconProps) => <Svg {...props}><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" /><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></Svg>;
 export const Menu = (props: IconProps) => <Svg {...props}><path d="M4 7h16M4 12h16M4 17h16" /></Svg>;
 export const Close = (props: IconProps) => <Svg {...props}><path d="M6 6l12 12M18 6 6 18" /></Svg>;
+export const LogOut = (props: IconProps) => <Svg {...props}><path d="M14 4h5v16h-5" /><path d="m9 8-4 4 4 4" /><path d="M5 12h11" /></Svg>;
 export const Trash = (props: IconProps) => <Svg {...props}><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /><path d="M10 11v6M14 11v6" /></Svg>;

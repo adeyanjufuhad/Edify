@@ -6,7 +6,7 @@ import { refresh } from "next/cache";
 import { PROFILE_COOKIE, PROFILE_COOKIE_MAX_AGE, requireConsentedParent, requireParent } from "@/lib/account";
 import { deleteParentAccount } from "@/lib/account-deletion";
 import { getAuth } from "@/lib/auth/server";
-import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile, setStream } from "@/lib/profiles";
+import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile, setPin, setStream } from "@/lib/profiles";
 import { isClassLevel } from "@/data/curriculum";
 import { normalizeSchool } from "@/data/schools";
 import { isSeniorClass, isStreamId } from "@/data/streams";
@@ -66,6 +66,23 @@ export async function openProfile(_state: FormState, formData: FormData): Promis
     secure: process.env.NODE_ENV === "production",
   });
   redirect("/study");
+}
+
+export type PinState = { error?: string; changedAt?: number };
+
+// A parent gives one of their learners a new PIN (the old one is not needed: the parent is signed in).
+export async function changePin(_state: PinState, formData: FormData): Promise<PinState> {
+  const parent = await requireConsentedParent();
+  const profileId = String(formData.get("profileId") ?? "");
+  const pin = String(formData.get("pin") ?? "");
+  if (!PIN_PATTERN.test(pin)) return { error: "Choose a PIN of exactly 4 digits." };
+  if (pin !== String(formData.get("confirmPin") ?? "")) return { error: "The two PINs don’t match. Type the same 4 digits twice." };
+  try {
+    if (!(await setPin(parent.id, profileId, pin))) return { error: "That learner isn’t on your account." };
+  } catch {
+    return { error: "Could not save the new PIN. Check your connection and try again." };
+  }
+  return { changedAt: Date.now() };
 }
 
 export async function removeProfile(formData: FormData) {
