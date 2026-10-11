@@ -11,7 +11,7 @@ colors:
   red-deep: "#780000"
   white: "#ffffff"
   ink-2: "rgba(0,48,73,.76)"
-  ink-3: "rgba(0,48,73,.62)"
+  ink-3: "rgba(0,48,73,.67)"
   line: "rgba(102,155,188,.38)"
   tint-red: "rgba(193,18,31,.09)"
   tint-slate: "rgba(102,155,188,.16)"
@@ -49,7 +49,7 @@ Flat design: depth comes from solid colour blocks and 1px lines, never from shad
 - **Red `#c1121f`**: primary buttons, the active sidebar link, the next lesson, kickers and highlighted words. Hover/pressed is `#780000`. Also means *wrong* on quiz options (with a red tint).
 - **Steel blue `#669bbc`**: secondary marks on navy, dashed "coming soon" nodes, one bento tile. Never body text on mist (too little contrast).
 - **Cream `#fdf0d5`**: page background and inner wells. **White** for panels and cards.
-- Secondary text uses navy at 76% (`--ink-2`), tertiary at 62% (`--ink-3`).
+- Secondary text uses navy at 76% (`--ink-2`), tertiary at 67% (`--ink-3`, the lightest navy that still reads at 4.5:1 or more on white and cream; do not go lighter for text).
 
 ## Typography
 - Fredoka for headings and big numbers; Nunito for everything else, including question text.
