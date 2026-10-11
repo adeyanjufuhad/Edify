@@ -128,7 +128,7 @@ Vercel serverless functions cannot hold a WebSocket open, so "realtime" has to c
 signed-in learner and link, the rate limit, the declared type (webm, ogg or mp4/m4a audio), that the first bytes
 match that type, the size (at most 400 KB) and the claimed length (at most 30 s). Playback is
 `GET /api/social/voice/<message>`, which re-checks that the caller is a learner on that link (with voice on) or the
-parent of one, and sends `Cache-Control: private, no-store` with range support (Safari needs it).
+parent of one, and sends `Cache-Control: private, no-cache` with range support (Safari needs it).
 Database load: a 200 KB note is one 270 KB request to Neon's HTTP endpoint (base64); fine for a few notes a minute.
 If volume grows, move to B and keep the same routes.
 

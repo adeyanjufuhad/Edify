@@ -27,6 +27,19 @@ const COLLECTED: { group: string; rows: { what: string; detail: React.ReactNode 
     ],
   },
   {
+    group: "Classmate challenges, chat and voice notes (only when a parent switches them on)",
+    rows: [
+      { what: "Classmate codes and links", detail: <>A one-time code a parent makes to link their child with a classmate. The code is stored scrambled (hashed), works once and expires after 7 days. When two parents use a code, we save a link between the two learners. A link only works for two learners in the same class and school. <a href="#classmates">The classmates section</a> says who sees what.</> },
+      { what: "Your choices for each learner", detail: "Which of four things you switched on for that learner: challenges, showing when they are online, text chat, and voice notes. All start off." },
+      { what: "Challenges", detail: "For each challenge: the two learners, the subject and term, a copy of the questions and answers, each learner’s picks, score and time taken, and when it started and finished." },
+      { what: "Online status", detail: "The last time the learner’s Edify page was open, as one time that is overwritten. It is used to show linked classmates a mark that says “Online” or not. It is deleted when you switch online status off or delete the learner." },
+      { what: "Text messages", detail: "The text, the time and which of the two learners sent it. Messages containing phone numbers, emails or links are refused, so we never save them." },
+      { what: "Voice notes", detail: "The recording (up to 30 seconds), its length and time, and which learner sent it. The recording is saved in our database; it is not sent to any other company." },
+      { what: "Reports and blocks", detail: "If a learner reports or blocks a classmate we save who reported whom, the reason they chose, any note they wrote and, if it was about a message, a copy of that message." },
+      { what: "Safety counters", detail: "A note of each action (for example, “sent a message”) with the time, so we can slow down anyone sending too much. They are deleted after 2 days." },
+    ],
+  },
+  {
     group: "About payments",
     rows: [
       { what: "Payment records", detail: <>When you choose a plan for a learner we save an order: its reference, which learner and plan it was for, the amount in naira, the email address used at checkout (your parent email), whether it was paid, and when it was created and paid. A payment gives that learner 105 days of access. These records are treated differently when you delete your account: see <a href="#payments">Payments and payment records</a>.</> },
@@ -37,7 +50,7 @@ const COLLECTED: { group: string; rows: { what: string; detail: React.ReactNode 
     group: "Kept in your browser",
     rows: [
       { what: "Cookies", detail: "Sign-in cookies from our sign-in service, and one Edify cookie that remembers which learner is studying for up to 30 days. They are needed for the site to work; we don’t use advertising or tracking cookies. When you go to Paystack to pay, Paystack’s page sets its own cookies under its own policy." },
-      { what: "An unfinished CBT test", detail: "Saved in the browser while a test is running, so a dropped connection doesn’t lose answers. It is removed when the test is submitted or quit. If a learner walks away from a test, it stays on that device until they finish or quit it." },
+      { what: "An unfinished CBT test or challenge", detail: "Saved in the browser while a test or challenge is running, so a dropped connection doesn’t lose answers. It is removed when the test is submitted or quit. If a learner walks away from a test, it stays on that device until they finish or quit it." },
       { what: "While you sign up", detail: "The email address you are confirming, and a note that you ticked the agreement box, are held in the browser tab until you enter the 6-digit code." },
     ],
   },
@@ -60,6 +73,7 @@ const SECTIONS: LegalSection[] = [
       <li>Only a parent or guardian can create an account. Children never give us an email address.</li>
       <li>We store the least we need: your name and email, and each child’s first name, class, school and study progress.</li>
       <li>We don’t sell data, show adverts, or use tracking or analytics tools.</li>
+      <li>Classmate challenges, online status, chat and voice notes are off for every child until a parent switches them on. Nobody can search for or find a child: two parents have to link their children with a one-time code. Other families only ever see a child’s first name and class. <a href="#classmates">Read the classmates section.</a></li>
       <li>Three service providers help us run Edify: Neon (database and sign-in) and Vercel (website hosting), both in London, UK, and Paystack (card and bank payments).</li>
       <li>You can delete your account and every learner’s data yourself, at any time. The one thing we keep is the record of payments you made, and <a href="#payments">the payments section</a> explains why.</li>
     </ul>,
@@ -105,8 +119,49 @@ const SECTIONS: LegalSection[] = [
         <li>We only ask for a first name, class and school, never a surname, birthday or photo.</li>
         <li>You can see every learner on the “Who’s studying?” page and remove any of them at any time. There is no edit button yet, so to correct a learner’s name, class or school, email us at <ContactEmail />.</li>
         <li>We don’t share learners’ data with schools, including schools that gave you a referral code.</li>
+        <li>Learners can only meet classmates through a link that both parents agreed to. <a href="#classmates">The classmates section</a> explains the extra protections.</li>
       </ul>
       <p>If you think a child has been added without a parent’s or guardian’s permission, contact us at <ContactEmail /> and we will delete it.</p>
+    </>,
+  },
+  {
+    id: "classmates",
+    title: "Classmate challenges, chat and voice notes",
+    body: <>
+      <p>Edify can let learners challenge a classmate on a subject, see which linked classmates are online, send text messages and send short voice notes. This connects children, so it is built to be off until a parent says yes, and to give strangers no way in.</p>
+      <h3>Who can use it, and who can see a child</h3>
+      <ul>
+        <li><b>Off by default.</b> For each learner, a parent separately switches on: challenges and classmates, showing when they are online, text chat, and voice notes. A feature only works between two children if <b>both</b> parents have switched it on.</li>
+        <li><b>No searching, no strangers.</b> There is no list of learners and no way to look someone up. Two learners can only be linked if they are in the <b>same school and the same class</b> and their two parents agree: one parent makes a one-time code and sends it to the other parent, who types it in. Either parent can remove the link at any time.</li>
+        <li><b>First name and class only.</b> A linked classmate (and their parents) sees a child’s first name, class, challenge results and, if both parents allow it, an “Online” mark. They never see the school, surname, plan, progress, notes or anything else.</li>
+        <li><b>The leaderboard</b> lists a learner and their linked classmates with first names, classes and challenge results, to the learners and parents involved. It looks back 90 days.</li>
+      </ul>
+      <h3>What parents can see and do</h3>
+      <ul>
+        <li>Switch each feature on or off for each child, and see every classmate their child is linked with.</li>
+        <li>Read every text message and listen to every voice note their child sent or received, and delete any of them. Deleting a message also deletes a voice recording.</li>
+        <li>Block or remove a classmate, and see the reports their child sent.</li>
+        <li>The other child’s parents can read the same conversation, because it is also their child’s. <Todo>lawyer to confirm this is clear enough for parents to consent to, and whether children should also be told in the app</Todo></li>
+      </ul>
+      <h3>Safety measures</h3>
+      <ul>
+        <li>Children can <b>block</b> or <b>report</b> a classmate or a message. A report blocks the classmate straight away and is saved for the Edify team.</li>
+        <li>Messages are limited to 500 characters and voice notes to 30 seconds, and there are limits on how many a child can send. Messages with phone numbers, emails, links or social media names are refused. This is a basic safeguard and will not catch everything.</li>
+        <li>Challenge answers are marked on our server, and a challenge’s questions stay hidden until a child has started it.</li>
+        <li>These tools are not live moderation. <b>Nobody at Edify reads every message.</b> Parents are best placed to supervise, and we act on reports. <Todo>owner to decide and state who at Edify reads reports and what they can access, how quickly they respond, and what happens next (warning, suspension, telling the school or the police)</Todo></li>
+        <li>Messages and voice notes are stored in our database and are not end-to-end encrypted, so people with access to the database can technically read them. <Todo>owner to decide and state who has that access and how it is logged; lawyer to confirm the wording</Todo></li>
+      </ul>
+      <h3>How long it is kept</h3>
+      <ul>
+        <li>Text messages: <b>14 days</b>, then deleted. Voice notes: <b>7 days</b>, then deleted. A message that has been reported is kept until its report is deleted.</li>
+        <li>Finished challenges (questions, answers, scores): <b>180 days</b>. Unfinished or cancelled challenges: about 30 days.</li>
+        <li>Reports, with the copy of the message: <b>12 months</b>. Classmate codes: used or expired codes are deleted after 30 days. Safety counters: 2 days.</li>
+        <li>Everything above is deleted at once when a parent removes the learner or deletes their account (see “How to delete your data”). If one family deletes a child, the conversations and challenge results with that child disappear for the classmate too.</li>
+      </ul>
+      <p><Todo>owner and lawyer to decide every period above (the numbers are proposals), whether reports may be kept longer for safety and legal reasons, and to confirm the daily clean-up job is switched on before these periods are promised</Todo></p>
+      <h3>Legal points still to settle</h3>
+      <p><Todo>lawyer to confirm the lawful basis and the consent needed for children’s messages, voice recordings and online status under the NDPA (section 25 and the children’s rules in section 31), and whether a data protection impact assessment is required before this feature is switched on</Todo></p>
+      <p><Todo>lawyer to confirm Edify’s duties if a report suggests a child is at risk or is being targeted, under Nigerian child-protection and cybercrime law (for example the Child’s Rights Act 2003), and what Edify must tell parents, the NDPC or the authorities</Todo></p>
     </>,
   },
   {
@@ -121,6 +176,7 @@ const SECTIONS: LegalSection[] = [
           <div><dt>Paystack (Paystack Payments Limited)</dt><dd>Takes payments. When you pay, we send Paystack your parent email address, the amount and our order reference, and you enter your card or bank details on Paystack’s page, where Paystack is responsible for them under its own privacy notice. Paystack tells us back whether the payment succeeded. We never send Paystack a learner’s name, school or PIN. <Todo>owner to confirm Paystack’s exact legal entity and where it processes data, and link its privacy notice</Todo></dd></div>
         </dl>
       </div>
+      <p>Chat messages and voice notes are stored in the same Neon database as everything else. We do not use a separate chat, messaging or file-storage company. <Todo>owner to keep this sentence true: if a realtime or storage provider is added later (for example Ably, Pusher or Vercel Blob), name it here, add it to the list above and update the version of this page</Todo></p>
       <p>Our own data is stored in the United Kingdom, and Neon and Vercel are American companies, so your data leaves Nigeria. Paystack may also process payment data outside Nigeria. The NDPA allows transfers when the other country or the arrangement gives adequate protection. <Todo>lawyer to confirm the transfer basis under NDPA sections 41 to 43 and whether data processing agreements with Neon, Vercel and Paystack are needed</Todo></p>
     </>,
   },
@@ -138,8 +194,9 @@ const SECTIONS: LegalSection[] = [
     title: "How long we keep it",
     body: <ul>
       <li><b>While your account is open</b>, we keep your account and your learners’ data so their progress is there when they come back.</li>
-      <li><b>When you remove a learner</b>, their profile, progress, notes and test attempts are deleted straight away. Their payment records stay, unlinked from them.</li>
-      <li><b>When you delete your account</b>, your parent account, every learner, and all their progress, notes and test attempts are deleted straight away. Only the payment records stay. Our database keeps a rolling 6-hour restore history for emergencies (Neon’s current setting for us, which can change), so deleted data can remain in that history for up to about 6 hours.</li>
+      <li><b>When you remove a learner</b>, their profile, progress, notes, test attempts and everything held for them by the classmate features (links, challenges, chat messages, voice notes, online status, reports) are deleted straight away. Their payment records stay, unlinked from them.</li>
+      <li><b>Classmate chat, voice notes and challenges</b> are deleted on a schedule even if nobody deletes anything: <a href="#classmates">see the classmates section</a> for the periods.</li>
+      <li><b>When you delete your account</b>, your parent account, every learner, and all their progress, notes, test attempts and classmate data are deleted straight away. Only the payment records stay. Our database keeps a rolling 6-hour restore history for emergencies (Neon’s current setting for us, which can change), so deleted data can remain in that history for up to about 6 hours.</li>
       <li><b>Payment records</b> stay after deletion for accounting and disputes. <Todo>retention period to be decided: see the payments section</Todo></li>
       <li><b>Sign-in sessions</b> expire on their own, and Vercel’s technical logs are kept only for a short time under Vercel’s own policy.</li>
       <li><b>Unused accounts</b>: <Todo>owner to decide, for example: accounts with no sign-in for 24 months are deleted after an email warning</Todo></li>
@@ -155,7 +212,7 @@ const SECTIONS: LegalSection[] = [
         <li>On the “Who’s studying?” page, scroll to <b>Delete your account</b>.</li>
         <li>Type <b>DELETE</b> to confirm and press the button.</li>
       </ol>
-      <p>This deletes your parent account, every learner, and all their progress, notes and CBT results, and signs you out. It can’t be undone, and paid access can’t be moved to a new account. To remove just one child, use <b>Remove</b> on their card instead. The only thing kept is the payment records described in <a href="#payments">the payments section</a>.</p>
+      <p>This deletes your parent account, every learner, and all their progress, notes and CBT results, together with their classmate links, challenges, chat messages, voice notes and online status, and signs you out. It can’t be undone, and paid access can’t be moved to a new account. To remove just one child, use <b>Remove</b> on their card instead. The only thing kept is the payment records described in <a href="#payments">the payments section</a>.</p>
       <p>If you can’t log in, email <ContactEmail /> from the address on the account and we will delete it for you.</p>
     </>,
   },
@@ -185,6 +242,7 @@ const SECTIONS: LegalSection[] = [
         <li>Passwords and PINs are stored scrambled (hashed), never as typed.</li>
         <li>The database password is held only by Edify’s own server; browsers never connect to the database directly.</li>
         <li>Each learner’s PIN keeps brothers and sisters out of each other’s work. It’s a light lock, not a substitute for keeping your own password private.</li>
+        <li>The classmate settings sit in your signed-in parent account, not behind a separate PIN, so a child using a device where you are signed in can change them. Sign out when you hand a device to a child. <Todo>owner to decide whether to add a separate parent PIN before the safety settings can be changed</Todo></li>
         <li>We use no advertising or tracking cookies, so there is no cookie banner. <Todo>lawyer to confirm no cookie notice is needed</Todo></li>
       </ul>
       <p>If a data breach puts your information at risk, we will tell the NDPC and the affected parents as the law requires. <Todo>lawyer to confirm breach-notice duties and timings under NDPA section 40</Todo></p>

@@ -16,6 +16,7 @@ const SECTIONS: LegalSection[] = [
       <li>A parent or guardian opens the account and is responsible for it. Learners study under that account.</li>
       <li>Each learner has their own plan. One payment gives that learner 105 days of access and does not renew by itself.</li>
       <li>Payments go through Paystack. Your card details never reach Edify.</li>
+      <li>Classmate challenges, chat and voice notes are off until you switch them on for each child. <a href="#classmates">The classmates section</a> explains the rules and your part in supervising.</li>
       <li>Edify is a study aid. We can’t promise exam results.</li>
       <li>You can delete your account at any time. <a href="#refunds">The refunds section</a> explains what happens to money already paid.</li>
     </ul>,
@@ -41,7 +42,7 @@ const SECTIONS: LegalSection[] = [
       <ul>
         <li><b>Content is added over time.</b> Not every class and subject has lessons yet. The billing page says what is available now. Check it before you pay, and only buy a plan if the available content suits your learner.</li>
         <li><b>It is a study aid.</b> We work hard to keep lessons and answers correct, but we can’t promise that a learner will pass or improve in any exam. Edify is independent of exam bodies such as WAEC and NECO, and of schools. Practice questions are exam-style; they are not real past papers unless a page says so.</li>
-        <li>Features described as coming later (for example, “AI study help, when it arrives”) are not part of a plan until they are released.</li>
+        <li>Features described as coming later (for example, “AI study help, when it arrives”) are not part of a plan until they are released. Classmate challenges, chat and voice notes are only available once we switch them on and you switch them on for your child.</li>
       </ul>
     </>,
   },
@@ -106,11 +107,29 @@ const SECTIONS: LegalSection[] = [
     </>,
   },
   {
+    id: "classmates",
+    title: "Classmate challenges, chat and voice notes",
+    body: <>
+      <p>Edify can let learners challenge a classmate, see which linked classmates are online, send text messages and send short voice notes. These features connect children, so these rules apply to you as the parent or guardian, and to your children, as well as the rest of these terms.</p>
+      <ul>
+        <li><b>You decide.</b> Every feature is off for each learner until you switch it on. You can change or switch off anything at any time on your family page. By switching a feature on you agree that your child may use it under these rules, and that the other child’s parent and you can both read and delete their conversation.</li>
+        <li><b>Links need two parents.</b> A learner can only be linked with a classmate in the same school and class whose parent used your one-time code (or whose code you used). Share a code only with a parent you know. You are responsible for who you give a code to, and we may cancel links we think were made wrongly.</li>
+        <li><b>You supervise.</b> Edify does not read every message and is not a substitute for you watching what your child does online. Read your child’s conversations from time to time, and talk to your child about being kind and safe. The settings are part of your signed-in family account, so sign out when you hand a device to a child.</li>
+        <li><b>Rules for everyone.</b> Be kind. No bullying, threats, insults, or sharing private information about anyone. Don’t share phone numbers, addresses, emails, links or social media names, and don’t ask others for them. Don’t record, copy or share someone else’s messages or voice notes outside Edify. Don’t help one classmate cheat in a challenge, and don’t use another person’s learner space.</li>
+        <li><b>Reports and action.</b> Children can block and report a classmate or a message. We may read reports and the content they refer to, and we may warn a learner, remove a link, switch classmate features off for a learner or close an account. <Todo>owner to decide and state how reports are reviewed, how fast, by whom, and what action follows; lawyer to check the wording on suspending an account and on telling parents or the authorities</Todo></li>
+        <li><b>Messages are kept briefly.</b> Text messages, voice notes and challenge results are deleted after the periods in the <Link href="/privacy#classmates" className="text-link">Privacy policy</Link>. We can’t guarantee that a message you want to keep will still be there.</li>
+        <li><b>Availability.</b> Online status, chat and voice notes can be slow, delayed or unavailable, and we can change or stop them. A classmate who deletes their account or learner takes their conversations and challenge results with them.</li>
+      </ul>
+      <p><Todo>owner to decide which plan includes challenges (today the draft says Gold, like CBT tests) and say so in the plans section; lawyer to confirm the parent’s responsibilities above, the limit on Edify’s responsibility for what children say to each other, and the moderation and takedown process</Todo></p>
+    </>,
+  },
+  {
     id: "use",
     title: "Acceptable use",
     body: <>
       <p>Please use Edify only for studying. You and your learners must not:</p>
       <ul>
+        <li>use chat, voice notes or challenges to bully, threaten, harass or deceive anyone, or to share contact details or private information (see the classmates section above);</li>
         <li>share a parent login with people outside your family, or let someone else use a paid learner’s space;</li>
         <li>copy, scrape, record or share Edify’s lessons, questions or answers, or sell or republish them;</li>
         <li>try to get around payment or access checks, read another family’s data, or interfere with the site or its security;</li>

@@ -1,3 +1,4 @@
 {
-  "regions": ["lhr1"]
+  "regions": ["lhr1"],
+  "crons": [{ "path": "/api/cron/social-purge", "schedule": "17 3 * * *" }]
 }

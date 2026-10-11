@@ -598,6 +598,20 @@ test("every query's parameters are all used and ids are never part of the SQL te
   }
 });
 
+test("the privacy policy states the limits and retention periods that the code enforces", async () => {
+  const privacy = await read("../src/app/(legal)/privacy/page.tsx");
+  const { RETENTION_DAYS: days, LIMITS: limits } = rules;
+  const stated = [
+    `${days.textMessages} days`, `${days.voiceNotes} days`, `${days.finishedChallenges} days`, `${days.leaderboardWindow} days`, `${days.events} days`,
+    `${limits.messageMaxChars} characters`, `${limits.voiceMaxSeconds} seconds`, `${limits.codeValidDays} days`,
+  ];
+  for (const text of stated) assert.ok(privacy.includes(text), `the privacy policy no longer says "${text}": update it or the limits`);
+  assert.equal(days.reports, 365);
+  assert.ok(privacy.includes("12 months"));
+  const legal = await read("../src/data/legal.ts");
+  assert.ok(!legal.includes('"2026-10-10-draft"'), "the legal version must have been bumped for the classmate sections");
+});
+
 // ---------------------------------------------------------------- presence and chat
 
 async function linkedPair(db, { x = A1, y = B1, xOn = {}, yOn = {} } = {}) {
