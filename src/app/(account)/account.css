@@ -66,8 +66,8 @@
 .remove-confirm { display: grid; gap: 8px; margin: 0 6px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--tint-red); font-size: 14px; }
 .stream-fix { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 6px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--tint-slate); font-size: 14px; }
 .stream-fix label { font-weight: 600; }
-.stream-fix select { min-height: 40px; font-size: 15px; color: var(--ink); background: var(--white); border: 2px solid var(--line); border-radius: var(--r-sm); padding: 6px 10px; }
-.stream-fix .pill-button { min-height: 40px; }
+.stream-fix select { min-height: 44px; font-size: 15px; color: var(--ink); background: var(--white); border: 2px solid var(--line); border-radius: var(--r-sm); padding: 6px 10px; }
+.stream-fix .pill-button { min-height: 44px; }
 .remove-confirm div { display: flex; align-items: center; gap: 12px; }
 .remove-confirm .text-button { padding: 0; }
 .danger-button { border: 0; border-radius: 6px; background: var(--red); color: var(--white); font-size: 14px; font-weight: 600; padding: 8px 12px; }

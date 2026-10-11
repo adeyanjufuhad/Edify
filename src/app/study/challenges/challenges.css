@@ -23,17 +23,17 @@
 .classmate-who strong { font-family: var(--display); font-size: 18px; font-weight: 700; overflow-wrap: anywhere; }
 .classmate-who small { font-size: 14px; color: var(--ink-2); }
 .classmate-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-.classmate-more { grid-column: 1 / -1; padding-top: 4px; }
-.classmate-more summary { width: fit-content; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--ink-3); border-radius: 6px; }
+.classmate-more { grid-column: 1 / -1; }
+.classmate-more summary { width: fit-content; padding-block: 12px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--ink-3); border-radius: 6px; }
 .classmate-more summary:hover { color: var(--ink); }
-.classmate-more-body { display: grid; gap: 14px; margin-top: 10px; padding: 14px; border-radius: var(--r); background: var(--mist); }
+.classmate-more-body { display: grid; gap: 14px; margin-top: 2px; padding: 14px; border-radius: var(--r); background: var(--mist); }
 .classmate-more-body p { margin: 0; font-size: 14px; color: var(--ink-2); }
 .classmate-more-body form { display: grid; gap: 8px; }
 .classmate-more-body label { font-size: 14px; font-weight: 600; }
 .classmate-more-body select, .classmate-more-body textarea { width: 100%; font-size: 15px; color: var(--ink); background: var(--white); border: 2px solid var(--line); border-radius: var(--r-sm); padding: 8px 12px; min-height: 44px; }
 .classmate-more-body textarea { min-height: 72px; resize: vertical; }
 .classmate-more-body select:focus-visible, .classmate-more-body textarea:focus-visible { outline: none; border-color: var(--navy); }
-.classmate-more-body .danger-button { justify-self: start; min-height: 40px; padding: 0 16px; border-radius: 999px; }
+.classmate-more-body .danger-button { justify-self: start; min-height: 44px; padding: 0 16px; border-radius: 999px; }
 .presence { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
 .presence::before { content: ""; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--slate); box-sizing: border-box; }
 .presence.is-online { color: var(--navy); }
@@ -85,7 +85,7 @@
 
 /* ---------- Leaderboard ---------- */
 .board-filters { display: flex; flex-wrap: wrap; gap: 6px; }
-.board-filters a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 2px solid var(--line); background: var(--white); font-size: 14px; font-weight: 700; }
+.board-filters a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 2px solid var(--line); background: var(--white); font-size: 14px; font-weight: 700; }
 .board-filters a:hover { border-color: var(--navy); }
 .board-filters a.is-on { background: var(--navy); border-color: var(--navy); color: var(--white); }
 .board-wrap { overflow-x: auto; }

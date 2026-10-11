@@ -70,7 +70,7 @@ export default function ChatsShell({ initial, children }: { initial: Conversatio
                             {chat.last.kind === "voice" ? <><Mic size={13} /> Voice note ({chat.last.seconds ?? 0}s)</> : chat.last.text}
                           </> : <em>{chat.online ? "Online now · say hello" : `${chat.classLevel} · say hello`}</em>}
                         </span>
-                        {chat.unread > 0 && <span className="unread" aria-label={`${chat.unread} unread`}>{chat.unread}</span>}
+                        {chat.unread > 0 && <span className="unread"><span aria-hidden="true">{chat.unread}</span><span className="sr-only">, {chat.unread} unread</span></span>}
                       </span>
                     </span>
                   </Link>

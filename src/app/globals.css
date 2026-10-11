@@ -78,6 +78,7 @@ svg { flex: none; }
 .text-button:hover { text-decoration: underline; text-underline-offset: 3px; }
 .text-button.small { font-size: 14px; }
 .text-button:disabled { color: var(--ink-3); cursor: default; text-decoration: none; }
+@media (pointer: coarse) { .text-button { min-height: 44px; } } /* finger-sized on touch screens, same look */
 
 /* Status labels */
 .status-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 5px 12px; border-radius: 999px; background: var(--tint-slate); color: var(--ink-2); white-space: nowrap; }

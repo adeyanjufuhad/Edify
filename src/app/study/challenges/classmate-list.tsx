@@ -30,7 +30,7 @@ export default function ClassmateList({ classmates, features }: { classmates: Cl
               {canChat && (
                 <Link href={`/study/chats/${classmate.linkId}`} className="pill-outline small">
                   <Message size={16} /> Chat<span className="sr-only"> with {classmate.name}</span>
-                  {unread > 0 && <span className="unread" aria-label={`${unread} unread`}>{unread}</span>}
+                  {unread > 0 && <span className="unread"><span aria-hidden="true">{unread}</span><span className="sr-only">, {unread} unread</span></span>}
                 </Link>
               )}
               <Link href={`/study/challenges/new?with=${classmate.linkId}`} className="pill-button small"><Target size={16} /> Challenge<span className="sr-only"> {classmate.name}</span></Link>
