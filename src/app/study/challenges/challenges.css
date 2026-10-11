@@ -118,28 +118,8 @@
   .board th:nth-child(5), .board td:nth-child(5), .board th:nth-child(6), .board td:nth-child(6) { display: none; }
 }
 
-/* ---------- Chat ---------- */
-.chat-class { margin-left: 8px; font-family: var(--font-body), system-ui, sans-serif; font-size: 16px; font-weight: 700; color: var(--ink-3); }
-.chat-panel { padding: 16px; }
-.chat { display: grid; gap: 12px; }
-.chat-log { display: flex; flex-direction: column; gap: 10px; height: min(52dvh, 460px); min-height: 260px; overflow-y: auto; padding: 14px; border-radius: var(--r-lg); background: var(--mist); overscroll-behavior: contain; }
-.chat-log:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
-.chat-empty { margin: auto; text-align: center; color: var(--ink-2); max-width: 32ch; }
-.bubble { align-self: flex-start; max-width: min(520px, 86%); padding: 10px 14px; border: 2px solid var(--line); border-radius: var(--r) var(--r) var(--r) 6px; background: var(--white); }
-.bubble.is-mine { align-self: flex-end; border-color: var(--navy); border-radius: var(--r) var(--r) 6px var(--r); background: var(--navy); color: var(--white); }
-.bubble p { margin: 0; font-size: 16px; overflow-wrap: anywhere; white-space: pre-wrap; }
-.bubble small { display: block; margin-top: 4px; font-size: 12px; color: var(--ink-3); }
-.bubble.is-mine small { color: var(--on-navy-2); }
-.bubble small .text-button { padding: 0; font-size: 12px; color: var(--red-deep); }
-.bubble audio { display: block; width: min(300px, 100%); margin-top: 6px; }
-.bubble-voice { font-weight: 700; }
-.chat-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
-.chat-form textarea { width: 100%; min-height: 52px; resize: vertical; font-size: 16px; color: var(--ink); background: var(--white); border: 2px solid var(--line); border-radius: var(--r); padding: 10px 14px; }
-.chat-form textarea:focus-visible { outline: none; border-color: var(--navy); }
-.chat-form .pill-button { min-height: 52px; }
+/* ---------- Voice-note recorder (used by src/app/study/chats/[linkId]/voice-recorder.tsx) ---------- */
 .chat-hint { margin: 0; font-size: 13px; color: var(--ink-3); }
-.chat-hint span { margin-right: 8px; font-variant-numeric: tabular-nums; font-weight: 700; }
-.chat-report { margin: 0; }
 .voice-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 12px; border: 2px dashed var(--line); border-radius: var(--r); background: var(--white); }
 .voice-bar audio { flex: 1 1 200px; min-width: 0; max-width: 100%; }
 .voice-bar .rec-time { font-family: var(--display); font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -147,4 +127,3 @@
 .voice-bar p { margin: 0; flex: 1 1 100%; font-size: 14px; color: var(--ink-2); }
 @media (prefers-reduced-motion: no-preference) { .rec-dot { animation: rec-pulse 1.2s ease-in-out infinite; } }
 @keyframes rec-pulse { 50% { opacity: 0.35; } }
-@media (max-width: 600px) { .chat-form { grid-template-columns: minmax(0, 1fr); } .chat-form .pill-button { width: 100%; } .bubble { max-width: 94%; } }
