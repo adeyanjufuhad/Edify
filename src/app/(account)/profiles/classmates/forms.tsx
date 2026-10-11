@@ -3,8 +3,8 @@
 import { useActionState, useState } from "react";
 import { SWITCHES, type SwitchId } from "@/data/challenges";
 import {
-  blockLinkAction, createInviteAction, redeemInviteAction, removeLinkAction, saveSettingsAction, unblockLinkAction,
-  type InviteState, type RedeemState, type SettingsState,
+  blockLinkAction, createInviteAction, linkSiblingAction, redeemInviteAction, removeLinkAction, saveSettingsAction, unblockLinkAction,
+  type InviteState, type RedeemState, type SettingsState, type SiblingState,
 } from "./actions";
 
 type Values = Record<SwitchId, boolean>;
@@ -57,7 +57,7 @@ export function InviteMaker({ learnerId, name, disabled }: { learnerId: string; 
   return (
     <form action={action} className="code-form">
       <input type="hidden" name="learnerId" value={learnerId} />
-      <p>Make a one-time code for {name} and send it to the other child’s parent, for example on WhatsApp. They type it in on their Edify family page.</p>
+      <p>Make a code for {name} and send it to the other parent. It works once, for 7 days.</p>
       {state.code ? (
         <div className="code-box" role="status">
           <strong aria-label={`Code ${state.code.split("").join(" ")}`}>{state.code}</strong>
@@ -76,7 +76,7 @@ export function RedeemForm({ learnerId, name, disabled }: { learnerId: string; n
   return (
     <form action={action} className="code-form">
       <input type="hidden" name="learnerId" value={learnerId} />
-      <label htmlFor={`code-${learnerId}`}>Got a code from another parent?</label>
+      <label htmlFor={`code-${learnerId}`}>Type the code the other parent sent you</label>
       <div className="code-row">
         <input id={`code-${learnerId}`} name="code" className="code-text" autoComplete="off" autoCapitalize="characters" spellCheck={false} maxLength={12} placeholder="ABCD-2345" required disabled={disabled} />
         <button type="submit" className="pill-button small" disabled={pending || disabled}>{pending ? "Checking…" : `Link ${name}`}</button>
@@ -108,5 +108,20 @@ export function LinkActions({ linkId, learnerId, other, mode }: { linkId: string
         : <button type="button" className="text-button small" onClick={() => setAsking("block")}>Block</button>}
       <button type="button" className="text-button small" onClick={() => setAsking("remove")}>Remove</button>
     </span>
+  );
+}
+
+// One click to link this learner with a brother or sister on the same account who is in the same class and school.
+export function SiblingLink({ learnerId, name, sibling }: { learnerId: string; name: string; sibling: { id: string; name: string; ready: boolean } }) {
+  const [state, action, pending] = useActionState<SiblingState, FormData>(linkSiblingAction, {});
+  return (
+    <form action={action} className="sibling-row">
+      <input type="hidden" name="learnerId" value={learnerId} />
+      <input type="hidden" name="siblingId" value={sibling.id} />
+      <span className="avatar small" aria-hidden="true">{sibling.name[0]?.toUpperCase()}</span>
+      <span className="link-who"><strong>{sibling.name}</strong><small>{sibling.ready ? "Same class and school, on your account" : `Switch on challenges for ${sibling.name} first`}</small></span>
+      <button type="submit" className="pill-button small" disabled={pending || !sibling.ready}>{pending ? "Linking…" : `Link with ${name}`}</button>
+      {state.error && <p role="alert" className="form-error">{state.error}</p>}
+    </form>
   );
 }

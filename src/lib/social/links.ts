@@ -37,7 +37,8 @@ export async function getLinkForLearner(learnerId: string, linkId: string): Prom
 }
 
 // ---------- What a parent sees ----------
-export type ParentLink = { linkId: string; status: "active" | "blocked"; blocked: "by-us" | "by-them" | null; learnerId: string; other: { name: string; classLevel: string } };
+// `otherId` stays on the server (it is only used to know who is already linked); pages show the name and class.
+export type ParentLink = { linkId: string; status: "active" | "blocked"; blocked: "by-us" | "by-them" | null; learnerId: string; otherId: string; other: { name: string; classLevel: string } };
 
 // Each link from the point of view of each of the parent's learners on it (two views when both learners are theirs).
 export async function listParentLinks(parentId: string): Promise<ParentLink[]> {
@@ -45,11 +46,11 @@ export async function listParentLinks(parentId: string): Promise<ParentLink[]> {
   return rows.flatMap((row) => {
     const status = row.status === "blocked" ? "blocked" : "active";
     const sides = [
-      { mine: { id: row.a_id as string, parent: row.a_parent as string }, other: { name: row.b_name as string, classLevel: row.b_class as string } },
-      { mine: { id: row.b_id as string, parent: row.b_parent as string }, other: { name: row.a_name as string, classLevel: row.a_class as string } },
+      { mine: { id: row.a_id as string, parent: row.a_parent as string }, otherId: row.b_id as string, other: { name: row.b_name as string, classLevel: row.b_class as string } },
+      { mine: { id: row.b_id as string, parent: row.b_parent as string }, otherId: row.a_id as string, other: { name: row.a_name as string, classLevel: row.a_class as string } },
     ];
     return sides.filter((side) => side.mine.parent === parentId).map((side) => ({
-      linkId: row.link_id as string, status: status as "active" | "blocked", learnerId: side.mine.id, other: side.other,
+      linkId: row.link_id as string, status: status as "active" | "blocked", learnerId: side.mine.id, otherId: side.otherId, other: side.other,
       blocked: status === "active" ? null : row.blocked_by === side.mine.id ? ("by-us" as const) : ("by-them" as const),
     }));
   });
@@ -115,6 +116,20 @@ export async function redeemInvite(parentId: string, learnerId: string, rawCode:
   const claimed = (await run(claimInviteQuery(invite.id as string, learner.id)))[0];
   if (!claimed || claimed.claimed !== 1 || !claimed.link_id) return { error: CODE_PROBLEM };
   return { classmate: { name: inviter.name, classLevel: inviter.classLevel } };
+}
+
+// Links two of the parent's own children who are in the same class and school. No code is needed because the same parent
+// approves both sides. Both must have challenges switched on.
+export async function linkOwnLearners(parentId: string, learnerId: string, siblingId: string): Promise<{ ok: true } | { error: string }> {
+  const [learner, sibling] = await Promise.all([getProfile(parentId, learnerId), getProfile(parentId, siblingId)]);
+  if (!learner || !sibling || learner.id === sibling.id) return { error: "Both learners must be on your account." };
+  if (!areClassmates({ school: learner.school, classLevel: learner.classLevel }, { school: sibling.school, classLevel: sibling.classLevel })) return { error: `${learner.name} and ${sibling.name} are not in the same class and school.` };
+  for (const one of [learner, sibling]) {
+    if (!(await getSettings(one.id)).challenges) return { error: `Switch on “Challenges and classmates” for ${one.name} first.` };
+    if (((await run(sq.linkCountQuery(one.id)))[0]?.n as number) >= LIMITS.maxClassmates) return { error: `${one.name} already has ${LIMITS.maxClassmates} classmates.` };
+  }
+  if ((await run(sq.linkBetweenQuery(learner.id, sibling.id)))[0]) return { error: `${learner.name} and ${sibling.name} are already linked.` };
+  return (await run(sq.linkOwnLearnersQuery(parentId, learner.id, sibling.id)))[0] ? { ok: true } : { error: "Could not link them. Try again." };
 }
 
 // ---------- Block, unblock, remove, report ----------

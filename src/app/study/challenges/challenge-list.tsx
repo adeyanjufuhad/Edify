@@ -18,7 +18,7 @@ function Row({ item }: { item: ChallengeItem }) {
   const label = statusLabel(item);
   const Icon = item.slot === "finished" && item.result === "won" ? Trophy : item.slot === "finished" ? Check : item.slot === "waiting" ? Clock : Target;
   const detail = item.slot === "finished" && item.mine.score !== null && item.theirs.score !== null
-    ? `${item.mine.score} to ${item.theirs.score} · ${item.subject}`
+    ? `You ${item.mine.score} – ${item.theirs.score} ${item.other.name} · ${item.count} questions`
     : `${item.iAmChallenger ? "You challenged" : "From"} ${item.other.name} · ${item.count} questions · ${item.minutes} min`;
   return (
     <li>

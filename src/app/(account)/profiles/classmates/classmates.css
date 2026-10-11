@@ -9,6 +9,25 @@
 .learner-tabs a:hover { border-color: var(--navy); }
 .learner-tabs a.is-on { background: var(--navy); border-color: var(--navy); color: var(--white); }
 
+/* Three steps per learner: switch on, add classmates, manage. */
+.steps-bar { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.steps-bar li { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 2px solid var(--line); border-radius: var(--r); background: var(--white); font-size: 15px; font-weight: 700; color: var(--ink-2); }
+.steps-bar b { display: grid; place-items: center; flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--tint-slate); color: var(--navy); font-size: 13px; }
+.steps-bar li.is-now { border-color: var(--red); color: var(--ink); }
+.steps-bar li.is-now b { background: var(--red); color: var(--white); }
+.steps-bar li.is-done { border-color: var(--navy); }
+.steps-bar li.is-done b { background: var(--navy); color: var(--white); }
+.step-card h2 { gap: 12px; }
+.step-num { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 10px; background: var(--red); color: var(--white); font-size: 16px; transform: rotate(-6deg); }
+.add-way { display: grid; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 2px dashed var(--line); }
+.add-way:first-of-type { margin-top: 12px; }
+.add-way h3 { display: flex; align-items: center; gap: 8px; font-size: 18px; margin: 0; }
+.add-way > p { margin: 0; font-size: 15px; color: var(--ink-2); }
+.add-way .code-grid { margin-top: 4px; }
+.way-label { display: block; margin-bottom: 8px; font-size: 15px; }
+.sibling-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 12px; border: 2px solid var(--line); border-radius: var(--r-lg); background: var(--white); }
+.sibling-row .form-error { grid-column: 1 / -1; }
+
 .switch-form { display: grid; gap: 14px; }
 .switch-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .switch-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: start; padding: 14px 16px; border: 2px solid var(--line); border-radius: var(--r-lg); background: var(--white); cursor: pointer; }
@@ -63,6 +82,9 @@
 .convo-list form { grid-row: 1 / span 3; grid-column: 2; }
 
 @media (max-width: 700px) {
+  .steps-bar li { flex-direction: column; text-align: center; gap: 4px; font-size: 13px; }
+  .sibling-row { grid-template-columns: auto minmax(0, 1fr); }
+  .sibling-row .pill-button { grid-column: 1 / -1; }
   .code-grid { grid-template-columns: minmax(0, 1fr); }
   .link-list li { grid-template-columns: auto minmax(0, 1fr); }
   .link-list li > .link-actions, .link-list li > .link-state { grid-column: 2; }

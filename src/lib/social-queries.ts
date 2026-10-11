@@ -76,6 +76,20 @@ export function linkForLearnerQuery(learnerId: string, linkId: string): Query {
   };
 }
 
+// Links two of the parent's OWN learners (brothers and sisters in the same class) without a code: the one parent is
+// both parents here. Nothing is inserted unless both learners belong to this parent.
+export function linkOwnLearnersQuery(parentId: string, learnerX: string, learnerY: string): Query {
+  return {
+    text: `insert into public.classmate_links (learner_a, learner_b)
+      select least($2::uuid, $3::uuid), greatest($2::uuid, $3::uuid)
+      where $2::uuid <> $3::uuid
+        and (select count(*) from public.learner_profiles p where p.id in ($2::uuid, $3::uuid) and p.parent_id = $1::uuid) = 2
+      on conflict (learner_a, learner_b) do nothing
+      returning id`,
+    params: [parentId, learnerX, learnerY],
+  };
+}
+
 // ---------- Classmate codes ----------
 export function createInviteQuery(parentId: string, learnerId: string, codeHash: string, validDays: number): Query {
   return {

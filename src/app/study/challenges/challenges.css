@@ -8,6 +8,7 @@
 .challenge-gate p { margin: 0; color: var(--ink-2); max-width: 60ch; }
 
 /* ---------- Classmates ---------- */
+.classmate-add-note { margin: 12px 0 0; font-size: 14px; color: var(--ink-3); }
 .classmate-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .classmate { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px 12px; padding: 12px 14px; border: 2px solid var(--line); border-radius: var(--r-lg); background: var(--white); }
 .classmate-who { display: grid; min-width: 0; }
@@ -37,7 +38,7 @@
 .challenge-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .challenge-rows a { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 10px 6px; border-radius: var(--r); transition: background-color 0.15s; }
 .challenge-rows a:hover { background: var(--tint-slate); }
-.challenge-rows svg { color: var(--ink-3); }
+.challenge-rows a > svg { color: var(--ink-3); }
 .challenge-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--navy); color: var(--white); }
 .challenge-mark.is-turn { background: var(--red); }
 .challenge-mark.is-idle { background: var(--tint-slate); color: var(--navy); }
@@ -53,6 +54,9 @@
 .choice:has(input:checked) { border-color: var(--red); background: var(--tint-red); }
 .choice:has(input:focus-visible) { outline: 2px solid var(--red); outline-offset: 2px; }
 .choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+
+.cbt-mode.is-disabled { cursor: not-allowed; opacity: 0.6; }
+.cbt-mode.is-disabled:hover { border-color: var(--line); }
 
 /* ---------- One challenge ---------- */
 .versus { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; align-items: stretch; }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Trophy, Users } from "@/components/icons";
+import { ArrowRight, Plus, Trophy, Users } from "@/components/icons";
 import Mascot from "@/components/mascot";
 import { CURRICULUM_CLASS } from "@/data/curriculum";
 import { leaderboard, listChallenges, type BoardEntry, type ChallengeItem } from "@/lib/social/challenges";
@@ -48,12 +48,12 @@ export default async function ChallengesPage({ searchParams }: { searchParams: P
 
       <div className="challenge-layout">
         <section className="panel" aria-labelledby="classmates-title">
-          <header className="panel-head"><h2 id="classmates-title">Your classmates</h2></header>
-          {classmates.length ? <ClassmateList classmates={classmates} features={{ presence: settings.presence, chat: settings.chat, voice: settings.voice }} /> : (
+          <header className="panel-head"><h2 id="classmates-title">Your classmates</h2><Link href={`/profiles/classmates?learner=${learner.id}#step-add`} className="text-link small"><Plus size={14} /> Add a classmate</Link></header>
+          {classmates.length ? <><ClassmateList classmates={classmates} features={{ presence: settings.presence, chat: settings.chat, voice: settings.voice }} /><p className="classmate-add-note">Want to challenge someone else? A parent adds classmates on the family page, using <b>Add a classmate</b> above.</p></> : (
             <div className="empty">
               <Users size={22} />
               <p>You aren’t linked with a classmate yet. A link needs both parents: one makes a one-time classmate code and sends it to the other. Only learners in your school and class can be linked.</p>
-              <p><Link href={`/profiles/classmates?learner=${learner.id}`} className="text-link small">Parents: open the classmate settings <ArrowRight size={14} /></Link></p>
+              <p><Link href={`/profiles/classmates?learner=${learner.id}#step-add`} className="pill-outline small"><Plus size={14} /> Ask a parent to add a classmate</Link></p>
             </div>
           )}
         </section>

@@ -448,6 +448,17 @@ test("reports: stored about the other learner on a link the reporter belongs to,
   assert.equal((await run(db, qq.reportsByParentQuery(P1))).rows.length, 0, "the reported family does not see the report");
 });
 
+test("a parent can link two of their own children without a code, but never someone else's child", async () => {
+  const db = await freshDatabase();
+  assert.equal((await run(db, qq.linkOwnLearnersQuery(P1, A1, B1))).rows.length, 0, "Chi is not Parent 1's child");
+  assert.equal((await run(db, qq.linkOwnLearnersQuery(P2, A1, A2))).rows.length, 0, "Parent 2 cannot link Parent 1's children");
+  assert.equal((await run(db, qq.linkOwnLearnersQuery(P1, A1, A1))).rows.length, 0, "a learner cannot be linked with themselves");
+  assert.equal((await run(db, qq.linkOwnLearnersQuery(P1, A2, A1))).rows.length, 1);
+  assert.equal((await run(db, qq.linkOwnLearnersQuery(P1, A1, A2))).rows.length, 0, "only one link per pair");
+  const [a, b] = link(A1, A2);
+  assert.deepEqual(await one(db, "select learner_a, learner_b, status from public.classmate_links"), { learner_a: a, learner_b: b, status: "active" });
+});
+
 test("classmate codes: created for the parent's own learner, found by hash only while usable, can be cancelled by their parent only", async () => {
   const db = await freshDatabase();
   const hash = "f".repeat(64);
@@ -586,7 +597,7 @@ test("every query's parameters are all used and ids are never part of the SQL te
     q.rateLimitQuery({ learnerId: A1 }, "msg", 3, 60), q.rateLimitQuery({ parentId: P1 }, "invite", 3, 60), q.claimInviteQuery(A1, B1), q.startEntryQuery(A1, B1),
     q.submitEntryQuery(A1, B1, 3, 5, "[]", 60), q.finishChallengeQuery(A1), q.settleOverdueQuery(A1, 60), q.finishSettledQuery(A1), q.leaderboardQuery([A1], 90, null),
     qq.settingsQuery(A1), qq.settingsForQuery([A1]), qq.saveSettingsQuery(P1, A1, { challenges: true, presence: false, chat: false, voice: false }), qq.classmatesQuery(A1),
-    qq.parentLinksQuery(P1), qq.linkBetweenQuery(A1, B1), qq.linkCountQuery(A1), qq.linkForLearnerQuery(A1, B1), qq.createInviteQuery(P1, A1, "f".repeat(64), 7),
+    qq.parentLinksQuery(P1), qq.linkOwnLearnersQuery(P1, A1, A2), qq.linkBetweenQuery(A1, B1), qq.linkCountQuery(A1), qq.linkForLearnerQuery(A1, B1), qq.createInviteQuery(P1, A1, "f".repeat(64), 7),
     qq.pendingInviteCountQuery(A1), qq.pendingInvitesQuery(P1), qq.cancelInviteQuery(P1, A1), qq.inviteByHashQuery("f".repeat(64)), qq.blockLinkQuery(P1, A1, B1),
     qq.unblockLinkQuery(P1, A1, B1), qq.removeLinkQuery(null, A1, B1), qq.cancelOpenForLinkQuery(P1, A1, B1), qq.reportQuery(A1, B1, "other", null, null, null),
     qq.reportsByParentQuery(P1), qq.openBetweenQuery(A1, B1), qq.challengeListQuery(A1, 180, 30), qq.challengeDetailQuery(A1, B1), qq.playQuery(A1, B1),

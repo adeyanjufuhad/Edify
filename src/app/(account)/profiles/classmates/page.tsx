@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Shield } from "@/components/icons";
+import { ArrowLeft, Link2, Shield, Users } from "@/components/icons";
 import { REPORT_REASONS, type SwitchId } from "@/data/challenges";
 import { requireConsentedParent } from "@/lib/account";
 import { listProfiles, type LearnerProfile } from "@/lib/profiles";
-import { LIMITS, RETENTION_DAYS } from "@/lib/social-rules";
+import { LIMITS, RETENTION_DAYS, areClassmates } from "@/lib/social-rules";
 import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@/lib/social/flags";
 import { listParentLinks, listPendingInvites, listReportsByParent, type ParentLink, type PendingInvite, type SentReport } from "@/lib/social/links";
 import { getSettingsFor, NOTHING_ON, type SocialSettings } from "@/lib/social/settings";
 import { cancelInviteAction } from "./actions";
 import Conversation from "./conversation";
-import { InviteMaker, LinkActions, RedeemForm, SettingsForm } from "./forms";
+import { InviteMaker, LinkActions, RedeemForm, SettingsForm, SiblingLink } from "./forms";
 import "./classmates.css";
 
 export const dynamic = "force-dynamic";
@@ -39,6 +39,10 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
   const mine = learner ? settings.get(learner.id) ?? NOTHING_ON : NOTHING_ON;
   const myLinks = learner ? links.filter((link) => link.learnerId === learner.id) : [];
   const myInvites = learner ? invites.filter((invite) => invite.learnerId === learner.id) : [];
+  // Brothers and sisters on this account who could be linked with one click (same class and school, not linked yet).
+  const linkedIds = new Set(myLinks.map((link) => link.otherId));
+  const siblings = learner ? profiles.filter((profile) => profile.id !== learner.id && !linkedIds.has(profile.id) && areClassmates({ school: learner.school, classLevel: learner.classLevel }, { school: profile.school, classLevel: profile.classLevel }))
+    .map((profile) => ({ id: profile.id, name: profile.name, ready: (settings.get(profile.id) ?? NOTHING_ON).challenges })) : [];
   const reading = chatEnabled() && typeof wantedChat === "string" ? myLinks.find((link) => link.linkId === wantedChat) : undefined;
 
   return (
@@ -47,7 +51,7 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
       <header>
         <span className="kicker">Classmates and safety</span>
         <h1>Who can your child <span className="hl">play with?</span></h1>
-        <p>Classmate challenges let your child answer the same questions as a classmate. Nothing is on until you switch it on, and nobody can find your child: a link needs a one-time code that you and the other parent both agree to.</p>
+        <p>Three steps for each child: switch on what they can use, add the classmates they may play with, then manage them. Nothing is on until you switch it on, and nobody can find your child: only a parent can add a classmate.</p>
       </header>
 
       {loadFailed && <p role="alert" className="form-error">This page could not be loaded. Refresh to try again.</p>}
@@ -61,19 +65,39 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
             </nav>
           )}
 
-          <section className="account-card" aria-labelledby="switches-title">
-            <h2 id="switches-title">What {learner.name} can do</h2>
+          <ol className="steps-bar" aria-label={`Setting up classmates for ${learner.name}`}>
+            <li className={mine.challenges ? "is-done" : "is-now"}><b>1</b> Switch on</li>
+            <li className={!mine.challenges ? "" : myLinks.length ? "is-done" : "is-now"}><b>2</b> Add classmates</li>
+            <li className={myLinks.length ? "is-now" : ""}><b>3</b> Manage</li>
+          </ol>
+
+          <section className="account-card step-card" id="step-switches" aria-labelledby="switches-title">
+            <h2 id="switches-title"><span className="step-num" aria-hidden="true">1</span> Choose what {learner.name} can use</h2>
             <SettingsForm key={learner.id} learnerId={learner.id} name={learner.name} values={mine} open={open} />
           </section>
 
-          <section className="account-card" aria-labelledby="link-title">
-            <h2 id="link-title">Link {learner.name} with a classmate</h2>
-            <p className="account-note" style={{ marginTop: 0 }}>Only learners in the same school and class can be linked: {learner.classLevel}{learner.school && <> at {learner.school}</>}. The other child’s parent has to agree too, and both of you can remove the link at any time.</p>
-            {!mine.challenges && <p className="form-error">Switch on “Challenges and classmates” for {learner.name} and press Save before linking.</p>}
-            <div className="code-grid">
-              <InviteMaker learnerId={learner.id} name={learner.name} disabled={!mine.challenges} />
-              <RedeemForm learnerId={learner.id} name={learner.name} disabled={!mine.challenges} />
-            </div>
+          <section className="account-card step-card" id="step-add" aria-labelledby="link-title">
+            <h2 id="link-title"><span className="step-num" aria-hidden="true">2</span> Add classmates for {learner.name}</h2>
+            <p className="account-note" style={{ marginTop: 0 }}>Only learners in {learner.classLevel}{learner.school && <> at {learner.school}</>} can be linked. Either parent can remove a link at any time.</p>
+            {!mine.challenges ? <p className="form-error">Finish step 1 first: tick “Challenges and classmates” for {learner.name} and press Save.</p> : (
+              <>
+                {siblings.length > 0 && (
+                  <div className="add-way">
+                    <h3><Users size={18} /> Your other children in the same class</h3>
+                    <p>They are on your account, so no code is needed.</p>
+                    {siblings.map((sibling) => <SiblingLink key={sibling.id} learnerId={learner.id} name={learner.name} sibling={sibling} />)}
+                  </div>
+                )}
+                <div className="add-way">
+                  <h3><Link2 size={18} /> A classmate from another family</h3>
+                  <p>One parent makes a code and sends it to the other parent (for example on WhatsApp). The other parent types it in on their own Edify family page. Do either A or B:</p>
+                  <div className="code-grid">
+                    <div><strong className="way-label">A. You send a code</strong><InviteMaker learnerId={learner.id} name={learner.name} disabled={false} /></div>
+                    <div><strong className="way-label">B. You received a code</strong><RedeemForm learnerId={learner.id} name={learner.name} disabled={false} /></div>
+                  </div>
+                </div>
+              </>
+            )}
             {myInvites.length > 0 && (
               <div className="pending">
                 <h3>Codes waiting to be used</h3>
@@ -90,8 +114,8 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
             )}
           </section>
 
-          <section className="account-card" aria-labelledby="links-title">
-            <h2 id="links-title">{learner.name}’s classmates</h2>
+          <section className="account-card step-card" id="step-manage" aria-labelledby="links-title">
+            <h2 id="links-title"><span className="step-num" aria-hidden="true">3</span> {learner.name}’s classmates</h2>
             {myLinks.length ? (
               <ul className="link-list">
                 {myLinks.map((link) => (
@@ -102,7 +126,7 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
                   </li>
                 ))}
               </ul>
-            ) : <p className="empty">No classmates yet.</p>}
+            ) : <p className="empty">No classmates yet. Add one in step 2.</p>}
           </section>
 
           {reading && <Conversation parentId={parent.id} learnerId={learner.id} learnerName={learner.name} linkId={reading.linkId} otherName={reading.other.name} voice={voiceEnabled()} />}

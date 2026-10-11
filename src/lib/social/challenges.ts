@@ -87,7 +87,7 @@ export async function getChallenge(learnerId: string, challengeId: string): Prom
 }
 
 // ---------- Creating, starting, handing in ----------
-export async function createChallenge(learnerId: string, input: { linkId: string; subjectSlug: string; termSlug: string; count: number }): Promise<{ id: string } | { error: string }> {
+export async function createChallenge(learnerId: string, input: { linkId: string; subjectSlug: string; termSlug: string; count: number; lessonIds?: string[] }): Promise<{ id: string } | { error: string }> {
   const link = await getLinkForLearner(learnerId, input.linkId);
   if (!link || link.status !== "active" || !link.otherSwitches.challenges) return { error: "That classmate isn’t available for challenges." };
   const subject = challengeSubjects().find((entry) => entry.slug === input.subjectSlug);
@@ -100,7 +100,8 @@ export async function createChallenge(learnerId: string, input: { linkId: string
   if (((await run(sq.openBetweenQuery(learnerId, link.other.id)))[0]?.n as number) >= LIMITS.openChallengesPerPair) return { error: `You already have ${LIMITS.openChallengesPerPair} open challenges with ${link.other.name}. Finish or cancel one first.` };
   if (!(await withinLimit({ learnerId }, "challenge", LIMITS.challengesPerLearnerPerDay, 86400))) return { error: "That’s enough challenges for today. Try again tomorrow." };
 
-  const made = makeChallengePaper(subject.slug, termSlug, input.count, randomInt(1, 2 ** 31));
+  const lessonIds = [...new Set((input.lessonIds ?? []).filter((id) => typeof id === "string" && id.length <= 80))].slice(0, 30);
+  const made = makeChallengePaper(subject.slug, termSlug, input.count, randomInt(1, 2 ** 31), lessonIds);
   if ("error" in made) return { error: made.error };
   const row = (await run(sq.createChallengeQuery({
     challengerId: learnerId, opponentId: link.other.id, subjectSlug: subject.slug, subjectName: made.subjectName, termSlug, termName: made.termName,

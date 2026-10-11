@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Brand from "@/components/brand";
 import { streamLabel } from "@/data/streams";
-import { Grid, Layers, Monitor, Note, Swap, Target, Users } from "@/components/icons";
+import { Grid, Layers, Monitor, Note, Shield, Swap, Target, Trophy, Users } from "@/components/icons";
 import PlanBadge from "@/components/plan-badge";
 import type { LearnerProfile } from "@/lib/profiles";
 
@@ -16,9 +16,12 @@ const STUDY_LINKS = [
 ];
 
 const CHALLENGE_LINK = { href: "/study/challenges", label: "Challenges", short: "Challenge", icon: Target };
+// The sidebar groups them under "Classmates"; the phone tab bar only has room for Challenges.
+const CLASSMATE_LINKS = [CHALLENGE_LINK, { href: "/study/challenges/leaderboard", label: "Leaderboard", short: "Leaders", icon: Trophy }];
 
 function isActive(pathname: string, href: string) {
   if (href === "/study") return pathname === "/study";
+  if (href === "/study/challenges") return pathname.startsWith(href) && !pathname.startsWith("/study/challenges/leaderboard");
   if (href === "/study/subjects") return pathname.startsWith("/study/subjects") || pathname.startsWith("/study/ss1");
   return pathname.startsWith(href);
 }
@@ -36,12 +39,20 @@ export default function AppSidebar({ learner, challenges = false }: { learner: L
         <div className="sidebar-brand"><Brand /></div>
         <nav className="sidebar-nav">
           <span className="sidebar-label">Study</span>
-          {links.map(({ href, label, icon: Icon }) => {
+          {STUDY_LINKS.map(({ href, label, icon: Icon }) => {
             const active = isActive(pathname, href);
             return <Link key={href} href={href} className={`sidebar-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}><Icon size={18} />{label}</Link>;
           })}
+          {challenges && <>
+            <span className="sidebar-label">Classmates</span>
+            {CLASSMATE_LINKS.map(({ href, label, icon: Icon }) => {
+              const active = isActive(pathname, href);
+              return <Link key={href} href={href} className={`sidebar-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}><Icon size={18} />{label}</Link>;
+            })}
+          </>}
           <span className="sidebar-label">Family</span>
           <Link href="/profiles" className="sidebar-link"><Users size={18} />Learners</Link>
+          {challenges && <Link href={`/profiles/classmates?learner=${learner.id}`} className="sidebar-link"><Shield size={18} />Classmate settings</Link>}
           <a href="/leave" className="sidebar-link"><Swap size={18} />Switch learner</a>
         </nav>
         <div className="sidebar-user">

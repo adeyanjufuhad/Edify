@@ -12,7 +12,8 @@ const split = (bank: CbtBank) => {
 
 const questionByKey = new Map(cbtBanks.flatMap((bank) => bank.lessons.flatMap((lesson) => lesson.questions.map((question) => [question.key, question] as const))));
 
-export type SubjectOption = { slug: string; name: string; terms: { slug: string; name: string; questions: number }[] };
+export type WeekOption = { id: string; label: string; topic: string; questions: number };
+export type SubjectOption = { slug: string; name: string; terms: { slug: string; name: string; questions: number; weeks: WeekOption[] }[] };
 
 // The subjects that have lessons with questions, and the terms of each. Computed from the lessons, never hard-coded.
 export function challengeSubjects(): SubjectOption[] {
@@ -20,7 +21,10 @@ export function challengeSubjects(): SubjectOption[] {
   for (const bank of cbtBanks) {
     const { termSlug, subjectSlug } = split(bank);
     const entry = subjects.get(subjectSlug) ?? { slug: subjectSlug, name: bank.subject, terms: [] };
-    entry.terms.push({ slug: termSlug, name: bank.term, questions: bank.lessons.reduce((sum, lesson) => sum + lesson.questions.length, 0) });
+    entry.terms.push({
+      slug: termSlug, name: bank.term, questions: bank.lessons.reduce((sum, lesson) => sum + lesson.questions.length, 0),
+      weeks: bank.lessons.map((lesson) => ({ id: lesson.id, label: lesson.label, topic: lesson.topic, questions: lesson.questions.length })),
+    });
     subjects.set(subjectSlug, entry);
   }
   return [...subjects.values()];
@@ -28,18 +32,33 @@ export function challengeSubjects(): SubjectOption[] {
 
 export type MadePaper = { paper: FrozenQuestion[]; subjectName: string; termName: string; count: number };
 
+// "Weeks 1, 3, 4–5" from the lessons chosen, in the order they come in the term.
+function weeksLabel(lessons: { from: number; to: number }[]) {
+  const parts = lessons.map(({ from, to }) => (from === to ? `${from}` : `${from}–${to}`));
+  return `${lessons.length === 1 && lessons[0].from === lessons[0].to ? "Week" : "Weeks"} ${parts.join(", ")}`;
+}
+
 // `termSlug` null means every term of the subject that has questions (only offered when there are at least two).
-export function makeChallengePaper(subjectSlug: string, termSlug: string | null, wantedCount: number, seed: number): MadePaper | { error: string } {
+// `lessonIds` narrows a single term to the weeks the learner ticked; empty means the whole term.
+export function makeChallengePaper(subjectSlug: string, termSlug: string | null, wantedCount: number, seed: number, lessonIds: string[] = []): MadePaper | { error: string } {
   const banks = cbtBanks.filter((bank) => split(bank).subjectSlug === subjectSlug && (termSlug === null || split(bank).termSlug === termSlug));
   if (!banks.length) return { error: "There are no questions for that subject and term yet." };
   if (termSlug === null && banks.length < 2) return { error: "Choose a term: this subject only has questions for one term so far." };
-  const lessons = banks.flatMap((bank) => bank.lessons);
+  let lessons = banks.flatMap((bank) => bank.lessons);
+  if (lessonIds.length) {
+    if (termSlug === null) return { error: "Choose one term to pick weeks from." };
+    const wanted = new Set(lessonIds);
+    lessons = lessons.filter((lesson) => wanted.has(lesson.id));
+    if (lessons.length !== wanted.size) return { error: "Choose weeks from the list." };
+  }
   const available = lessons.reduce((sum, lesson) => sum + lesson.questions.length, 0);
   const count = Math.min(wantedCount, available);
   if (count < 5) return { error: "There are not enough questions for that choice yet." };
 
-  const termName = termSlug === null ? "All terms" : banks[0].term;
-  const merged: CbtBank = { key: `${termSlug ?? "all"}/${subjectSlug}`, subject: banks[0].subject, term: termName, lessons };
+  // The database keeps up to 80 characters for this label.
+  const fullName = termSlug === null ? "All terms" : lessonIds.length ? `${banks[0].term} · ${weeksLabel(lessons)}` : banks[0].term;
+  const termName = fullName.length > 80 ? `${fullName.slice(0, 79)}…` : fullName;
+  const merged: CbtBank = { key: `${termSlug ?? "all"}/${subjectSlug}`, subject: banks[0].subject, term: banks[0].term, lessons };
   const questions = buildPaper({ bank: merged, mode: "term", lessons, range: null, count, shuffle: true, minutes: count, seed });
 
   const paper: FrozenQuestion[] = [];

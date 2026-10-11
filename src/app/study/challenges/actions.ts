@@ -16,8 +16,11 @@ const field = (formData: FormData, name: string) => String(formData.get(name) ??
 export async function createChallengeAction(_state: ActionState, formData: FormData): Promise<ActionState> {
   const actor = await actionActor();
   if (!actor.ok) return { error: actor.error };
+  if (field(formData, "cover") === "weeks" && !formData.getAll("lesson").length) return { error: "Tick at least one week, or choose the whole term." };
   const made = await createChallenge(actor.learner.id, {
     linkId: field(formData, "linkId"), subjectSlug: field(formData, "subject"), termSlug: field(formData, "term"), count: Number(field(formData, "count")),
+    // Weeks are only sent when the learner chose "Choose weeks"; none means the whole term.
+    lessonIds: field(formData, "cover") === "weeks" ? formData.getAll("lesson").map(String) : [],
   });
   if ("error" in made) return { error: made.error };
   redirect(`/study/challenges/${made.id}`);

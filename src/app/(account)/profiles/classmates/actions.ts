@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { refresh } from "next/cache";
 import { requireConsentedParent } from "@/lib/account";
 import { challengesEnabled } from "@/lib/social/flags";
-import { blockAsParent, cancelInvite, createInvite, redeemInvite, removeAsParent, unblockAsParent } from "@/lib/social/links";
+import { blockAsParent, cancelInvite, createInvite, linkOwnLearners, redeemInvite, removeAsParent, unblockAsParent } from "@/lib/social/links";
 import { saveSettings } from "@/lib/social/settings";
 import { deleteMessageAsParent } from "@/lib/social/chat";
 
@@ -12,6 +12,7 @@ import { deleteMessageAsParent } from "@/lib/social/chat";
 // form are only references, and each query checks that they belong to this parent.
 export type SettingsState = { saved?: boolean; error?: string };
 export type InviteState = { code?: string; expiresAt?: string; error?: string };
+export type SiblingState = { linked?: boolean; error?: string };
 export type RedeemState = { joined?: { name: string; classLevel: string }; error?: string };
 
 async function parentOrNotFound() {
@@ -77,4 +78,13 @@ export async function deleteMessageAction(formData: FormData) {
   const parent = await parentOrNotFound();
   await deleteMessageAsParent(parent.id, field(formData, "messageId"));
   refresh();
+}
+
+// Links two of this parent's own children (same class and school) without a code.
+export async function linkSiblingAction(_state: SiblingState, formData: FormData): Promise<SiblingState> {
+  const parent = await parentOrNotFound();
+  const result = await linkOwnLearners(parent.id, field(formData, "learnerId"), field(formData, "siblingId"));
+  if ("error" in result) return { error: result.error };
+  refresh();
+  return { linked: true };
 }
