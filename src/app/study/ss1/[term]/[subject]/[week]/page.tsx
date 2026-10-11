@@ -44,6 +44,7 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
       loadFailed={loadFailed}
       initialView={view === "full" ? "full" : "quick"}
       next={nextWeek ? { href: lessonPath(termData, subjectData, nextWeek), label: nextWeek.topic } : null}
+      back={{ href: `/study/ss1/${termData.slug}/${subjectData.slug}`, label: `${subjectData.name} scheme of work` }}
     />
   );
 }

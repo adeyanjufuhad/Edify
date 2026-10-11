@@ -97,7 +97,23 @@
 .term-tab.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
 .term-tab.active small { color: var(--slate); }
 
-.path-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+/* One card per subject; each opens that subject's scheme of work. The whole card is the link (stretched ::after). */
+.subject-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 20px; align-items: stretch; }
+.subject-cards > li { display: grid; min-width: 0; }
+.subject-card { position: relative; display: grid; gap: 14px; align-content: start; transition: border-color 0.15s, background-color 0.15s; }
+.subject-card:hover, .subject-card:focus-within { border-color: var(--navy); }
+.subject-card-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; }
+.subject-card-title h2 { font-size: 24px; font-weight: 700; line-height: 1.15; margin: 0; }
+.subject-card-title span { display: block; font-size: 14px; color: var(--ink-3); font-variant-numeric: tabular-nums; margin-top: 2px; }
+.subject-link { color: inherit; }
+.subject-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.subject-link:focus-visible { outline: none; }
+.subject-link:focus-visible::after { outline: 2px solid var(--red); outline-offset: 3px; }
+.subject-next { display: grid; gap: 2px; margin: 0; padding: 12px 14px; border-radius: var(--r); background: var(--mist); }
+.subject-next small { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--red-deep); }
+.subject-next strong { font-size: 15px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.subject-card-action { display: inline-flex; align-items: center; gap: 6px; justify-self: start; font-size: 15px; font-weight: 700; color: var(--red-deep); }
+.subject-card:hover .subject-card-action { text-decoration: underline; text-underline-offset: 4px; }
 .path-head { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: center; margin-bottom: 12px; }
 .path-title h2 { font-size: 22px; font-weight: 700; margin: 0; }
 .path-title span { font-size: 14px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
@@ -118,10 +134,12 @@
 .is-ready .path-node { border-color: var(--red); }
 .is-soon .path-week, .is-soon .path-topic, .is-soon .path-action { color: var(--ink-3); font-weight: 500; }
 .is-soon .path-node { border-style: dashed; }
-.path-more { position: sticky; top: 24px; background: var(--navy); border-color: var(--navy); color: var(--mist); }
-.path-more .kicker { color: var(--slate); }
-.path-more h2 { color: var(--white); font-size: 20px; margin: 8px 0; }
-.path-more p { margin: 0; font-size: 15px; color: var(--on-navy-2); }
+.subject-more { background: var(--navy); border-color: var(--navy); color: var(--mist); display: grid; align-content: center; }
+.subject-cards > li:last-child { grid-column: 1 / -1; }
+.subject-more p { max-width: 60ch; }
+.subject-more .kicker { color: var(--slate); }
+.subject-more h2 { color: var(--white); font-size: 22px; margin: 8px 0; }
+.subject-more p { margin: 0; font-size: 15px; color: var(--on-navy-2); }
 
 /* ---------- Notes ---------- */
 .notes-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
@@ -252,8 +270,7 @@
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) {
   .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .overview-grid, .path-grid { grid-template-columns: 1fr; }
-  .path-more { position: static; }
+  .overview-grid { grid-template-columns: 1fr; }
   .lesson-columns { grid-template-columns: 1fr; gap: 20px; }
   .lesson-toc { order: 0; position: static; display: flex; flex-wrap: wrap; gap: 6px; }
   .lesson-toc strong { width: 100%; padding-left: 0; }

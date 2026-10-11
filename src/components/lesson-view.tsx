@@ -16,12 +16,14 @@ type Props = {
   loadFailed: boolean;
   initialView: "quick" | "full";
   next: { href: string; label: string } | null;
+  // Where "back" goes: the subject's scheme of work, or the subject list when not given.
+  back?: { href: string; label: string };
 };
 
 const LETTERS = ["A", "B", "C", "D", "E"];
 const AUTOSAVE_DELAY_MS = 1500;
 
-export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, initialView, next, practiceAvailable }: Props) {
+export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, initialView, next, back, practiceAvailable }: Props) {
   const [complete, setComplete] = useState(initialCompleted);
   const [note, setNote] = useState(initialNote);
   const [saveStatus, setSaveStatus] = useState(loadFailed ? "Your saved notes could not be loaded. Please refresh before writing." : "");
@@ -140,7 +142,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
   return (
     <div className="page lesson-shell">
       <div className="read-progress" aria-hidden="true" />
-      <Link href="/study/subjects" className="back-link"><ArrowLeft size={15} /> All lessons</Link>
+      <Link href={back?.href ?? "/study/subjects"} className="back-link"><ArrowLeft size={15} /> {back?.label ?? "All lessons"}</Link>
       <div className="lesson-head">
         <span className="kicker">{crumbs}</span>
         <h1>{lesson.title}<span className="dot">.</span></h1>

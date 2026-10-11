@@ -5,19 +5,19 @@
 @keyframes low-pulse { 50% { scale: 1.07; } }
 
 /* Position of each child in a list, so rows can enter one after another. */
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(1) { --i: 0; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(2) { --i: 1; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(3) { --i: 2; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(4) { --i: 3; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(5) { --i: 4; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(6) { --i: 5; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(7) { --i: 6; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(8) { --i: 7; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(9) { --i: 8; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(10) { --i: 9; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(11) { --i: 10; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(12) { --i: 11; }
-:is(.path, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(n + 13) { --i: 12; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(1) { --i: 0; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(2) { --i: 1; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(3) { --i: 2; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(4) { --i: 3; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(5) { --i: 4; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(6) { --i: 5; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(7) { --i: 6; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(8) { --i: 7; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(9) { --i: 8; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(10) { --i: 9; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(11) { --i: 10; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(12) { --i: 11; }
+:is(.path, .subject-cards, .notes-grid, .upcoming-list, .subject-list, .attempt-list, .note-previews, .cbt-week-scores, .cbt-modes, .stat-grid, .overview-col, .sidebar-nav) > :nth-child(n + 13) { --i: 12; }
 
 @media (prefers-reduced-motion: no-preference) {
   /* ---- Page entrance: header first, then each block. Grids below animate their own children instead. ---- */
@@ -29,7 +29,7 @@
 
   .stat-grid > * { animation: rise-in 0.6s var(--ease-out) calc(0.12s + var(--i) * 70ms) backwards; }
   .overview-col > * { animation: rise-in 0.65s var(--ease-out) calc(0.3s + var(--i) * 90ms) backwards; }
-  .path-step, .notes-grid > li, .upcoming-list > li, .subject-list > li, .attempt-list > li, .note-previews > li, .cbt-week-scores > li {
+  .path-step, .subject-cards > li, .notes-grid > li, .upcoming-list > li, .subject-list > li, .attempt-list > li, .note-previews > li, .cbt-week-scores > li {
     animation: rise-in 0.55s var(--ease-out) calc(0.2s + var(--i) * 45ms) backwards;
   }
   .cbt-modes > * { animation: rise-in 0.55s var(--ease-out) calc(0.15s + var(--i) * 70ms) backwards; }
@@ -53,6 +53,8 @@
   .coming-mascot, .empty-mascot { animation: bob 5s ease-in-out infinite; }
   .upcoming-list svg, .path-action svg, .continue-card b { transition: translate 0.25s var(--ease-out); }
   .note-previews a, .attempt-list a { transition: background-color 0.15s, translate 0.25s var(--ease-out); }
+  .subject-card { transition: border-color 0.15s, translate 0.25s var(--ease-out); }
+  .subject-card-action svg { transition: translate 0.25s var(--ease-out); }
 
   /* ---- Learning path: the next lesson pulses ---- */
   .is-next .path-node { position: relative; }
@@ -88,6 +90,8 @@
   .upcoming-list a:hover svg, .path-step > a:hover .path-action svg { translate: 3px 0; }
   .continue-card:hover b { translate: 4px 0; }
   .note-previews a:hover, .attempt-list a:hover { translate: 0 -2px; }
+  .subject-card:hover { translate: 0 -3px; }
+  .subject-card:hover .subject-card-action svg { translate: 3px 0; }
   .option-btn:not(:disabled):hover, .cbt-option:not(:disabled):hover { translate: 0 -2px; }
   .cbt-mode:hover { translate: 0 -2px; }
   .cbt-cell:hover:not(.is-current) { scale: 1.07; }
