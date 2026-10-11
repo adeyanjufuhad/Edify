@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth/client";
 import type { LearnerProfile } from "@/lib/profiles";
 import { CLASS_LEVELS } from "@/data/curriculum";
 import { SUGGESTED_SCHOOLS } from "@/data/schools";
+import { STREAMS, isSeniorClass, streamLabel } from "@/data/streams";
 import PlanBadge from "@/components/plan-badge";
 import { addProfile, forgetProfile, openProfile, removeProfile, type FormState } from "./actions";
 
@@ -28,7 +29,7 @@ export function ProfilePicker({ profiles }: { profiles: LearnerProfile[] }) {
             <button type="button" className="profile-select" aria-pressed={profile.id === selected} onClick={() => { setSelected(profile.id); setPin(""); setConfirmRemove(null); requestAnimationFrame(() => pinRef.current?.focus()); }}>
               <span className="avatar" aria-hidden="true">{profile.name[0]?.toUpperCase()}</span>
               <strong>{profile.name}</strong>
-              <small>{profile.classLevel}{profile.school && <> · <span className="profile-school">{profile.school}</span></>}</small>
+              <small>{profile.classLevel}{profile.stream && <> · {streamLabel(profile.stream)}</>}{profile.school && <> · <span className="profile-school">{profile.school}</span></>}</small>
               <PlanBadge plan={profile.plan} sponsored={profile.sponsored} />
             </button>
             {confirmRemove === profile.id ? (
@@ -71,13 +72,7 @@ export function AddProfileForm() {
         <label htmlFor="learner-name">First name</label>
         <input id="learner-name" name="name" autoComplete="off" required maxLength={40} defaultValue={values?.name} placeholder="e.g. Taiwo…" />
       </div>
-      <div className="field">
-        <label htmlFor="learner-class">Class</label>
-        <select id="learner-class" name="classLevel" defaultValue={values?.classLevel ?? ""} required>
-          <option value="" disabled>Choose a class…</option>
-          {CLASS_LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
-        </select>
-      </div>
+      <ClassAndStream initialClass={values?.classLevel} initialStream={values?.stream} />
       <SchoolField initial={values?.school} />
       <div className="field">
         <label htmlFor="learner-pin">4-digit PIN</label>
@@ -97,6 +92,31 @@ export function AddProfileForm() {
       <button className="pill-button full" type="submit" disabled={pending}>{pending ? "Adding…" : "Add learner"}</button>
     </form>
   );
+}
+
+// The class, and for SS1 to SS3 learners a stream. The stream picker only appears once a senior class is chosen.
+function ClassAndStream({ initialClass, initialStream }: { initialClass?: string; initialStream?: string }) {
+  const [level, setLevel] = useState(initialClass ?? "");
+  const senior = isSeniorClass(level);
+  return <>
+    <div className="field">
+      <label htmlFor="learner-class">Class</label>
+      <select id="learner-class" name="classLevel" value={level} onChange={(event) => setLevel(event.target.value)} required>
+        <option value="" disabled>Choose a class…</option>
+        {CLASS_LEVELS.map((item) => <option key={item} value={item}>{item}</option>)}
+      </select>
+    </div>
+    {senior && (
+      <div className="field">
+        <label htmlFor="learner-stream">Stream</label>
+        <select id="learner-stream" name="stream" defaultValue={initialStream ?? ""} required aria-describedby="learner-stream-help">
+          <option value="" disabled>Choose a stream…</option>
+          {STREAMS.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
+        </select>
+        <span className="field-help" id="learner-stream-help">SS1 to SS3 students choose one: Science, Technical, Arts or Business.</span>
+      </div>
+    )}
+  </>;
 }
 
 // A free-text school field for any school; partner schools appear as autocomplete suggestions.

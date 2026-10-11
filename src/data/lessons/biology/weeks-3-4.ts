@@ -1,0 +1,141 @@
+import type { Lesson, LessonSection, PracticeQuestion } from "../types";
+
+export const bioWeeks34: Lesson = {
+  id: "ss1-first-biology-weeks-3-4",
+  week: "Weeks 03–04",
+  title: "Classification of living things",
+  subtitle: "How biologists group living things, the seven levels of the hierarchy, how scientific names work, and the five kingdoms.",
+  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Biology, Chapter Three (PDF pages 23–31). The explanations and practice questions below are newly written for Edify.",
+  objectives: [
+    "Define classification and taxonomy and give three reasons why living things are classified.",
+    "Arrange the seven levels of the hierarchy from the broadest to the narrowest.",
+    "Explain binomial nomenclature and write scientific names with the correct capital letters.",
+    "Name the five kingdoms and give a key feature of each.",
+    "Classify humans through the hierarchy and identify the plant groups Thallophyta, Bryophyta, Pteridophyta and Spermatophyta.",
+  ],
+  sections: [
+    {
+      heading: "1. Why classify?",
+      paragraphs: [
+        "Classification is the science of arranging living things into groups based on their structure, genetics or cell organisation. It is also called taxonomy, and the branch of biology that studies its principles is taxonomy too.",
+        "Classification helps biologists to name organisms without confusion, to show how closely related organisms are, and to identify unfamiliar organisms using keys. A key is a list of paired statements that leads you, step by step, to an organism’s name.",
+      ],
+    },
+    {
+      heading: "2. The hierarchy",
+      paragraphs: [
+        "Living things are arranged in levels, from the broadest to the narrowest: kingdom, phylum (called division for plants), class, order, family, genus and species. Each level contains the one below it. A kingdom is a group of related phyla, a phylum is a group of related classes, and so on down to the genus, which is a group of closely related species.",
+        "A species is a population of organisms that can interbreed to produce fertile offspring. It is the lowest unit of classification. The kingdom is the most inclusive level, because it holds the most organisms.",
+      ],
+      diagram: "Draw seven nested boxes, the largest labelled KINGDOM and the smallest labelled SPECIES. Write the levels in order between them: phylum, class, order, family, genus.",
+    },
+    {
+      heading: "3. Naming organisms: binomial nomenclature",
+      paragraphs: [
+        "The system of giving every organism two Latin names is called binomial nomenclature. It was developed by Carolus Linnaeus, a Swedish botanist (1707–1778), who is known as the father of taxonomy. The first name is the generic name, which starts with a capital letter. The second is the specific name, which starts with a small letter.",
+        "Humans are classified as follows: Kingdom Animalia; Phylum Chordata (has a notochord); Subphylum Vertebrata (has a backbone); Class Mammalia (has mammary glands); Order Primates (well-developed hands and feet for grasping); Family Hominidae; Genus Homo; Species sapiens. The scientific name is Homo sapiens.",
+      ],
+    },
+    {
+      heading: "4. The five kingdoms",
+      paragraphs: [
+        "Linnaeus placed all living things into two kingdoms, plant and animal. This could not place many single-celled organisms, so biologists now use five kingdoms: Monera, Protista, Fungi, Plantae and Animalia. The system is usually credited to R. H. Whittaker (1969) and was later popularised by Margulis and Schwartz (1982).",
+        "Monera are microscopic, single-celled prokaryotes with no nucleus and no membrane-bound organelles. Bacteria and blue-green algae (cyanobacteria) belong here. They reproduce asexually, mainly by binary fission.",
+        "Protista are eukaryotic, mostly unicellular organisms with a nucleus and organelles. Plant-like protists (protophyta) such as Chlamydomonas and Chlorella have chloroplasts and cellulose cell walls. Animal-like protists (protozoa) such as Amoeba and Paramecium feed on ready-made food and have no cell walls. Euglena has features of both.",
+        "Fungi are eukaryotic heterotrophs that feed as decomposers on moist, dead organic matter. They lack chlorophyll, have cell walls of chitin, store food as glycogen and are non-motile. They can be unicellular (yeast) or multicellular (mucor, mushrooms).",
+        "Plantae are multicellular, non-motile eukaryotes with cellulose cell walls and chlorophyll, so they make their own food by photosynthesis. Plants are grouped as Thallophyta (algae, mostly without true roots, stems or leaves), Bryophyta (mosses and liverworts), Pteridophyta (ferns, which have vascular tissue and reproduce with spores) and Spermatophyta (seed plants). Seed plants are gymnosperms, with naked seeds on cones such as conifers, or angiosperms, with seeds enclosed in a fruit.",
+        "Animalia are multicellular, motile eukaryotes whose cells have no cell walls. They feed heterotrophically. Invertebrates lack a backbone and include sponges, cnidarians (hydra), flatworms, roundworms, earthworms, molluscs, echinoderms and arthropods. Vertebrates belong to the phylum Chordata and have a backbone or a notochord.",
+      ],
+    },
+  ] as LessonSection[],
+  hiddenFacts: [
+    "Use the hierarchy in order, from broadest to narrowest: kingdom, phylum (division), class, order, family, genus, species. The lowest unit is the species and the most inclusive is the kingdom.",
+    "The genus name starts with a capital letter and the species name with a small letter: Homo sapiens, not Homo Sapiens. In handwritten answers, underline both names or write them in italics.",
+    "Linnaeus introduced binomial nomenclature. Darwin (evolution), Pasteur (pasteurisation) and John Ray (early plant classification) are common wrong answers in multiple-choice questions.",
+    "The five-kingdom system is usually credited to Whittaker (1969). The book credits Margulis and Schwartz (1982), who popularised it. Either name may be asked, but the five kingdoms are what matter.",
+    "Monera are prokaryotes: their DNA is not enclosed in a nucleus. Protista, Fungi, Plantae and Animalia are eukaryotes, with a nucleus.",
+    "Euglena is not simply a plant or an animal. In theory answers, say it has both plant-like features (chloroplasts, paramylum) and animal-like features (flagellum, pellicle, eyespot).",
+    "Fungi are not plants. They have no chlorophyll, use chitin rather than cellulose in their cell walls, and store glycogen.",
+    "Plasmodium, the malaria parasite, is a protist (a protozoan), not a worm, even though it causes a disease that worms also cause in other forms.",
+  ],
+  summary: "Classification groups living things into a hierarchy: kingdom, phylum (division), class, order, family, genus and species. Every organism has a two-part scientific name, introduced by Linnaeus, with the genus capitalised and the species in small letters. The five kingdoms are Monera (prokaryotes), Protista, Fungi, Plantae and Animalia (eukaryotes). Humans are Homo sapiens, in the kingdom Animalia and phylum Chordata.",
+  quick: {
+    intro: "The hierarchy, the scientific names and the five kingdoms with their key features. Most questions on this topic are about these three things.",
+    blocks: [
+      {
+        heading: "1. The hierarchy",
+        points: [
+          "Broadest to narrowest: Kingdom, Phylum (Division), Class, Order, Family, Genus, Species.",
+          "Species = a group that interbreeds to produce fertile offspring. The lowest unit.",
+          "Kingdom = the most inclusive unit.",
+          "Taxonomy = the science of classification. Keys identify unknown organisms step by step.",
+        ],
+        memory: "King Philip Came Over For Good Soup: Kingdom, Phylum, Class, Order, Family, Genus, Species.",
+      },
+      {
+        heading: "2. Scientific names",
+        points: [
+          "Two names: genus (capital letter) then species (small letter).",
+          "Binomial nomenclature was introduced by Carolus Linnaeus, the father of taxonomy.",
+          "Humans: Homo sapiens. Housefly: Musca domestica.",
+          "Human classification: Animalia > Chordata > Vertebrata > Mammalia > Primates > Hominidae > Homo > sapiens.",
+        ],
+        memory: "Genus = Gives a capital. Species = Small letter.",
+      },
+      {
+        heading: "3. The five kingdoms",
+        points: [
+          "Monera: microscopic prokaryotes; no nucleus; bacteria and blue-green algae; binary fission.",
+          "Protista: unicellular eukaryotes; plant-like (Chlamydomonas) and animal-like (Amoeba, Paramecium).",
+          "Fungi: heterotrophic decomposers; chitin walls; glycogen; no chlorophyll; non-motile (mushrooms, yeast, mucor).",
+          "Plantae: multicellular; cellulose walls; chlorophyll; non-motile (mosses, ferns, conifers, flowering plants).",
+          "Animalia: multicellular; no cell walls; motile; heterotrophic (invertebrates and vertebrates).",
+        ],
+      },
+      {
+        heading: "4. Plant groups",
+        points: [
+          "Thallophyta: algae.",
+          "Bryophyta: mosses and liverworts.",
+          "Pteridophyta: ferns (vascular, reproduce with spores).",
+          "Spermatophyta: seed plants. Gymnosperms have naked seeds (conifers). Angiosperms have seeds in a fruit (flowering plants).",
+        ],
+        warning: "Ferns are not seed plants. Pteridophytes reproduce with spores.",
+      },
+    ],
+    likely: [
+      { question: "Define classification.", answer: "The science of arranging living things into groups based on structural, genetic or cellular organisation. It is also called taxonomy." },
+      { question: "Name the levels of classification from the broadest to the narrowest.", answer: "Kingdom, phylum (division), class, order, family, genus, species." },
+      { question: "What is a species?", answer: "A population of organisms that can interbreed among themselves to produce fertile offspring." },
+      { question: "Who developed the binomial system of naming organisms?", answer: "Carolus Linnaeus, a Swedish botanist, known as the father of taxonomy." },
+      { question: "State the two rules for writing a scientific name.", answer: "The genus name starts with a capital letter and the species name starts with a small letter (for example Homo sapiens)." },
+      { question: "Name the five kingdoms.", answer: "Monera, Protista, Fungi, Plantae and Animalia." },
+      { question: "What do Monera and the other four kingdoms differ in?", answer: "Monera are prokaryotes: they have no nucleus and no membrane-bound organelles. The other kingdoms are eukaryotes with a nucleus." },
+      { question: "Why is Euglena difficult to classify?", answer: "It has plant-like features, such as chloroplasts, and animal-like features, such as a flagellum and a pellicle." },
+      { question: "State two characteristics of fungi.", answer: "Heterotrophic decomposers; cell walls made of chitin; store food as glycogen; no chlorophyll; non-motile." },
+      { question: "What is the difference between gymnosperms and angiosperms?", answer: "Gymnosperms have naked seeds borne on cones; angiosperms have seeds enclosed in a fruit." },
+    ],
+  },
+  questions: [
+    { number: 1, kind: "Objective", prompt: "The lowest unit of classification is the", options: ["species", "kingdom", "class", "phylum"], answer: "A" },
+    { number: 2, kind: "Objective", prompt: "The scientist who introduced binomial nomenclature was", options: ["Carolus Linnaeus", "Charles Darwin", "John Ray", "Louis Pasteur"], answer: "A" },
+    { number: 3, kind: "Objective", prompt: "In the name Homo sapiens, the second name is the", options: ["specific name", "generic name", "common name", "family name"], answer: "A" },
+    { number: 4, kind: "Objective", prompt: "The kingdom whose members have prokaryotic cells is", options: ["Monera", "Protista", "Fungi", "Plantae"], answer: "A" },
+    { number: 5, kind: "Objective", prompt: "The most inclusive category in the hierarchy is the", options: ["kingdom", "species", "genus", "order"], answer: "A" },
+    { number: 6, kind: "Objective", prompt: "Unicellular eukaryotes such as Amoeba and Paramecium belong to the kingdom", options: ["Monera", "Protista", "Fungi", "Animalia"], answer: "B" },
+    { number: 7, kind: "Objective", prompt: "Which feature shows that an organism is a fungus?", options: ["Cell walls made of chitin", "Chlorophyll is present", "Starch is stored as food", "It feeds by photosynthesis"], answer: "A" },
+    { number: 8, kind: "Objective", prompt: "Ferns belong to the group", options: ["Thallophyta", "Bryophyta", "Pteridophyta", "Angiosperms"], answer: "C" },
+    { number: 9, kind: "Objective", prompt: "Flowering plants whose seeds are enclosed in a fruit are", options: ["gymnosperms", "mosses", "angiosperms", "algae"], answer: "C" },
+    { number: 10, kind: "Objective", prompt: "Which of these is an invertebrate phylum?", options: ["Chordata", "Mammalia", "Arthropoda", "Primates"], answer: "C" },
+    { number: 11, kind: "Objective", prompt: "The class to which humans belong is", options: ["Mammalia", "Primates", "Aves", "Chordata"], answer: "A" },
+    { number: 12, kind: "Objective", prompt: "Chlamydomonas is a plant-like protist. Which of these is its main plant-like feature?", options: ["Animal-like protists", "Fungal chitin", "Bacterial binary fission", "Chloroplasts with cellulose cell walls"], answer: "D" },
+    { number: 13, kind: "Objective", prompt: "Mushrooms and yeast belong to the kingdom", options: ["Plantae", "Monera", "Fungi", "Animalia"], answer: "C" },
+    { number: 14, kind: "Objective", prompt: "Which of these is NOT a feature of animals?", options: ["They are multicellular", "Their cells have no cell walls", "Most of them are motile", "Their cells have cellulose cell walls"], answer: "D" },
+    { number: 15, kind: "Theory", prompt: "Define classification and state three reasons why living things are classified.", answer: "Classification is the science of arranging living things into groups based on their structure, genetics or cell organisation. Reasons: to name organisms without confusion; to show how closely related organisms are; to identify unknown organisms; to organise information about organisms." },
+    { number: 16, kind: "Theory", prompt: "Arrange the seven levels of classification from the broadest to the narrowest.", answer: "Kingdom, phylum (division), class, order, family, genus, species." },
+    { number: 17, kind: "Theory", prompt: "Explain binomial nomenclature and write the scientific name of humans, showing the correct capital letters.", answer: "Binomial nomenclature gives each organism two Latin names: a generic name (capital letter) and a specific name (small letter). Humans are Homo sapiens." },
+    { number: 18, kind: "Theory", prompt: "Name the five kingdoms and give one key feature of each.", answer: "Monera: prokaryotes with no nucleus. Protista: unicellular eukaryotes. Fungi: heterotrophic decomposers with chitin walls. Plantae: multicellular eukaryotes with cellulose walls and chlorophyll. Animalia: multicellular eukaryotes with no cell walls that are heterotrophic." },
+    { number: 19, kind: "Theory", prompt: "Explain why Euglena is difficult to classify as either a plant or an animal.", answer: "Euglena has plant-like features, such as chloroplasts that allow photosynthesis in light, and animal-like features, such as a flagellum for movement, a pellicle, an eyespot and the ability to feed on food in the absence of light. It therefore shares features of both groups." },
+    { number: 20, kind: "Theory", prompt: "Differentiate between gymnosperms and angiosperms.", answer: "Gymnosperms are seed plants with naked seeds borne on cones, such as conifers. Angiosperms are flowering seed plants whose seeds are enclosed in a fruit developed from the ovary." },
+  ] as PracticeQuestion[],
+};

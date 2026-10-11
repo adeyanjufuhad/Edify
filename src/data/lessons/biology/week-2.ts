@@ -1,0 +1,153 @@
+import type { Lesson, LessonSection, PracticeQuestion } from "../types";
+
+export const bioWeek2: Lesson = {
+  id: "ss1-first-biology-week-2",
+  week: "Week 02",
+  title: "Characteristics of living things",
+  subtitle: "The ten features that separate living things from non-living things, how plants and animals differ, and why viruses sit on the boundary.",
+  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Biology, Chapter Two (PDF pages 15–17). The explanations and practice questions below are newly written for Edify.",
+  objectives: [
+    "List the ten characteristics of living things and define each in your own words.",
+    "Use the memory aid MR NIGER CAD to recall all ten characteristics in order.",
+    "Compare plants and animals, and living with non-living things, using clear points.",
+    "Explain why viruses are described as the link between living and non-living things.",
+  ],
+  sections: [
+    {
+      heading: "1. What makes a thing alive?",
+      paragraphs: [
+        "Everything can be sorted into living and non-living things. A living thing performs life processes that a non-living thing cannot. These processes are the characteristics of living things. An organism that shows them all is alive; a stone, a book or a pool of water does not.",
+        "Living things do not all look alike, but they share the same basic list of features. Learning the list, and the reason each item is on it, is the key to answering both objective and theory questions on this topic.",
+      ],
+    },
+    {
+      heading: "2. The ten characteristics",
+      paragraphs: [
+        "Movement is the way living things move from place to place, or move parts of the body, in search of food, shelter or mates. Animals move the whole body; plants move parts of their body in response to growth or external stimuli.",
+        "Respiration is the oxidative breakdown of food such as glucose inside the cells to release energy for life processes. It takes place mainly in the mitochondria, which is why they are called the ‘power house of the cell’.",
+        "Nutrition is the taking in, digestion, absorption and use of food. Animals feed on food made by others. Plants take in water, carbon dioxide and minerals and make their own food by photosynthesis.",
+        "Irritability, or sensitivity, is the ability to respond to stimuli such as heat, light, sound, hunger, thirst or pain, so that the organism can survive. Growth is an irreversible increase in size or dry weight from the building of new body material, increase in cell number, cell enlargement and cell differentiation.",
+        "Excretion is the removal of waste products of metabolism from inside the body. Reproduction is the process by which an organism produces young ones of its own kind. Every organism has a definite and limited lifespan, and death occurs when conditions are unfavourable for life.",
+        "Competition is the struggle of living things for necessities such as food, light and space. Adaptation is the ability to change, over time, in ways that help an organism survive in its environment. An organism that cannot adapt risks extinction.",
+      ],
+    },
+    {
+      heading: "3. Plants and animals compared",
+      paragraphs: [
+        "Plants make their own food and are fixed in place, so they are called autotrophs. Animals cannot make their own food, feed on plants or other animals, and are called heterotrophs. Plants contain chlorophyll in chloroplasts and have cell walls made of cellulose. Animals have neither.",
+        "Plants store carbohydrate as starch and grow indefinitely at their tips. Animals store carbohydrate as glycogen and grow to a limited, definite size. Animals have specific organs for respiration (lungs), excretion (kidneys) and sensitivity (eyes), and they respond to stimuli quickly. Plants respond more slowly and have no sense organs.",
+        "Both are made of cells, respond to stimuli, grow by cell division, reproduce, have a limited lifespan, and carry out digestion and excretion in some form.",
+      ],
+    },
+    {
+      heading: "4. Living and non-living things",
+      paragraphs: [
+        "Living things have life in them, feed, excrete, respire, reproduce and respond to stimuli. They have a limited lifespan and grow by assimilating food into the body. They are built from many different elements. Non-living things, such as stone, sand, water and oxygen, do not perform these processes. They may grow, but only by external addition of material, and some are made of a single element.",
+      ],
+    },
+    {
+      heading: "5. Viruses: the link",
+      paragraphs: [
+        "Viruses are non-cellular microscopic particles that can only be seen with an electron microscope. Outside a living cell, a virus behaves like a non-living thing: it is often crystallised and cannot move, respire or feed. Inside a living cell, it reproduces and behaves like a living thing. This is why viruses are described as the connecting link.",
+        "A virus contains either RNA or DNA, never both, wrapped in a protein coat. The whole infectious particle is called a virion. A virus that infects bacteria is called a bacteriophage.",
+      ],
+    },
+  ] as LessonSection[],
+  hiddenFacts: [
+    "The mnemonic MR NIGER CAD covers all ten characteristics in order: Movement, Respiration, Nutrition, Irritability, Growth, Excretion, Reproduction, Competition, Adaptation, Death. Competition and adaptation are on the list in this book, so learn them too.",
+    "Respiration is the release of energy from food inside the cells. Breathing is the movement of air. Do not write ‘respiration is breathing’, which loses the mark.",
+    "Irritability is a feature of living things. Insensitivity is not, so do not confuse the two words in a multiple-choice question.",
+    "Living things grow by assimilation of food into the body, from the inside, and the growth is irreversible. Non-living things grow only by the external addition of material.",
+    "Plants are fixed, but they can still move parts of their body, such as leaves turning toward light. ‘Plants cannot move’ is too strong; say they do not move from place to place.",
+    "Plants respire all the time, day and night, using their living cells. Photosynthesis is a different process that only happens in light, in cells that contain chlorophyll.",
+    "A virus is not ‘alive’ or ‘dead’ outside a host in the usual sense. Answer by stating which features it shows inside and outside a living cell.",
+  ],
+  summary: "Living things perform ten characteristics: movement, respiration, nutrition, irritability, growth, excretion, reproduction, competition, adaptation and death. Plants make their own food and are fixed, while animals feed on other organisms and move their whole body. Non-living things lack these processes. Viruses act like non-living things outside a host and like living things inside one, which makes them the link between the two.",
+  quick: {
+    intro: "The ten characteristics in the book’s order, the mnemonic MR NIGER CAD, and the comparisons examiners use. Learn the definitions word for word where you can.",
+    blocks: [
+      {
+        heading: "1. The ten characteristics",
+        points: [
+          "Movement: moving from place to place for food, shelter or mates (animals move the whole body; plants move parts).",
+          "Respiration: breaking down food such as glucose in cells to release energy.",
+          "Nutrition: taking in, digesting, absorbing and using food.",
+          "Irritability (sensitivity): responding to stimuli such as heat, light, hunger or pain.",
+          "Growth: irreversible increase in size or dry weight from new material and more cells.",
+          "Excretion: removing waste products of metabolism.",
+          "Reproduction: producing young ones of the same kind.",
+          "Competition: struggling for food, light and space.",
+          "Adaptation: changing to suit the environment; failing to adapt leads to extinction.",
+          "Death: every organism has a definite, limited lifespan.",
+        ],
+        memory: "MR NIGER CAD: Movement, Respiration, Nutrition, Irritability, Growth, Excretion, Reproduction, Competition, Adaptation, Death.",
+      },
+      {
+        heading: "2. Plants and animals",
+        points: [
+          "Plants make their own food (autotrophs). Animals feed on other organisms (heterotrophs).",
+          "Plants have chlorophyll and cellulose cell walls. Animals have neither.",
+          "Plants store starch. Animals store glycogen.",
+          "Plants grow indefinitely at their tips. Animals grow to a definite size.",
+          "Animals have sense organs and respond quickly. Plants respond slowly and have no sense organs.",
+        ],
+        memory: "Plants MAKE food. Animals TAKE food.",
+        warning: "Plants do respire, all the time. Do not say plants ‘do not breathe’ or ‘do not respire’.",
+      },
+      {
+        heading: "3. Living and non-living",
+        points: [
+          "Living things respire, feed, excrete, reproduce and respond; non-living things do not.",
+          "Living things have a limited lifespan. Non-living things do not die.",
+          "Living things grow from the inside by assimilation. Non-living things grow by external addition.",
+          "Living things are made of many elements. Non-living things can be a single element (for example oxygen).",
+        ],
+      },
+      {
+        heading: "4. Viruses",
+        points: [
+          "Non-cellular, seen only with an electron microscope.",
+          "Outside a host: crystallised, does not move, respire or feed (non-living features).",
+          "Inside a host: reproduces and shows living features.",
+          "Contains either RNA or DNA, never both, in a protein coat. The particle is a virion.",
+          "A virus that infects bacteria is a bacteriophage.",
+        ],
+        warning: "Never say a virus ‘eats’ or ‘breathes’ outside a host. Answer by the features it shows in each state.",
+      },
+    ],
+    likely: [
+      { question: "List the ten characteristics of living things.", answer: "Movement, respiration, nutrition, irritability, growth, excretion, reproduction, competition, adaptation and death (MR NIGER CAD)." },
+      { question: "Define respiration.", answer: "The oxidative breakdown of complex food substances, such as glucose, in the cells to release energy for vital activities." },
+      { question: "Define irritability.", answer: "The ability of living things to respond to stimuli such as heat, light, sound, hunger, thirst or pain, in order to survive." },
+      { question: "What is the mitochondrion called and why?", answer: "The ‘power house of the cell’, because it is where food is oxidised to release energy." },
+      { question: "Why are viruses described as the link between living and non-living things?", answer: "Outside a host they show non-living features (crystallised, cannot move or respire); inside a host they reproduce and show living features." },
+      { question: "State two features viruses share with living things.", answer: "They reproduce, and they can move (inside a host, or carried by the host)." },
+      { question: "State two features viruses share with non-living things.", answer: "Outside a host they cannot move and cannot respire." },
+      { question: "What is the difference between plants and animals in nutrition?", answer: "Plants make their own food by photosynthesis (autotrophic). Animals feed on plants or other animals (heterotrophic)." },
+      { question: "Why is growth in a living organism different from growth in a crystal?", answer: "A living organism grows from the inside, by assimilating food into its body. A crystal grows by external addition of material." },
+      { question: "What is adaptation?", answer: "The ability of an organism to change and suit its environment. An organism that cannot adapt risks extinction." },
+    ],
+  },
+  questions: [
+    { number: 1, kind: "Objective", prompt: "Respiration takes place mainly in the", options: ["chloroplast", "nucleus", "mitochondrion", "vacuole"], answer: "C" },
+    { number: 2, kind: "Objective", prompt: "In the mnemonic MR NIGER CAD, the letter C stands for", options: ["Crystallisation", "Circulation", "Competition", "Chlorophyll"], answer: "C" },
+    { number: 3, kind: "Objective", prompt: "Which of the following is NOT a characteristic of living things?", options: ["Irritability", "Growth", "Crystallisation", "Reproduction"], answer: "C" },
+    { number: 4, kind: "Objective", prompt: "Growth in living things is best described as", options: ["an irreversible increase in size or dry weight from new body material", "the external addition of stones", "the addition of water to a container", "a change in colour"], answer: "A" },
+    { number: 5, kind: "Objective", prompt: "Which of these is a feature of animals but not of plants?", options: ["Locomotion of the whole body", "Making their own food", "Cellulose cell walls", "Chlorophyll"], answer: "A" },
+    { number: 6, kind: "Objective", prompt: "Plants store carbohydrate as", options: ["glycogen", "fat", "protein", "starch"], answer: "D" },
+    { number: 7, kind: "Objective", prompt: "Which of these is described as the ‘power house of the cell’?", options: ["chloroplast", "nucleus", "vacuole", "mitochondrion"], answer: "D" },
+    { number: 8, kind: "Objective", prompt: "A virus behaves like a non-living thing when it is", options: ["inside a living cell", "outside a living cell", "reproducing", "replicating in a host"], answer: "B" },
+    { number: 9, kind: "Objective", prompt: "Viruses contain", options: ["DNA only", "RNA only", "either RNA or DNA, but never both", "both DNA and RNA together"], answer: "C" },
+    { number: 10, kind: "Objective", prompt: "Which of these is an example of irritability?", options: ["A rock being worn away", "A leaf turning toward light", "Water boiling", "A nail rusting"], answer: "B" },
+    { number: 11, kind: "Objective", prompt: "Which characteristic is shared by all living things?", options: ["Photosynthesis", "Locomotion", "Respiration", "Transpiration"], answer: "C" },
+    { number: 12, kind: "Objective", prompt: "A bacteriophage is", options: ["a bacterium that makes food", "a type of fungus", "a protozoan", "a virus that infects bacteria"], answer: "D" },
+    { number: 13, kind: "Objective", prompt: "Which living thing is fixed in place but can move some of its parts?", options: ["A dog", "A fish", "An insect", "A plant"], answer: "D" },
+    { number: 14, kind: "Objective", prompt: "Which of these is a difference between living and non-living things?", options: ["Living things can respire; non-living things cannot", "Non-living things reproduce", "Living things never die", "Non-living things feed"], answer: "A" },
+    { number: 15, kind: "Theory", prompt: "State any six characteristics of living things.", answer: "Any six of: movement, respiration, nutrition, irritability, growth, excretion, reproduction, competition, adaptation, death." },
+    { number: 16, kind: "Theory", prompt: "Define respiration and state where it takes place in the cell.", answer: "Respiration is the oxidative breakdown of complex food substances, such as glucose, to release energy for vital activities. It takes place in the mitochondria." },
+    { number: 17, kind: "Theory", prompt: "List four differences between plants and animals.", answer: "Any four of: plants make their own food, animals do not; plants have chlorophyll, animals do not; plants have cellulose cell walls, animals do not; plants store starch, animals store glycogen; plants grow indefinitely, animals grow to a definite size; animals have sense organs, plants do not." },
+    { number: 18, kind: "Theory", prompt: "Explain why viruses are regarded as the link between living and non-living things.", answer: "Outside a living cell a virus is crystallised and cannot move, respire or feed, so it has non-living features. Inside a living cell it reproduces and shows living features, so it has living features. This double nature links it to both groups." },
+    { number: 19, kind: "Theory", prompt: "Explain the difference between growth in a living organism and growth in a non-living object such as a crystal.", answer: "A living organism grows from the inside by assimilating food into its body, and the growth is irreversible, through new material and more cells. A crystal grows by the external addition of material to its surface." },
+    { number: 20, kind: "Theory", prompt: "Explain what is meant by competition and adaptation as characteristics of living things.", answer: "Competition is the struggle of living things for necessities such as food, light and space. Adaptation is the ability of an organism to change in ways that help it survive in its environment. An organism that cannot adapt risks extinction." },
+  ] as PracticeQuestion[],
+};

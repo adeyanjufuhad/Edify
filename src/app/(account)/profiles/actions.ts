@@ -9,10 +9,11 @@ import { getAuth } from "@/lib/auth/server";
 import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile } from "@/lib/profiles";
 import { isClassLevel } from "@/data/curriculum";
 import { normalizeSchool } from "@/data/schools";
+import { isSeniorClass, isStreamId } from "@/data/streams";
 import { applyReferral } from "@/lib/referrals";
 
 // `values` hands back what was typed (never the PINs) so a rejected form keeps it.
-export type FormValues = { name: string; classLevel: string; school: string; referralCode: string };
+export type FormValues = { name: string; classLevel: string; stream: string; school: string; referralCode: string };
 export type FormState = { error?: string; addedAt?: number; values?: FormValues };
 
 export async function addProfile(_state: FormState, formData: FormData): Promise<FormState> {
@@ -21,19 +22,23 @@ export async function addProfile(_state: FormState, formData: FormData): Promise
   const pin = String(formData.get("pin") ?? "");
   const confirm = String(formData.get("confirmPin") ?? "");
   const classLevel = String(formData.get("classLevel") ?? "");
+  const stream = String(formData.get("stream") ?? "");
   const school = normalizeSchool(String(formData.get("school") ?? ""));
   const referralCode = String(formData.get("referralCode") ?? "").trim().slice(0, 40);
-  const values = { name, classLevel, school, referralCode };
+  const values = { name, classLevel, stream, school, referralCode };
   const fail = (error: string): FormState => ({ error, values });
   if (!name || name.length > 40) return fail("Enter the learner’s first name (up to 40 letters).");
   if (!isClassLevel(classLevel)) return fail("Choose the learner’s class (JSS1 to SS3).");
+  // Only SS1 to SS3 learners have a stream; for JSS learners any value sent is ignored.
+  const streamId = isSeniorClass(classLevel) && isStreamId(stream) ? stream : null;
+  if (isSeniorClass(classLevel) && !streamId) return fail("Choose the learner’s stream: Science, Technical, Arts or Business.");
   if (school.length < 2 || school.length > 80) return fail("Enter the learner’s school (pick one from the list or type its name).");
   if (!PIN_PATTERN.test(pin)) return fail("Choose a PIN of exactly 4 digits.");
   if (pin !== confirm) return fail("The two PINs don’t match. Type the same 4 digits twice.");
   const referral = applyReferral(referralCode, school);
   if (!referral.ok) return fail(referral.error);
   try {
-    await createProfile(parent.id, { name, pin, classLevel, school, plan: referral.plan, referralCode: referral.code });
+    await createProfile(parent.id, { name, pin, classLevel, school, stream: streamId, plan: referral.plan, referralCode: referral.code });
   } catch (error) {
     const limit = error instanceof Error && error.message.includes(String(MAX_PROFILES));
     return fail(limit ? `You can add up to ${MAX_PROFILES} learners.` : "Could not add the learner. Check your connection and try again.");

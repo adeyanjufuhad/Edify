@@ -10,10 +10,28 @@ import { week10 } from "./week-10";
 import { week11 } from "./week-11";
 import { week12 } from "./week-12";
 import { week13 } from "./week-13";
+import { bioWeek1 } from "./biology/week-1";
+import { bioWeek2 } from "./biology/week-2";
+import { bioWeeks34 } from "./biology/weeks-3-4";
+import { bioWeek5 } from "./biology/week-5";
+import { bioWeek6 } from "./biology/week-6";
+import { bioWeeks78 } from "./biology/weeks-7-8";
+import { bioWeek9 } from "./biology/week-9";
+import { bioWeek10 } from "./biology/week-10";
+import { bioWeek11 } from "./biology/week-11";
 
 // To publish a lesson: create its data file, then register it here under
 // "<term>/<subject>/<week slug>" (the slugs used in src/data/curriculum.ts).
 export const lessons: Record<string, Lesson> = {
+  "first-term/biology/week-1": bioWeek1,
+  "first-term/biology/week-2": bioWeek2,
+  "first-term/biology/weeks-3-4": bioWeeks34,
+  "first-term/biology/week-5": bioWeek5,
+  "first-term/biology/week-6": bioWeek6,
+  "first-term/biology/weeks-7-8": bioWeeks78,
+  "first-term/biology/week-9": bioWeek9,
+  "first-term/biology/week-10": bioWeek10,
+  "first-term/biology/week-11": bioWeek11,
   "first-term/chemistry/week-1": week1,
   "first-term/chemistry/week-2": week2,
   "first-term/chemistry/week-3": week3,

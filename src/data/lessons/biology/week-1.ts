@@ -1,0 +1,151 @@
+import type { Lesson, LessonSection, PracticeQuestion } from "../types";
+
+export const bioWeek1: Lesson = {
+  id: "ss1-first-biology-week-1",
+  week: "Week 01",
+  title: "Introduction to Biology",
+  subtitle: "What biology studies, its two main branches and the scientific method, shown with a simple plant experiment you can picture.",
+  source: "Original teaching notes based chiefly on Hidden Facts in SSCE Biology, Chapter One (PDF pages 13–15). The explanations and practice questions below are newly written for Edify.",
+  objectives: [
+    "Define biology and explain the meaning of its two Greek root words.",
+    "Name the two main branches of biology and say what each one studies.",
+    "Put the steps of the scientific method in order and describe each one.",
+    "Explain a controlled experiment, identifying the variable and the control.",
+    "List at least four ways biology is useful to people.",
+  ],
+  sections: [
+    {
+      heading: "1. What is biology?",
+      paragraphs: [
+        "Biology is the branch of science that studies living things. The word comes from two Greek words: BIOS, meaning life, and LOGOS, meaning to study. Put together, biology is the study of life.",
+        "Biology has two main branches. Botany is the study of plants. Zoology is the study of animals. Other branches, such as ecology (living things and their surroundings) and genetics (how characteristics are passed on), grow out of these two, so start with botany and zoology.",
+      ],
+      diagram: "Draw a box labelled BIOLOGY (the study of life). Split it into two smaller boxes: BOTANY (plants) and ZOOLOGY (animals).",
+    },
+    {
+      heading: "2. The scientific method",
+      paragraphs: [
+        "Biologists find answers by following a systematic approach called the scientific method. It starts with an observation of something in nature and ends with the results being shared with other scientists.",
+        "Take the example of a shoot growing toward a window. Observation: the shoot bends toward the light. Hypothesis: non-woody shoots respond to light from one side by growing toward it. Experiment: put identical bean seedlings in two set-ups, one lit from one side only and one rotated slowly so every side gets equal light. Analysis: the one-sided seedling bends, the rotated one grows straight. Conclusion: the hypothesis is supported. The result is then accepted, rejected or modified, and shared so others can repeat and test it.",
+        "A hypothesis that is repeatedly supported becomes a theory, which explains why something happens. A law describes a consistent pattern, such as what happens every time under the same conditions. Notice that the steps are an ordered cycle, not a list you can shuffle.",
+      ],
+      points: [
+        "1. Observation",
+        "2. Hypothesis (a scientific guess that can be tested)",
+        "3. Experiment (design and carry it out to test the hypothesis)",
+        "4. Analysis of the results",
+        "5. Conclusion: accept, reject or modify the hypothesis",
+        "6. Share the results so others can check them",
+      ],
+    },
+    {
+      heading: "3. Controlled experiments",
+      paragraphs: [
+        "An experiment must be fair. To avoid false conclusions, every factor is kept the same except the one being tested. That factor is the variable. In the shoot experiment, the variable is the direction of light, because only the lighting differs between the two seedlings.",
+        "The control is the set-up that stays the same in every respect except the variable. The rotating klinostat (a slowly turning turntable) gives the rotated seedling equal light all round, so it shows what happens without one-sided light. Water, soil, pot size and time are kept constant for both seedlings.",
+      ],
+      points: [
+        "Variable: the one factor deliberately changed (independent variable).",
+        "Constant factors: everything else, kept the same.",
+        "Control: the comparison set-up that shows what happens without the variable.",
+      ],
+    },
+    {
+      heading: "4. Why biology matters",
+      paragraphs: [
+        "Biology is applied in many areas of daily life. In agriculture and horticulture, it has produced stronger crop varieties, pesticides and herbicides, and techniques for ripening fruit. In fishery and animal husbandry, knowledge of reproductive cycles has improved production.",
+        "In medicine, dentistry and veterinary science, biology underlies the vaccines and drugs used to prevent and treat disease, and organ transplants such as kidney transplants. In food and drink industries, fermentation processes depend on biology. Biotechnology, including genetic engineering, produces hormones, vaccines and single-cell protein from microorganisms such as yeast.",
+        "Biology can also be misused. The development of biological weapons, which use disease-causing microbes against enemy troops, is a harmful application. A balanced answer to a ‘discuss’ question mentions both sides.",
+      ],
+    },
+  ] as LessonSection[],
+  hiddenFacts: [
+    "Biology is the study of life. Botany is the study of plants, zoology the study of animals. Say ‘living things’ in theory answers, because ‘plants and animals’ leaves out microorganisms.",
+    "Put the scientific method in order: observation, hypothesis, experiment, analysis, conclusion, sharing. A common loss of marks is putting the conclusion before the experiment.",
+    "One experiment does not prove a hypothesis for good. Results support it or do not, under the conditions tested. Write ‘supports’ or ‘is consistent with’, not ‘proves’.",
+    "A theory does not turn into a law when it is well tested. A theory explains why something happens; a law describes what happens. The book’s phrasing that a theory ‘becomes a law’ is loose, so keep the two words separate in answers.",
+    "In a controlled experiment, change only one variable. If two things differ between the set-ups, you cannot say which one caused the result.",
+    "The klinostat rotates the plant so that light reaches every side equally. It is the control, not the variable.",
+    "Biotechnology is not botany. Botany is one branch of biology; biotechnology is the use of living things and their processes to make products.",
+  ],
+  summary: "Biology is the study of life, with two main branches: botany (plants) and zoology (animals). Biologists investigate with the scientific method: observation, hypothesis, experiment, analysis, conclusion and sharing results. A controlled experiment changes one variable and keeps everything else the same. Biology supports agriculture, medicine, food industries and biotechnology, and can also be misused.",
+  quick: {
+    intro: "The book’s own definitions and lists, with the counts examiners ask for: 2 branches, 6 steps in the scientific method, 4 or more uses. Learn the wording and the order.",
+    blocks: [
+      {
+        heading: "1. Meaning and branches",
+        points: [
+          "Biology = the study of living things (life). BIOS = life, LOGOS = study.",
+          "2 main branches: Botany (plants) and Zoology (animals).",
+        ],
+        memory: "Botany = plants. Zoology = zoo = animals.",
+      },
+      {
+        heading: "2. The scientific method",
+        points: [
+          "Observe something in nature.",
+          "Make a hypothesis (a testable guess).",
+          "Design and carry out an experiment.",
+          "Analyse the results.",
+          "Conclude: accept, reject or modify the hypothesis.",
+          "Share the results with other scientists.",
+        ],
+        memory: "O-H-E-A-C-S: Observe, Hypothesis, Experiment, Analyse, Conclude, Share.",
+      },
+      {
+        heading: "3. Controlled experiments",
+        points: [
+          "The variable is the one factor changed on purpose.",
+          "Everything else is kept constant.",
+          "The control shows what happens without the variable.",
+        ],
+        memory: "Change ONE thing. Keep the rest the SAME.",
+        warning: "A control is not always ‘nothing’. In the shoot experiment, the control had equal light all round, so the only difference was one-sided light.",
+      },
+      {
+        heading: "4. Uses of biology",
+        points: [
+          "Agriculture and horticulture: better crops, pesticides, herbicides, fruit ripening.",
+          "Medicine, dentistry and veterinary science: vaccines, drugs, transplants.",
+          "Food industries: fermentation.",
+          "Biotechnology: genetic engineering, hormones, single-cell protein.",
+        ],
+        warning: "Biology can also be harmful: biological weapons use disease-causing microbes. Mention both sides in discussion questions.",
+      },
+    ],
+    likely: [
+      { question: "Define biology.", answer: "The study of living things, or the study of life. BIOS means life and LOGOS means to study." },
+      { question: "Name the two main branches of biology.", answer: "Botany (the study of plants) and zoology (the study of animals)." },
+      { question: "List the stages involved in the scientific method.", answer: "Observation, hypothesis, experiment, analysis, conclusion (accept, reject or modify), and sharing the results." },
+      { question: "What is a hypothesis?", answer: "A scientific or intelligent guess made to account for an observed natural phenomenon, which can be tested by experiment." },
+      { question: "What is a controlled experiment?", answer: "An experiment in which all factors are kept constant except the one being tested (the variable), so that results are fair." },
+      { question: "What is a klinostat used for?", answer: "To rotate a plant slowly so that light reaches every side equally, acting as the control in a light experiment." },
+      { question: "State four usefulness of biology to man.", answer: "Any four of: agriculture and horticulture; medicine, dentistry and veterinary science; food production; biotechnology; development of vaccines and drugs." },
+      { question: "What is a theory in science?", answer: "A hypothesis that has been tested and proven repeatedly correct within the limits of the available evidence." },
+      { question: "What is the difference between a theory and a law?", answer: "A theory explains why something happens; a law describes a consistent pattern of what happens. A theory does not automatically become a law." },
+      { question: "Give one harmful application of biology.", answer: "The development of biological weapons that use disease-causing microbes to attack enemy troops." },
+    ],
+  },
+  questions: [
+    { number: 1, kind: "Objective", prompt: "Biology is derived from two Greek words, BIOS and LOGOS. What does LOGOS mean?", options: ["Life", "Plant", "To study", "Animal"], answer: "C", explanation: "BIOS means life and LOGOS means to study, so biology is the study of life." },
+    { number: 2, kind: "Objective", prompt: "The branch of biology that studies plants is", options: ["zoology", "ecology", "botany", "genetics"], answer: "C" },
+    { number: 3, kind: "Objective", prompt: "The branch of biology that studies animals is", options: ["botany", "ecology", "zoology", "genetics"], answer: "C" },
+    { number: 4, kind: "Objective", prompt: "The first step of the scientific method is", options: ["observation", "experiment", "conclusion", "sharing results"], answer: "A" },
+    { number: 5, kind: "Objective", prompt: "In an experiment on the bending of shoots toward light, the variable is", options: ["the type of seed", "the size of the pot", "the lighting", "the amount of water"], answer: "C", explanation: "The lighting is the one factor deliberately changed." },
+    { number: 6, kind: "Objective", prompt: "A hypothesis is best described as", options: ["a proven law", "a list of uses of biology", "a type of plant", "a scientific guess that can be tested"], answer: "D" },
+    { number: 7, kind: "Objective", prompt: "Which of these is an example of the use of biology in agriculture?", options: ["Developing pest-resistant crops", "Making plastic bags", "Building roads", "Mining iron"], answer: "A" },
+    { number: 8, kind: "Objective", prompt: "Which of these is part of biotechnology?", options: ["Astronomy", "Mining", "Carpentry", "Genetic engineering"], answer: "D" },
+    { number: 9, kind: "Objective", prompt: "The correct order of the scientific method is", options: ["hypothesis, observation, experiment", "experiment, observation, conclusion, hypothesis", "conclusion, experiment, hypothesis, observation", "observation, hypothesis, experiment, conclusion"], answer: "D" },
+    { number: 10, kind: "Objective", prompt: "A theory is best described as", options: ["an untested guess", "a law that can never change", "the result of one experiment", "a hypothesis that has been tested and repeatedly supported"], answer: "D" },
+    { number: 11, kind: "Objective", prompt: "A klinostat is used to", options: ["measure light intensity", "grow bacteria", "cut plant samples", "rotate a plant so light reaches every side equally"], answer: "D" },
+    { number: 12, kind: "Objective", prompt: "Which of these is a harmful application of biology?", options: ["Vaccines", "Fermentation of drinks", "Biological weapons", "Kidney transplants"], answer: "C" },
+    { number: 13, kind: "Objective", prompt: "Which of the following is NOT a step of the scientific method?", options: ["Making observations", "Sharing results", "Testing a hypothesis", "Guessing without testing"], answer: "D" },
+    { number: 14, kind: "Objective", prompt: "Changing two factors at the same time in an experiment is a mistake because", options: ["it makes the experiment faster", "it always gives a wrong answer", "it is only needed in theory", "you cannot tell which factor caused the result"], answer: "D" },
+    { number: 15, kind: "Theory", prompt: "Define biology and explain the meaning of the two Greek words from which it is derived.", answer: "Biology is the study of living things, or the study of life. BIOS means life and LOGOS means to study." },
+    { number: 16, kind: "Theory", prompt: "Name the two main branches of biology and state what each one studies.", answer: "Botany studies plants. Zoology studies animals." },
+    { number: 17, kind: "Theory", prompt: "Describe the steps of the scientific method in order, from observation to sharing the results.", answer: "Observation of a natural event; a hypothesis to explain it; design and carry out an experiment to test it; analyse the results; draw a conclusion and accept, reject or modify the hypothesis; share the results so others can verify them." },
+    { number: 18, kind: "Theory", prompt: "Explain what a controlled experiment is, using the shoot and light example to identify the variable and the control.", answer: "A controlled experiment keeps every factor the same except one, the variable. In the shoot example the variable is the lighting: one seedling is lit from one side. The control is the seedling on the klinostat, which receives equal light all round, so the only difference is the one-sided light." },
+    { number: 19, kind: "Theory", prompt: "State four uses of biology to humankind.", answer: "Any four of: agriculture and horticulture (better crops, pesticides); medicine, dentistry and veterinary science (vaccines, drugs, transplants); food production (fermentation); biotechnology (hormones, single-cell protein); development of vaccines and drugs against disease." },
+    { number: 20, kind: "Theory", prompt: "Distinguish between a hypothesis, a theory and a scientific law.", answer: "A hypothesis is a testable guess made to explain an observation. A theory is a hypothesis that has been tested and repeatedly supported within the limits of the available evidence, and it explains why something happens. A law describes a consistent pattern of what happens under given conditions." },
+  ] as PracticeQuestion[],
+};

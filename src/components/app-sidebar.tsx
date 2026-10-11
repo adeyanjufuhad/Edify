@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Brand from "@/components/brand";
+import { streamLabel } from "@/data/streams";
 import { Grid, Layers, Monitor, Note, Swap, Users } from "@/components/icons";
 import PlanBadge from "@/components/plan-badge";
 import type { LearnerProfile } from "@/lib/profiles";
@@ -23,6 +24,7 @@ function isActive(pathname: string, href: string) {
 export default function AppSidebar({ learner }: { learner: LearnerProfile }) {
   const pathname = usePathname();
   const { name: learnerName, classLevel, school } = learner;
+  const stream = streamLabel(learner.stream);
 
   return (
     <>
@@ -40,7 +42,7 @@ export default function AppSidebar({ learner }: { learner: LearnerProfile }) {
         </nav>
         <div className="sidebar-user">
           <span className="avatar small" aria-hidden="true">{learnerName[0]?.toUpperCase()}</span>
-          <div><strong>{learnerName}</strong><span>{classLevel} learner</span>{school && <span className="sidebar-school" title={school}>{school}</span>}<PlanBadge plan={learner.plan} sponsored={learner.sponsored} className="on-navy" /></div>
+          <div><strong>{learnerName}</strong><span>{classLevel}{stream && <> · {stream}</>} learner</span>{school && <span className="sidebar-school" title={school}>{school}</span>}<PlanBadge plan={learner.plan} sponsored={learner.sponsored} className="on-navy" /></div>
         </div>
       </aside>
 

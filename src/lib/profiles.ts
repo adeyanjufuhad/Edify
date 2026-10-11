@@ -2,13 +2,14 @@ import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:cry
 import { promisify } from "node:util";
 import { database } from "@/lib/db";
 import { isPlanId, type PlanId } from "@/data/plans";
+import { isStreamId, type StreamId } from "@/data/streams";
 import { paidAccess } from "@/lib/access";
 
 const scrypt = promisify(scryptCallback) as (password: string, salt: Buffer, keylen: number) => Promise<Buffer>;
 
-// `sponsored` is true when a referral code set the learner's plan.
-export type LearnerProfile = { id: string; name: string; classLevel: string; school: string | null; plan: PlanId; sponsored: boolean; expiresAt?: string | null };
-type NewProfile = { name: string; pin: string; classLevel: string; school: string; plan: PlanId; referralCode: string | null };
+// `sponsored` is true when a referral code set the learner's plan. `stream` is null for JSS learners.
+export type LearnerProfile = { id: string; name: string; classLevel: string; school: string | null; stream: StreamId | null; plan: PlanId; sponsored: boolean; expiresAt?: string | null };
+type NewProfile = { name: string; pin: string; classLevel: string; school: string; stream: StreamId | null; plan: PlanId; referralCode: string | null };
 
 export const MAX_PROFILES = 6;
 export const PIN_PATTERN = /^\d{4}$/;
@@ -36,6 +37,7 @@ async function toProfile(row: Record<string, unknown>): Promise<LearnerProfile> 
     name: row.name as string,
     classLevel: row.class_level as string,
     school: (row.school as string | null) ?? null,
+    stream: isStreamId(row.stream) ? row.stream : null,
     plan: isPlanId(access.plan) ? access.plan : "free",
     expiresAt: access.expiresAt,
     sponsored,
@@ -43,28 +45,28 @@ async function toProfile(row: Record<string, unknown>): Promise<LearnerProfile> 
 }
 
 export async function listProfiles(parentId: string): Promise<LearnerProfile[]> {
-  const rows = await database()`select id, name, class_level, school, plan, referral_code from public.learner_profiles where parent_id = ${parentId} order by created_at`;
+  const rows = await database()`select id, name, class_level, school, stream, plan, referral_code from public.learner_profiles where parent_id = ${parentId} order by created_at`;
   return Promise.all(rows.map(toProfile));
 }
 
 export async function getProfile(parentId: string, profileId: string): Promise<LearnerProfile | null> {
   if (!UUID_PATTERN.test(profileId)) return null;
-  const rows = await database()`select id, name, class_level, school, plan, referral_code from public.learner_profiles where id = ${profileId} and parent_id = ${parentId}`;
+  const rows = await database()`select id, name, class_level, school, stream, plan, referral_code from public.learner_profiles where id = ${profileId} and parent_id = ${parentId}`;
   return rows[0] ? toProfile(rows[0]) : null;
 }
 
-export async function createProfile(parentId: string, { name, pin, classLevel, school, plan, referralCode }: NewProfile): Promise<LearnerProfile> {
-  const rows = await database()`insert into public.learner_profiles (parent_id, name, pin_hash, class_level, school, plan, referral_code)
-    select ${parentId}, ${name}, ${await hashPin(pin)}, ${classLevel}, ${school}, ${plan}, ${referralCode}
+export async function createProfile(parentId: string, { name, pin, classLevel, school, stream, plan, referralCode }: NewProfile): Promise<LearnerProfile> {
+  const rows = await database()`insert into public.learner_profiles (parent_id, name, pin_hash, class_level, school, stream, plan, referral_code)
+    select ${parentId}, ${name}, ${await hashPin(pin)}, ${classLevel}, ${school}, ${stream}, ${plan}, ${referralCode}
     where (select count(*) from public.learner_profiles where parent_id = ${parentId}) < ${MAX_PROFILES}
-    returning id, name, class_level, school, plan, referral_code`;
+    returning id, name, class_level, school, stream, plan, referral_code`;
   if (!rows[0]) throw new Error(`A parent account can have at most ${MAX_PROFILES} learners.`);
   return toProfile(rows[0]);
 }
 
 export async function checkPin(parentId: string, profileId: string, pin: string): Promise<LearnerProfile | null> {
   if (!UUID_PATTERN.test(profileId) || !PIN_PATTERN.test(pin)) return null;
-  const rows = await database()`select id, name, class_level, school, plan, referral_code, pin_hash from public.learner_profiles where id = ${profileId} and parent_id = ${parentId}`;
+  const rows = await database()`select id, name, class_level, school, stream, plan, referral_code, pin_hash from public.learner_profiles where id = ${profileId} and parent_id = ${parentId}`;
   if (!rows[0] || !(await pinMatches(pin, rows[0].pin_hash as string))) return null;
   return toProfile(rows[0]);
 }
