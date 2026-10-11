@@ -1,7 +1,7 @@
 // Senior secondary streams. Parents choose one for each SS1 to SS3 learner; JSS learners have no stream.
 export const STREAMS = [
-  { id: "science", label: "Science" },
-  { id: "technical", label: "Technical" },
+  { id: "medical", label: "Medical" },
+  { id: "technology", label: "Technology" },
   { id: "arts", label: "Arts" },
   { id: "business", label: "Business" },
 ] as const;

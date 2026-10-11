@@ -31,7 +31,7 @@ export async function addProfile(_state: FormState, formData: FormData): Promise
   if (!isClassLevel(classLevel)) return fail("Choose the learner’s class (JSS1 to SS3).");
   // Only SS1 to SS3 learners have a stream; for JSS learners any value sent is ignored.
   const streamId = isSeniorClass(classLevel) && isStreamId(stream) ? stream : null;
-  if (isSeniorClass(classLevel) && !streamId) return fail("Choose the learner’s stream: Science, Technical, Arts or Business.");
+  if (isSeniorClass(classLevel) && !streamId) return fail("Choose the learner’s stream: Medical, Technology, Arts or Business.");
   if (school.length < 2 || school.length > 80) return fail("Enter the learner’s school (pick one from the list or type its name).");
   if (!PIN_PATTERN.test(pin)) return fail("Choose a PIN of exactly 4 digits.");
   if (pin !== confirm) return fail("The two PINs don’t match. Type the same 4 digits twice.");

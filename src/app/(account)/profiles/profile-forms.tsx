@@ -124,7 +124,7 @@ function ClassAndStream({ initialClass, initialStream }: { initialClass?: string
           <option value="" disabled>Choose a stream…</option>
           {STREAMS.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
         </select>
-        <span className="field-help" id="learner-stream-help">SS1 to SS3 students choose one: Science, Technical, Arts or Business.</span>
+        <span className="field-help" id="learner-stream-help">SS1 to SS3 students choose one: Medical, Technology, Arts or Business.</span>
       </div>
     )}
   </>;
