@@ -5,4 +5,9 @@ export const LEGAL_VERSION = "2026-10-10-draft";
 export const LEGAL_UPDATED = "10 October 2026";
 
 // Filled in by the owner before launch. Shown on the pages as highlighted placeholders until then.
-export const OPERATOR = { name: "", address: "", email: "" };
+// The email is still to come: until it is set, the pages show a highlighted gap for it.
+export const OPERATOR = {
+  name: "BRANDING KORNER GLOBAL CONSULT LIMITED",
+  address: "No. 5 Martins Ajani Street, Ijaiye, Ahmadiyyah, Lagos State, Nigeria",
+  email: "",
+};
