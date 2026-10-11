@@ -78,8 +78,8 @@ re-entering the password before changing safety settings; that needs product wor
   get exactly the same questions in the same order even if the lessons are edited while the challenge is open.
 * **Asynchronous:** each player takes the paper in their own time. The challenge expires after **3 days** if a
   player has not started it (OWNER DECISION). Each player can only start once; the server stamps the start time, so a
-  reload does not restart the clock, and an answer sheet arriving more than 60 seconds after the time limit is
-  refused. A player who starts and never hands in scores zero.
+  reload does not restart the clock, and an answer sheet that arrives more than 60 seconds after the time limit
+  scores zero. A player who starts and never hands in also scores zero.
 * **Answers never reach the browser** until the challenge is finished. The paper sent to the browser has no answers.
   A player sees their own score as soon as they finish; the classmate's score, the winner and the review of every
   question appear once both are done.
@@ -220,3 +220,46 @@ order by r.created_at desc;
 * Parent PIN for safety settings (section 2).
 * An admin screen for reports.
 * Push or email notifications for challenges (would add a processor and contact data; not built).
+
+## 12. Known limits of this build, and what was and was not tested
+
+**Known limits**
+
+* **School names are free text.** Two learners are "classmates" when their school names match ignoring case, spacing and
+  punctuation ("St. Mary's College" = "st marys college") and their class is the same. "Brainfield" and "Brainfield School"
+  do not match, and there is no "edit learner" screen yet, so a parent with a differently typed school cannot link. Fix
+  later with an edit screen or a school list.
+* **No admin screen for reports** and no notification when one is sent (section 9).
+* **The parent area is not behind a separate PIN** (section 2).
+* **Only SS1 lessons exist**, so challenges use the same SS1 questions for any class, with a note on the page (as CBT does).
+* **Polling, not live connections** (section 4): a message can take up to about 4 seconds to appear, online status up to
+  about 25 seconds.
+* **The purge needs `CRON_SECRET`.** `vercel.json` schedules `/api/cron/social-purge` daily; until the secret is set the
+  call answers 401 and Vercel will show a failing cron job.
+
+**Tested here** (`node --experimental-strip-types --test scripts/social.test.mjs scripts/account-deletion.test.mjs`,
+needs PGlite: see `scripts/pglite.mjs`)
+
+* Every rule with no database (winner, ranking, codes, who counts as a classmate, message filter, voice file check, range
+  parsing, marking a paper).
+* Every SQL statement the features run, executed on a real Postgres engine (PGlite) built from the repo's migrations:
+  limits, claiming a code, starting and handing in a challenge (clock, lateness, zero for walk-aways), the leaderboard,
+  masking of the classmate's score and answers until a challenge is finished, block / unblock / remove / report with
+  ownership checks, presence, chat (cursor, retention, unread, parents reading and deleting), voice notes (storage,
+  playback authorisation, retention), the daily purge, and account and learner deletion (explicit statements, foreign-key
+  cascades alone, other families untouched, and a database without the new tables).
+* `tsc --noEmit`, `eslint .`, and `next build` (webpack, and Turbopack with a temporary `turbopack.root`, because this
+  worktree reaches `node_modules` through a junction).
+* With the switches off: every new API route answers 404 (or 401 for the purge), checked against a running dev server; the
+  updated privacy policy and terms render with the new sections and no console errors.
+
+**Not tested** (no accounts could be created and the worktree has no Neon Auth or database settings)
+
+* Any signed-in page: the hub, new challenge, the exam as a challenge, the challenge page, the leaderboard, the parent
+  page, the chat room and the recorder. They are type-checked and built but have not been seen in a browser, on a phone, or
+  against Neon.
+* Microphone recording and audio playback in real browsers (Chrome, Safari on iPhone, Firefox), including Safari's range
+  requests.
+* The statements through Neon's HTTP driver (they ran on PGlite; the driver turns every parameter into text, which is why
+  the statements cast them), and the Vercel cron job.
+* Any visual check of the new screens (screenshots were not available), so spacing and mobile layout are unreviewed.
