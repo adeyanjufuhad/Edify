@@ -30,7 +30,8 @@ const COLLECTED: { group: string; rows: { what: string; detail: React.ReactNode 
     group: "Classmate challenges, chat and voice notes (only when a parent switches them on)",
     rows: [
       { what: "Classmate codes and links", detail: <>A one-time code a parent makes to link their child with a classmate. The code is stored scrambled (hashed), works once and expires after 7 days. When two parents use a code, we save a link between the two learners. A link only works for two learners in the same class and school. <a href="#classmates">The classmates section</a> says who sees what.</> },
-      { what: "Your choices for each learner", detail: "Which of four things you switched on for that learner: challenges, showing when they are online, text chat, and voice notes. All start off." },
+      { what: "Your choices for each learner", detail: "Which things you switched on for that learner: challenges, being visible to their class, showing when they are online, text chat, and voice notes. All start off." },
+      { what: "Classmate requests", detail: "When a child asks a classmate from the class list to be classmates: who asked whom, when, and whether it was accepted or declined." },
       { what: "Challenges", detail: "For each challenge: the two learners, the subject and term, a copy of the questions and answers, each learner’s picks, score and time taken, and when it started and finished." },
       { what: "Online status", detail: "The last time the learner’s Edify page was open, as one time that is overwritten. It is used to show linked classmates a mark that says “Online” or not. It is deleted when you switch online status off or delete the learner." },
       { what: "Text messages", detail: "The text, the time and which of the two learners sent it. Messages containing phone numbers, emails or links are refused, so we never save them." },
@@ -73,7 +74,7 @@ const SECTIONS: LegalSection[] = [
       <li>Only a parent or guardian can create an account. Children never give us an email address.</li>
       <li>We store the least we need: your name and email, and each child’s first name, class, school and study progress.</li>
       <li>We don’t sell data, show adverts, or use tracking or analytics tools.</li>
-      <li>Classmate challenges, online status, chat and voice notes are off for every child until a parent switches them on. Nobody can search for or find a child: two parents have to link their children with a one-time code. Other families only ever see a child’s first name and class. <a href="#classmates">Read the classmates section.</a></li>
+      <li>Classmate challenges, online status, chat and voice notes are off for every child until a parent switches them on. Nobody can search for a child: children only see others in their own school and class, either through a code two parents exchange or, if both parents allow it, a class list. Other families only ever see a child’s first name and class. <a href="#classmates">Read the classmates section.</a></li>
       <li>Three service providers help us run Edify: Neon (database and sign-in) and Vercel (website hosting), both in London, UK, and Paystack (card and bank payments).</li>
       <li>You can delete your account and every learner’s data yourself, at any time. The one thing we keep is the record of payments you made, and <a href="#payments">the payments section</a> explains why.</li>
     </ul>,
@@ -131,9 +132,10 @@ const SECTIONS: LegalSection[] = [
       <p>Edify can let learners challenge a classmate on a subject, see which linked classmates are online, send text messages and send short voice notes. This connects children, so it is built to be off until a parent says yes, and to give strangers no way in.</p>
       <h3>Who can use it, and who can see a child</h3>
       <ul>
-        <li><b>Off by default.</b> For each learner, a parent separately switches on: challenges and classmates, showing when they are online, text chat, and voice notes. A feature only works between two children if <b>both</b> parents have switched it on.</li>
-        <li><b>No searching, no strangers.</b> There is no list of learners and no way to look someone up. Two learners can only be linked if they are in the <b>same school and the same class</b> and their two parents agree: one parent makes a one-time code and sends it to the other parent, who types it in. Either parent can remove the link at any time.</li>
+        <li><b>Off by default.</b> For each learner, a parent separately switches on: challenges and classmates, being visible to their class, showing when they are online, text chat, and voice notes. A feature only works between two children if <b>both</b> parents have switched it on.</li>
+        <li><b>No strangers.</b> There is no search and no list of all learners. A child only ever sees children in their <b>own school and class</b>, and only in one of two ways: (1) two parents link them with a one-time code (or link their own two children); or (2) both parents switch on <b>“Visible to my class”</b>, which shows the child in a class list to the other children in that class whose parents made the same choice. From the class list a child can send a classmate request with a challenge; they can only chat once the other child accepts. Saying no blocks the request for good, and either parent can remove any link at any time.</li>
         <li><b>First name and class only.</b> A linked classmate (and their parents) sees a child’s first name, class, challenge results and, if both parents allow it, an “Online” mark. They never see the school, surname, plan, progress, notes or anything else.</li>
+        <li><b>The class list</b> shows first name, class and (if both share it) “Online now”, nothing else. <Todo>owner and lawyer to confirm that a class list, even limited to children whose parents opted in, is acceptable, and how a family can be sure a child in the list really attends that school (school names are typed in by parents and are not checked)</Todo></li>
         <li><b>The leaderboard</b> lists a learner and their linked classmates with first names, classes and challenge results, shown to those learners. It looks back 90 days.</li>
       </ul>
       <h3>What parents can see and do</h3>

@@ -15,7 +15,7 @@ export default async function NewChallengePage({ searchParams }: { searchParams:
   const { learner, blocked } = await pageActor();
   if (blocked) return <Gate blocked={blocked} learnerId={learner.id} />;
   const { with: withLink } = await searchParams;
-  const classmates = await listClassmates(learner.id).catch(() => []);
+  const classmates = await listClassmates(learner.id, true).catch(() => []);
   const subjects = challengeSubjects();
 
   return (

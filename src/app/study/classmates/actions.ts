@@ -26,7 +26,7 @@ const on = (formData: FormData, name: string) => formData.get(name) === "on";
 export async function saveSettingsAction(_state: SettingsState, formData: FormData): Promise<SettingsState> {
   const parent = await parentOrNotFound();
   const saved = await saveSettings(parent.id, field(formData, "learnerId"), {
-    challenges: on(formData, "challenges"), presence: on(formData, "presence"), chat: on(formData, "chat"), voice: on(formData, "voice"),
+    challenges: on(formData, "challenges"), classVisible: on(formData, "classVisible"), presence: on(formData, "presence"), chat: on(formData, "chat"), voice: on(formData, "voice"),
   });
   if (!saved) return { error: "That learner isn’t on your account." };
   refresh();

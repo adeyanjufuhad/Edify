@@ -6,36 +6,37 @@ export type Query = { text: string; params: unknown[] };
 
 // ---------- Settings ----------
 export function settingsQuery(learnerId: string): Query {
-  return { text: "select challenges_on, presence_on, chat_on, voice_on from public.learner_social_settings where learner_id = $1::uuid", params: [learnerId] };
+  return { text: "select challenges_on, presence_on, chat_on, voice_on, class_visible from public.learner_social_settings where learner_id = $1::uuid", params: [learnerId] };
 }
 
 export function settingsForQuery(learnerIds: string[]): Query {
-  return { text: "select learner_id, challenges_on, presence_on, chat_on, voice_on from public.learner_social_settings where learner_id = any($1::uuid[])", params: [learnerIds] };
+  return { text: "select learner_id, challenges_on, presence_on, chat_on, voice_on, class_visible from public.learner_social_settings where learner_id = any($1::uuid[])", params: [learnerIds] };
 }
 
 // Saves the parent's choices for one of their own learners; no row comes back when the learner is not theirs.
-export function saveSettingsQuery(parentId: string, learnerId: string, on: { challenges: boolean; presence: boolean; chat: boolean; voice: boolean }): Query {
+export function saveSettingsQuery(parentId: string, learnerId: string, on: { challenges: boolean; presence: boolean; chat: boolean; voice: boolean; classVisible?: boolean }): Query {
   return {
-    text: `insert into public.learner_social_settings (learner_id, challenges_on, presence_on, chat_on, voice_on)
-      select id, $3::boolean, $4::boolean, $5::boolean, $6::boolean from public.learner_profiles where id = $1::uuid and parent_id = $2::uuid
-      on conflict (learner_id) do update set challenges_on = excluded.challenges_on, presence_on = excluded.presence_on, chat_on = excluded.chat_on, voice_on = excluded.voice_on, updated_at = now()
+    text: `insert into public.learner_social_settings (learner_id, challenges_on, presence_on, chat_on, voice_on, class_visible)
+      select id, $3::boolean, $4::boolean, $5::boolean, $6::boolean, $7::boolean from public.learner_profiles where id = $1::uuid and parent_id = $2::uuid
+      on conflict (learner_id) do update set challenges_on = excluded.challenges_on, presence_on = excluded.presence_on, chat_on = excluded.chat_on, voice_on = excluded.voice_on, class_visible = excluded.class_visible, updated_at = now()
       returning learner_id`,
-    params: [learnerId, parentId, on.challenges, on.presence, on.chat, on.voice],
+    params: [learnerId, parentId, on.challenges, on.presence, on.chat, on.voice, on.classVisible === true],
   };
 }
 
 // ---------- Links ----------
 // Only people linked with the learner, and only those whose parents have switched challenges on.
-export function classmatesQuery(learnerId: string): Query {
+// `withRequests` also includes classmate requests still waiting (a challenge can be sent with a request; chat cannot).
+export function classmatesQuery(learnerId: string, withRequests = false): Query {
   return {
-    text: `select l.id as link_id, o.id as learner_id, o.name as name, o.class_level as class_level,
+    text: `select l.id as link_id, l.status as status, o.id as learner_id, o.name as name, o.class_level as class_level,
         s.presence_on as presence_on, s.chat_on as chat_on, s.voice_on as voice_on
       from public.classmate_links l
       join public.learner_profiles o on o.id = case when l.learner_a = $1::uuid then l.learner_b else l.learner_a end
       join public.learner_social_settings s on s.learner_id = o.id and s.challenges_on
-      where l.status = 'active' and $1::uuid in (l.learner_a, l.learner_b)
+      where (l.status = 'active' or ($2::boolean and l.status = 'pending')) and $1::uuid in (l.learner_a, l.learner_b)
       order by lower(o.name), o.id`,
-    params: [learnerId],
+    params: [learnerId, withRequests],
   };
 }
 
@@ -90,6 +91,86 @@ export function linkOwnLearnersQuery(parentId: string, learnerX: string, learner
   };
 }
 
+// ---------- "Visible to my class" (db/migrations/014) ----------
+// A school name compared the way social-rules.ts schoolKey() does: lower case, no dots, commas or quotes, single spaces.
+const SCHOOL_KEY = (column: string) => `btrim(regexp_replace(regexp_replace(lower(coalesce(${column}, '')), '[.,''’"]', '', 'g'), '\\s+', ' ', 'g'))`;
+
+// Everyone in the learner's school and class who can be seen there: both parents switched on challenges and "Visible to my
+// class". Never anyone the learner has blocked or who blocked them. "online" is only filled when both share online status.
+// link_status/requested_by say whether they are already linked, asked, or being asked.
+export function classDirectoryQuery(learnerId: string, withinSeconds: number, limit: number): Query {
+  return {
+    text: `select o.id as learner_id, o.name as name, o.class_level as class_level, o.school as school,
+        case when me.presence_on and s.presence_on then coalesce(p.last_seen_at > now() - make_interval(secs => $2::int), false) end as online,
+        l.id as link_id, l.status as link_status, l.requested_by as requested_by
+      from public.learner_profiles mp
+      join public.learner_social_settings me on me.learner_id = mp.id and me.challenges_on and me.class_visible
+      join public.learner_profiles o on o.id <> mp.id and o.class_level = mp.class_level
+        and ${SCHOOL_KEY("o.school")} = ${SCHOOL_KEY("mp.school")} and char_length(${SCHOOL_KEY("mp.school")}) >= 2
+      join public.learner_social_settings s on s.learner_id = o.id and s.challenges_on and s.class_visible
+      left join public.learner_presence p on p.learner_id = o.id
+      left join public.classmate_links l on l.learner_a = least(mp.id, o.id) and l.learner_b = greatest(mp.id, o.id)
+      where mp.id = $1::uuid and (l.id is null or l.status <> 'blocked')
+      order by (case when me.presence_on and s.presence_on then coalesce(p.last_seen_at > now() - make_interval(secs => $2::int), false) end) desc nulls last, lower(o.name), o.id
+      limit $3::int`,
+    params: [learnerId, withinSeconds, limit],
+  };
+}
+
+// Asks to be classmates: a pending link, asked by this learner. Nothing happens if a link (of any kind) already exists.
+export function requestLinkQuery(learnerId: string, otherId: string): Query {
+  return {
+    text: `insert into public.classmate_links (learner_a, learner_b, status, requested_by)
+      values (least($1::uuid, $2::uuid), greatest($1::uuid, $2::uuid), 'pending', $1::uuid)
+      on conflict (learner_a, learner_b) do nothing
+      returning id`,
+    params: [learnerId, otherId],
+  };
+}
+
+// Requests to and from this learner that are still waiting.
+export function pendingLinksQuery(learnerId: string): Query {
+  return {
+    text: `select l.id as link_id, l.requested_by as requested_by, o.id as other_id, o.name as name, o.class_level as class_level
+      from public.classmate_links l
+      join public.learner_profiles o on o.id = case when l.learner_a = $1::uuid then l.learner_b else l.learner_a end
+      where l.status = 'pending' and $1::uuid in (l.learner_a, l.learner_b)
+      order by l.created_at desc`,
+    params: [learnerId],
+  };
+}
+
+// The asked learner accepts. The one who asked cannot accept their own request.
+export function acceptLinkQuery(learnerId: string, linkId: string): Query {
+  return {
+    text: `update public.classmate_links l set status = 'active', requested_by = null
+      where l.id = $2::uuid and l.status = 'pending' and $1::uuid in (l.learner_a, l.learner_b) and l.requested_by <> $1::uuid
+      returning l.id`,
+    params: [learnerId, linkId],
+  };
+}
+
+// Starting a challenge that came with a request counts as accepting it.
+export function acceptByChallengeQuery(learnerId: string, challengeId: string): Query {
+  return {
+    text: `update public.classmate_links l set status = 'active', requested_by = null
+      from public.challenges c
+      where c.id = $2::uuid and c.opponent_id = $1::uuid and l.status = 'pending' and l.requested_by <> $1::uuid
+        and l.learner_a = least(c.challenger_id, c.opponent_id) and l.learner_b = greatest(c.challenger_id, c.opponent_id)`,
+    params: [learnerId, challengeId],
+  };
+}
+
+// The asked learner says no. This blocks quietly, so the same child cannot ask again.
+export function declineLinkQuery(learnerId: string, linkId: string): Query {
+  return {
+    text: `update public.classmate_links l set status = 'blocked', blocked_by = $1::uuid, requested_by = null
+      where l.id = $2::uuid and l.status = 'pending' and $1::uuid in (l.learner_a, l.learner_b) and l.requested_by <> $1::uuid
+      returning l.id`,
+    params: [learnerId, linkId],
+  };
+}
+
 // ---------- Classmate codes ----------
 export function createInviteQuery(parentId: string, learnerId: string, codeHash: string, validDays: number): Query {
   return {
@@ -131,7 +212,7 @@ export function inviteByHashQuery(codeHash: string): Query {
 const MEMBER = `$2::uuid in (l.learner_a, l.learner_b) and ($1::uuid is null or exists (select 1 from public.learner_profiles p where p.id = $2::uuid and p.parent_id = $1::uuid))`;
 
 export function blockLinkQuery(parentId: string | null, learnerId: string, linkId: string): Query {
-  return { text: `update public.classmate_links l set status = 'blocked', blocked_by = $2::uuid where l.id = $3::uuid and l.status = 'active' and ${MEMBER} returning l.id`, params: [parentId, learnerId, linkId] };
+  return { text: `update public.classmate_links l set status = 'blocked', blocked_by = $2::uuid, requested_by = null where l.id = $3::uuid and l.status in ('active', 'pending') and ${MEMBER} returning l.id`, params: [parentId, learnerId, linkId] };
 }
 
 // Only the side that blocked can lift it, so a blocked learner's parent cannot undo someone else's block.
@@ -141,7 +222,7 @@ export function unblockLinkQuery(parentId: string, learnerId: string, linkId: st
 
 // Removing a link also removes its chat (foreign key). A link blocked by the other side is kept, so their block holds.
 export function removeLinkQuery(parentId: string | null, learnerId: string, linkId: string): Query {
-  return { text: `delete from public.classmate_links l where l.id = $3::uuid and ${MEMBER} and (l.status = 'active' or l.blocked_by = $2::uuid) returning l.id`, params: [parentId, learnerId, linkId] };
+  return { text: `delete from public.classmate_links l where l.id = $3::uuid and ${MEMBER} and (l.status in ('active', 'pending') or l.blocked_by = $2::uuid) returning l.id`, params: [parentId, learnerId, linkId] };
 }
 
 // Open challenges between the two on a link end when the link is blocked or removed.
@@ -208,7 +289,7 @@ const CHALLENGE_COLUMNS = `c.id as id, l.id as link_id, c.challenger_id as chall
     case when c.finished_at is not null then ot.duration_seconds end as their_duration`;
 const CHALLENGE_JOINS = `from public.challenges c
     join public.learner_profiles o on o.id = case when c.challenger_id = $1::uuid then c.opponent_id else c.challenger_id end
-    join public.classmate_links l on l.status = 'active' and l.learner_a = least(c.challenger_id, c.opponent_id) and l.learner_b = greatest(c.challenger_id, c.opponent_id)
+    join public.classmate_links l on l.status in ('active', 'pending') and l.learner_a = least(c.challenger_id, c.opponent_id) and l.learner_b = greatest(c.challenger_id, c.opponent_id)
     left join public.challenge_entries me on me.challenge_id = c.id and me.learner_id = $1::uuid
     left join public.challenge_entries ot on ot.challenge_id = c.id and ot.learner_id = o.id`;
 
@@ -242,7 +323,7 @@ export function playQuery(learnerId: string, challengeId: string): Query {
         greatest(0, extract(epoch from (e.started_at + make_interval(mins => c.minutes) - now()))::int) as seconds_left
       from public.challenges c
       join public.challenge_entries e on e.challenge_id = c.id and e.learner_id = $1::uuid
-      join public.classmate_links l on l.status = 'active' and l.learner_a = least(c.challenger_id, c.opponent_id) and l.learner_b = greatest(c.challenger_id, c.opponent_id)
+      join public.classmate_links l on l.status in ('active', 'pending') and l.learner_a = least(c.challenger_id, c.opponent_id) and l.learner_b = greatest(c.challenger_id, c.opponent_id)
       where c.id = $2::uuid and c.status = 'open' and e.submitted_at is null`,
     params: [learnerId, challengeId],
   };

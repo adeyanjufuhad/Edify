@@ -13,9 +13,9 @@ const hashCode = (code: string) => createHash("sha256").update(code).digest("hex
 export type Classmate = { linkId: string; learnerId: string; name: string; classLevel: string; presence: boolean; chat: boolean; voice: boolean };
 
 // Linked classmates whose parents have switched challenges on. First name and class only.
-export async function listClassmates(learnerId: string): Promise<Classmate[]> {
+export async function listClassmates(learnerId: string, withRequests = false): Promise<Classmate[]> {
   if (!isUuid(learnerId)) return [];
-  const rows = await run(sq.classmatesQuery(learnerId));
+  const rows = await run(sq.classmatesQuery(learnerId, withRequests));
   return rows.map((row) => ({
     linkId: row.link_id as string, learnerId: row.learner_id as string, name: row.name as string, classLevel: row.class_level as string,
     presence: row.presence_on === true, chat: row.chat_on === true, voice: row.voice_on === true,
@@ -38,20 +38,20 @@ export async function getLinkForLearner(learnerId: string, linkId: string): Prom
 
 // ---------- What a parent sees ----------
 // `otherId` stays on the server (it is only used to know who is already linked); pages show the name and class.
-export type ParentLink = { linkId: string; status: "active" | "blocked"; blocked: "by-us" | "by-them" | null; learnerId: string; otherId: string; other: { name: string; classLevel: string } };
+export type ParentLink = { linkId: string; status: "active" | "blocked" | "pending"; blocked: "by-us" | "by-them" | null; learnerId: string; otherId: string; other: { name: string; classLevel: string } };
 
 // Each link from the point of view of each of the parent's learners on it (two views when both learners are theirs).
 export async function listParentLinks(parentId: string): Promise<ParentLink[]> {
   const rows = await run(sq.parentLinksQuery(parentId));
   return rows.flatMap((row) => {
-    const status = row.status === "blocked" ? "blocked" : "active";
+    const status = row.status === "blocked" ? "blocked" : row.status === "pending" ? "pending" : "active";
     const sides = [
       { mine: { id: row.a_id as string, parent: row.a_parent as string }, otherId: row.b_id as string, other: { name: row.b_name as string, classLevel: row.b_class as string } },
       { mine: { id: row.b_id as string, parent: row.b_parent as string }, otherId: row.a_id as string, other: { name: row.a_name as string, classLevel: row.a_class as string } },
     ];
     return sides.filter((side) => side.mine.parent === parentId).map((side) => ({
-      linkId: row.link_id as string, status: status as "active" | "blocked", learnerId: side.mine.id, otherId: side.otherId, other: side.other,
-      blocked: status === "active" ? null : row.blocked_by === side.mine.id ? ("by-us" as const) : ("by-them" as const),
+      linkId: row.link_id as string, status: status as ParentLink["status"], learnerId: side.mine.id, otherId: side.otherId, other: side.other,
+      blocked: status !== "blocked" ? null : row.blocked_by === side.mine.id ? ("by-us" as const) : ("by-them" as const),
     }));
   });
 }
@@ -130,6 +130,58 @@ export async function linkOwnLearners(parentId: string, learnerId: string, sibli
   }
   if ((await run(sq.linkBetweenQuery(learner.id, sibling.id)))[0]) return { error: `${learner.name} and ${sibling.name} are already linked.` };
   return (await run(sq.linkOwnLearnersQuery(parentId, learner.id, sibling.id)))[0] ? { ok: true } : { error: "Could not link them. Try again." };
+}
+
+// ---------- "Visible to my class" ----------
+export type ClassEntry = { learnerId: string; name: string; classLevel: string; online: boolean | null; state: "none" | "linked" | "asked" | "asking-me"; linkId: string | null };
+
+// Everyone the learner may see in their school and class (both parents chose "Visible to my class"). First name, class and,
+// when both share it, whether they are online. The school is checked again here with the same rule as everywhere else.
+export async function classDirectory(learner: { id: string; school: string | null; classLevel: string }): Promise<ClassEntry[]> {
+  const rows = await run(sq.classDirectoryQuery(learner.id, LIMITS.onlineWithinSeconds, 100));
+  return rows
+    .filter((row) => areClassmates({ school: learner.school, classLevel: learner.classLevel }, { school: (row.school as string | null) ?? null, classLevel: row.class_level as string }))
+    .map((row) => ({
+      learnerId: row.learner_id as string, name: row.name as string, classLevel: row.class_level as string,
+      online: typeof row.online === "boolean" ? row.online : null,
+      linkId: (row.link_id as string | null) ?? null,
+      state: !row.link_id ? "none" : row.link_status === "active" ? "linked" : row.requested_by === learner.id ? "asked" : "asking-me",
+    }));
+}
+
+export type Request = { linkId: string; name: string; classLevel: string; fromMe: boolean };
+
+export async function listRequests(learnerId: string): Promise<Request[]> {
+  return (await run(sq.pendingLinksQuery(learnerId))).map((row) => ({ linkId: row.link_id as string, name: row.name as string, classLevel: row.class_level as string, fromMe: row.requested_by === learnerId }));
+}
+
+// Asks a child in the class to be classmates (a challenge can go with it). Returns the link to challenge on. If they had
+// already asked this learner, asking back accepts.
+export async function requestFromClass(learner: { id: string; school: string | null; classLevel: string }, otherId: string): Promise<{ linkId: string } | { error: string }> {
+  if (!isUuid(otherId)) return { error: "That classmate isn’t available." };
+  const entry = (await classDirectory(learner)).find((one) => one.learnerId === otherId);
+  if (!entry) return { error: "That classmate isn’t available." };
+  if (entry.linkId) {
+    if (entry.state === "asking-me") await run(sq.acceptLinkQuery(learner.id, entry.linkId));
+    return { linkId: entry.linkId };
+  }
+  if (!(await withinLimit({ learnerId: learner.id }, "request", LIMITS.requestsPerLearnerPerDay, 86400))) return { error: "That’s enough classmate requests for today. Try again tomorrow." };
+  for (const id of [learner.id, otherId]) {
+    if (((await run(sq.linkCountQuery(id)))[0]?.n as number) >= LIMITS.maxClassmates) return { error: id === learner.id ? `You already have ${LIMITS.maxClassmates} classmates, which is the most we allow.` : `${entry.name} can’t take more classmates.` };
+  }
+  const row = (await run(sq.requestLinkQuery(learner.id, otherId)))[0];
+  return row ? { linkId: row.id as string } : { error: "That classmate isn’t available." };
+}
+
+export async function acceptRequest(learnerId: string, linkId: string) {
+  return isUuid(linkId) && (await run(sq.acceptLinkQuery(learnerId, linkId))).length > 0;
+}
+
+// Saying no blocks quietly and ends any challenge that came with the request.
+export async function declineRequest(learnerId: string, linkId: string) {
+  if (!isUuid(linkId)) return false;
+  const [declined] = await runTogether([sq.declineLinkQuery(learnerId, linkId), sq.cancelOpenForLinkQuery(null, learnerId, linkId)]);
+  return declined.length > 0;
 }
 
 // ---------- Block, unblock, remove, report ----------

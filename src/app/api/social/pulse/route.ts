@@ -2,6 +2,7 @@ import { chatEnabled, presenceEnabled } from "@/lib/social/flags";
 import { actionActor } from "@/lib/social/guard";
 import { onlineByLink } from "@/lib/social/presence";
 import { unreadByLink } from "@/lib/social/chat";
+import { classDirectory } from "@/lib/social/links";
 
 export const dynamic = "force-dynamic";
 
@@ -11,11 +12,15 @@ export async function GET() {
   const actor = await actionActor();
   if (!actor.ok) return Response.json({ error: actor.error }, { status: actor.status });
   try {
-    const [online, unread] = await Promise.all([
+    const sharesOnline = presenceEnabled() && actor.settings.presence;
+    const [online, unread, classOnline] = await Promise.all([
       presenceEnabled() && actor.settings.presence ? onlineByLink(actor.learner.id) : Promise.resolve({}),
       chatEnabled() && actor.settings.chat ? unreadByLink(actor.learner.id) : Promise.resolve({}),
+      sharesOnline && actor.settings.classVisible
+        ? classDirectory(actor.learner).then((list) => Object.fromEntries(list.filter((entry) => entry.online !== null).map((entry) => [entry.learnerId, entry.online === true])))
+        : Promise.resolve({}),
     ]);
-    return Response.json({ online, unread }, { headers: { "Cache-Control": "no-store" } });
+    return Response.json({ online, unread, classOnline }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return Response.json({ error: "Temporarily unavailable" }, { status: 503 });
   }

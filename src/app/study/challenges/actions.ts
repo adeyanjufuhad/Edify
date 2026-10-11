@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { isReportReason } from "@/data/challenges";
 import { actionActor } from "@/lib/social/guard";
 import { cancelChallenge, createChallenge, declineChallenge, startChallenge, submitChallenge } from "@/lib/social/challenges";
-import { blockAsLearner, reportAsLearner } from "@/lib/social/links";
+import { acceptRequest, blockAsLearner, declineRequest, reportAsLearner, requestFromClass } from "@/lib/social/links";
 import { receivedMessage } from "@/lib/social/chat";
 
 // Every action starts by finding out who is asking from the signed-in session and learner cookie (never from the
@@ -85,4 +85,25 @@ export async function reportMessageAction(_state: ActionState, formData: FormDat
   const result = await reportAsLearner(actor.learner.id, message.linkId, reason, field(formData, "note"), { id: message.id, text: message.text });
   if ("error" in result) return { error: result.error };
   redirect("/study/challenges?notice=reported");
+}
+
+// "Challenge" on someone in the class list: sends a classmate request (or reuses the link) and opens the challenge form.
+export async function challengeFromClassAction(formData: FormData) {
+  const actor = await actionActor();
+  if (!actor.ok || !actor.settings.classVisible) redirect("/study/challenges");
+  const result = await requestFromClass(actor.learner, field(formData, "learnerId"));
+  if ("error" in result) redirect("/study/challenges?notice=unavailable");
+  redirect(`/study/challenges/new?with=${result.linkId}`);
+}
+
+export async function acceptRequestAction(formData: FormData) {
+  const actor = await actionActor();
+  if (actor.ok) await acceptRequest(actor.learner.id, field(formData, "linkId"));
+  redirect("/study/challenges?notice=accepted");
+}
+
+export async function declineRequestAction(formData: FormData) {
+  const actor = await actionActor();
+  if (actor.ok) await declineRequest(actor.learner.id, field(formData, "linkId"));
+  redirect("/study/challenges?notice=declined");
 }

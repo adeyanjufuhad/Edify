@@ -11,7 +11,7 @@ import { usePulse } from "./use-pulse";
 // The learner's linked classmates: first name and class, who is online (when both parents allow it), and what they
 // can do with each one. `features` says what the owner has switched on and the learner's own parent allows.
 export default function ClassmateList({ classmates, features }: { classmates: Classmate[]; features: { presence: boolean; chat: boolean; voice: boolean } }) {
-  const pulse = usePulse(features.presence || features.chat);
+  const pulse = usePulse();
   return (
     <ul className="classmate-list">
       {classmates.map((classmate) => {

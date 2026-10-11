@@ -15,7 +15,7 @@ export default function Gate({ blocked, learnerId }: { blocked: Blocked; learner
         </> : <>
           <h1>A parent needs to switch challenges on.</h1>
           <p>Challenges let you answer the same questions as your classmates and see who scores more. To keep you safe, your parent chooses who you are linked with and decides whether you can use challenges, chat and voice notes.</p>
-          <Link href={`/profiles/classmates?learner=${learnerId}`} className="pill-button">Ask a parent to open the classmate settings</Link>
+          <Link href={`/study/classmates?learner=${learnerId}`} className="pill-button">Open classmate settings (for parents)</Link>
         </>}
       </section>
     </div>

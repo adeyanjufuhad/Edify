@@ -89,7 +89,7 @@ export async function getChallenge(learnerId: string, challengeId: string): Prom
 // ---------- Creating, starting, handing in ----------
 export async function createChallenge(learnerId: string, input: { linkId: string; subjectSlug: string; termSlug: string; count: number; lessonIds?: string[] }): Promise<{ id: string } | { error: string }> {
   const link = await getLinkForLearner(learnerId, input.linkId);
-  if (!link || link.status !== "active" || !link.otherSwitches.challenges) return { error: "That classmate isn’t available for challenges." };
+  if (!link || (link.status !== "active" && link.status !== "pending") || !link.otherSwitches.challenges) return { error: "That classmate isn’t available for challenges." };
   const subject = challengeSubjects().find((entry) => entry.slug === input.subjectSlug);
   if (!subject) return { error: "Choose a subject from the list." };
   const termSlug = input.termSlug === "all" ? null : input.termSlug;
@@ -114,6 +114,8 @@ export async function createChallenge(learnerId: string, input: { linkId: string
 export async function startChallenge(learnerId: string, challengeId: string): Promise<{ ok: true } | { error: string }> {
   if (!isUuid(challengeId)) return { error: "That challenge isn’t available." };
   await run(startEntryQuery(challengeId, learnerId));
+  // A challenge that came with a classmate request: starting it accepts the request.
+  await run(sq.acceptByChallengeQuery(learnerId, challengeId));
   const play = (await run(sq.playQuery(learnerId, challengeId)))[0];
   return play ? { ok: true } : { error: "This challenge can’t be started. It may have ended, or you may have handed it in already." };
 }

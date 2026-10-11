@@ -16,11 +16,11 @@ export function SettingsForm({ learnerId, name, values, open }: { learnerId: str
   const [on, setOn] = useState<Values>(values);
   const set = (id: SwitchId, value: boolean) => setOn((current) => {
     const next = { ...current, [id]: value };
-    if (!next.challenges) { next.presence = false; next.chat = false; next.voice = false; }
+    if (!next.challenges) { next.classVisible = false; next.presence = false; next.chat = false; next.voice = false; }
     if (!next.chat) next.voice = false;
     return next;
   });
-  const needs: Partial<Record<SwitchId, boolean>> = { presence: !on.challenges, chat: !on.challenges, voice: !on.chat };
+  const needs: Partial<Record<SwitchId, boolean>> = { classVisible: !on.challenges, presence: !on.challenges, chat: !on.challenges, voice: !on.chat };
 
   return (
     <form action={action} className="switch-form">

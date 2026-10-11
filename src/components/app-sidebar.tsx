@@ -52,7 +52,7 @@ export default function AppSidebar({ learner, challenges = false }: { learner: L
           </>}
           <span className="sidebar-label">Family</span>
           <Link href="/profiles" className="sidebar-link"><Users size={18} />Learners</Link>
-          {challenges && <Link href={`/profiles/classmates?learner=${learner.id}`} className="sidebar-link"><Shield size={18} />Classmate settings</Link>}
+          {challenges && <Link href={`/study/classmates?learner=${learner.id}`} className={`sidebar-link ${pathname.startsWith("/study/classmates") ? "active" : ""}`} aria-current={pathname.startsWith("/study/classmates") ? "page" : undefined}><Shield size={18} />Classmate settings</Link>}
           <a href="/leave" className="sidebar-link"><Swap size={18} />Switch learner</a>
         </nav>
         <div className="sidebar-user">

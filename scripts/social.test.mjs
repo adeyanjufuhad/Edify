@@ -142,7 +142,7 @@ const B1 = "b1b1b1b1-0000-4000-8000-000000000003"; // parent 2, Chi
 const C1 = "c1c1c1c1-0000-4000-8000-000000000004"; // parent 3, Dayo
 
 const BASE = ["../neon/schema.sql", "../db/migrations/001_learner_profiles.sql", "../db/migrations/002_learner_school.sql", "../db/migrations/003_learner_plan.sql", "../db/migrations/004_cbt_attempts.sql", "../db/migrations/006_payments.sql", "../db/migrations/007_parent_consents.sql", "../db/migrations/008_learner_stream.sql", "../db/migrations/009_stream_names.sql"];
-const SOCIAL = ["../db/migrations/010_classmates_challenges.sql", "../db/migrations/011_presence.sql", "../db/migrations/012_chat.sql", "../db/migrations/013_voice_notes.sql"];
+const SOCIAL = ["../db/migrations/010_classmates_challenges.sql", "../db/migrations/011_presence.sql", "../db/migrations/012_chat.sql", "../db/migrations/013_voice_notes.sql", "../db/migrations/014_class_visibility.sql"];
 
 async function freshDatabase({ social = true } = {}) {
   const db = new PGlite();
@@ -381,7 +381,7 @@ test("settings: a parent can only save them for their own learner", async () => 
   assert.equal((await run(db, qq.saveSettingsQuery(P1, A1, on))).rows.length, 1);
   assert.equal((await run(db, qq.saveSettingsQuery(P1, A1, { ...on, presence: true }))).rows.length, 1, "saving again updates");
   assert.equal(await count(db, "select count(*) n from public.learner_social_settings"), 1);
-  assert.deepEqual((await run(db, qq.settingsQuery(A1))).rows[0], { challenges_on: true, presence_on: true, chat_on: false, voice_on: false });
+  assert.deepEqual((await run(db, qq.settingsQuery(A1))).rows[0], { challenges_on: true, presence_on: true, chat_on: false, voice_on: false, class_visible: false });
   assert.equal((await run(db, qq.settingsQuery(B1))).rows.length, 0, "no row means everything off");
   assert.equal((await run(db, qq.settingsForQuery([A1, B1]))).rows.length, 1);
   await assert.rejects(run(db, qq.saveSettingsQuery(P1, A1, { challenges: false, presence: false, chat: true, voice: false })), /check/i, "the database refuses chat without challenges");
@@ -396,7 +396,7 @@ test("classmate list: only active links to learners whose parents switched chall
   await db.query("insert into public.classmate_links (learner_a, learner_b) values ($1, $2), ($3, $4)", [ab1, ab2, ac1, ac2]);
   let list = (await run(db, qq.classmatesQuery(A1))).rows;
   assert.deepEqual(list.map((r) => r.name), ["Chi"], "Dayo's parent has not switched challenges on");
-  assert.deepEqual(Object.keys(list[0]).sort(), ["chat_on", "class_level", "learner_id", "link_id", "name", "presence_on", "voice_on"], "no school, stream, plan or parent");
+  assert.deepEqual(Object.keys(list[0]).sort(), ["chat_on", "class_level", "learner_id", "link_id", "name", "presence_on", "status", "voice_on"], "no school, stream, plan or parent");
   await run(db, qq.saveSettingsQuery(P3, C1, on));
   assert.deepEqual((await run(db, qq.classmatesQuery(A1))).rows.map((r) => r.name), ["Chi", "Dayo"]);
   await run(db, qq.blockLinkQuery(null, A1, list[0].link_id));
@@ -597,7 +597,7 @@ test("every query's parameters are all used and ids are never part of the SQL te
     q.rateLimitQuery({ learnerId: A1 }, "msg", 3, 60), q.rateLimitQuery({ parentId: P1 }, "invite", 3, 60), q.claimInviteQuery(A1, B1), q.startEntryQuery(A1, B1),
     q.submitEntryQuery(A1, B1, 3, 5, "[]", 60), q.finishChallengeQuery(A1), q.settleOverdueQuery(A1, 60), q.finishSettledQuery(A1), q.leaderboardQuery([A1], 90, null),
     qq.settingsQuery(A1), qq.settingsForQuery([A1]), qq.saveSettingsQuery(P1, A1, { challenges: true, presence: false, chat: false, voice: false }), qq.classmatesQuery(A1),
-    qq.parentLinksQuery(P1), qq.linkOwnLearnersQuery(P1, A1, A2), qq.linkBetweenQuery(A1, B1), qq.linkCountQuery(A1), qq.linkForLearnerQuery(A1, B1), qq.createInviteQuery(P1, A1, "f".repeat(64), 7),
+    qq.parentLinksQuery(P1), qq.linkOwnLearnersQuery(P1, A1, A2), qq.classDirectoryQuery(A1, 75, 100), qq.requestLinkQuery(A1, B1), qq.pendingLinksQuery(A1), qq.acceptLinkQuery(A1, B1), qq.acceptByChallengeQuery(A1, B1), qq.declineLinkQuery(A1, B1), qq.linkBetweenQuery(A1, B1), qq.linkCountQuery(A1), qq.linkForLearnerQuery(A1, B1), qq.createInviteQuery(P1, A1, "f".repeat(64), 7),
     qq.pendingInviteCountQuery(A1), qq.pendingInvitesQuery(P1), qq.cancelInviteQuery(P1, A1), qq.inviteByHashQuery("f".repeat(64)), qq.blockLinkQuery(P1, A1, B1),
     qq.unblockLinkQuery(P1, A1, B1), qq.removeLinkQuery(null, A1, B1), qq.cancelOpenForLinkQuery(P1, A1, B1), qq.reportQuery(A1, B1, "other", null, null, null),
     qq.reportsByParentQuery(P1), qq.openBetweenQuery(A1, B1), qq.challengeListQuery(A1, 180, 30), qq.challengeDetailQuery(A1, B1), qq.playQuery(A1, B1),
@@ -786,6 +786,71 @@ test("a message can only be reported by the learner who received it", async () =
   assert.equal((await run(db, qq.receivedMessageQuery(A1, sent))).rows.length, 0, "not your own message");
   assert.equal((await run(db, qq.receivedMessageQuery(C1, sent))).rows.length, 0, "not an outsider");
   assert.deepEqual((await run(db, qq.receivedMessageQuery(B1, sent))).rows[0], { id: sent, link_id: linkId, kind: "text", body: "rude words" });
+});
+
+// ---------------------------------------------------------------- visible to my class
+
+const VISIBLE = { challenges: true, classVisible: true, presence: false, chat: false, voice: false };
+
+test("class list: only same school and class, both parents chose 'visible to my class', never blocked; online only when both share it", async () => {
+  const db = await freshDatabase();
+  await db.query("update public.learner_profiles set school = 'brainfield  school.' where id = $1", [C1]);
+  await db.query("insert into public.learner_profiles (id, parent_id, name, pin_hash, class_level, school) values ('d1d1d1d1-0000-4000-8000-000000000005', $1, 'Eko', 'x', 'SS2', 'Brainfield School')", [P3]);
+  await run(db, qq.saveSettingsQuery(P1, A1, VISIBLE));
+  await run(db, qq.saveSettingsQuery(P2, B1, VISIBLE));
+  await run(db, qq.saveSettingsQuery(P3, C1, VISIBLE));
+  await run(db, qq.saveSettingsQuery(P3, "d1d1d1d1-0000-4000-8000-000000000005", VISIBLE));
+  await run(db, qq.saveSettingsQuery(P1, A2, { ...VISIBLE, classVisible: false }));
+  const names = async (who = A1) => (await run(db, qq.classDirectoryQuery(who, 75, 100))).rows.map((r) => r.name).sort();
+  assert.deepEqual(await names(), ["Chi", "Dayo"], "Bola is not visible, Eko is in another class, school spelling differences are ignored");
+  await run(db, qq.saveSettingsQuery(P1, A1, { ...VISIBLE, classVisible: false }));
+  assert.deepEqual(await names(), [], "you only see the class if you are visible too");
+  await run(db, qq.saveSettingsQuery(P1, A1, VISIBLE));
+  assert.deepEqual((await run(db, qq.classDirectoryQuery(A1, 75, 100))).rows.map((r) => r.online), [null, null], "no online status unless both share it");
+  await run(db, qq.saveSettingsQuery(P1, A1, { ...VISIBLE, presence: true }));
+  await run(db, qq.saveSettingsQuery(P2, B1, { ...VISIBLE, presence: true }));
+  await run(db, qq.heartbeatQuery(B1, 20));
+  const rows = (await run(db, qq.classDirectoryQuery(A1, 75, 100))).rows;
+  assert.deepEqual(rows.map((r) => [r.name, r.online]), [["Chi", true], ["Dayo", null]], "online people first");
+  const linkId = (await run(db, qq.requestLinkQuery(A1, C1))).rows[0].id;
+  await run(db, qq.declineLinkQuery(C1, linkId));
+  assert.deepEqual(await names(), ["Chi"], "after Dayo declines, Ada no longer sees Dayo");
+  assert.deepEqual(await names(C1), ["Chi"], "and Dayo no longer sees Ada");
+});
+
+test("classmate requests: one per pair, only the asked child accepts or declines, a decline cannot be re-asked, chat waits for acceptance", async () => {
+  const db = await freshDatabase();
+  for (const [parent, learner] of [[P1, A1], [P2, B1]]) await run(db, qq.saveSettingsQuery(parent, learner, { ...VISIBLE, chat: true }));
+  const linkId = (await run(db, qq.requestLinkQuery(A1, B1))).rows[0].id;
+  assert.equal((await run(db, qq.requestLinkQuery(B1, A1))).rows.length, 0, "only one link per pair");
+  assert.equal((await run(db, qq.sendTextQuery(A1, linkId, "hi"))).rows.length, 0, "no chat while the request is pending");
+  assert.deepEqual((await run(db, qq.pendingLinksQuery(B1))).rows.map((r) => [r.name, r.requested_by]), [["Ada", A1]]);
+  assert.deepEqual((await run(db, qq.classmatesQuery(B1))).rows, [], "a pending request is not yet a classmate");
+  assert.equal((await run(db, qq.acceptLinkQuery(A1, linkId))).rows.length, 0, "the asker cannot accept their own request");
+  assert.equal((await run(db, qq.acceptLinkQuery(C1, linkId))).rows.length, 0, "an outsider cannot accept");
+  assert.equal((await run(db, qq.acceptLinkQuery(B1, linkId))).rows.length, 1);
+  assert.equal((await run(db, qq.sendTextQuery(A1, linkId, "hi"))).rows.length, 1, "chat opens once accepted");
+
+  const second = (await run(db, qq.requestLinkQuery(A2, B1))).rows[0].id;
+  assert.equal((await run(db, qq.declineLinkQuery(A2, second))).rows.length, 0, "the asker cannot decline");
+  assert.equal((await run(db, qq.declineLinkQuery(B1, second))).rows.length, 1);
+  assert.equal((await one(db, `select status, blocked_by from public.classmate_links where id = '${second}'`)).status, "blocked");
+  assert.equal((await run(db, qq.requestLinkQuery(A2, B1))).rows.length, 0, "a declined child cannot ask again");
+});
+
+test("a challenge can be sent with a request; starting it accepts the request", async () => {
+  const db = await freshDatabase();
+  const linkId = (await run(db, qq.requestLinkQuery(A1, B1))).rows[0].id;
+  const id = (await db.query(`insert into public.challenges (challenger_id, opponent_id, subject_slug, subject_name, term_name, question_count, minutes, paper, expires_at) values ($1, $2, 'chemistry', 'Chemistry', 'First Term', 5, 5, $3::jsonb, now() + interval '3 days') returning id`, [A1, B1, PAPER])).rows[0].id;
+  assert.equal((await run(db, qq.challengeListQuery(B1, 180, 30))).rows.length, 1, "the asked child sees the challenge");
+  await start(db, id, A1);
+  await run(db, qq.acceptByChallengeQuery(A1, id));
+  assert.equal((await one(db, "select status from public.classmate_links")).status, "pending", "the challenger starting does not accept for the other child");
+  await start(db, id, B1);
+  assert.equal((await entries(db, id)).length, 2, "a pending request still lets both play");
+  await run(db, qq.acceptByChallengeQuery(B1, id));
+  assert.deepEqual(await one(db, "select status, requested_by from public.classmate_links"), { status: "active", requested_by: null });
+  assert.equal(linkId.length, 36);
 });
 
 // ---------------------------------------------------------------- deletion

@@ -5,24 +5,24 @@ import { saveSettingsQuery, settingsForQuery, settingsQuery } from "@/lib/social
 import { database } from "@/lib/db";
 
 // What a parent has switched on for a learner. No row means everything is off.
-export type SocialSettings = { challenges: boolean; presence: boolean; chat: boolean; voice: boolean };
-export const NOTHING_ON: SocialSettings = { challenges: false, presence: false, chat: false, voice: false };
+export type SocialSettings = { challenges: boolean; classVisible: boolean; presence: boolean; chat: boolean; voice: boolean };
+export const NOTHING_ON: SocialSettings = { challenges: false, classVisible: false, presence: false, chat: false, voice: false };
 
 function fromRow(row: Row | undefined): SocialSettings {
   if (!row) return NOTHING_ON;
-  return { challenges: row.challenges_on === true, presence: row.presence_on === true, chat: row.chat_on === true, voice: row.voice_on === true };
+  return { challenges: row.challenges_on === true, classVisible: row.class_visible === true, presence: row.presence_on === true, chat: row.chat_on === true, voice: row.voice_on === true };
 }
 
 // Chat needs challenges, voice needs chat, presence needs challenges: switching a feature off switches off what depends on it.
 export function consistent(wanted: SocialSettings): SocialSettings {
   const challenges = wanted.challenges;
   const chat = challenges && wanted.chat;
-  return { challenges, presence: challenges && wanted.presence, chat, voice: chat && wanted.voice };
+  return { challenges, classVisible: challenges && wanted.classVisible, presence: challenges && wanted.presence, chat, voice: chat && wanted.voice };
 }
 
 // What actually applies right now: a feature the owner has not switched on for the whole site counts as off.
 export function effective(settings: SocialSettings): SocialSettings {
-  return { challenges: settings.challenges, presence: settings.presence && presenceEnabled(), chat: settings.chat && chatEnabled(), voice: settings.voice && voiceEnabled() };
+  return { challenges: settings.challenges, classVisible: settings.classVisible, presence: settings.presence && presenceEnabled(), chat: settings.chat && chatEnabled(), voice: settings.voice && voiceEnabled() };
 }
 
 export async function getSettings(learnerId: string): Promise<SocialSettings> {

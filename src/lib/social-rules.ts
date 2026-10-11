@@ -16,6 +16,8 @@ export const LIMITS = {
   challengeValidDays: 3,
   challengeCounts: [10, 15, 20] as readonly number[],
   gracePeriodSeconds: 60,
+  // Classmate requests to children in the same class ("Visible to my class")
+  requestsPerLearnerPerDay: 10,
   // Reports
   reportsPerLearnerPerDay: 5,
   // Chat

@@ -3,6 +3,14 @@
 
 .challenge-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start; }
 .challenge-note { margin: 0; }
+.challenge-column { display: grid; gap: 20px; align-content: start; }
+.panel-sub { font-size: 13px; font-weight: 600; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.class-count { margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--navy); }
+.request-list { display: grid; gap: 10px; }
+.request { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border: 2px solid var(--line); border-radius: var(--r-lg); background: var(--white); }
+.request.is-incoming { border-color: var(--red); background: var(--tint-red); }
+.request .classmate-actions form { display: inline-flex; }
+@media (max-width: 600px) { .request { grid-template-columns: auto minmax(0, 1fr); } .request .classmate-actions { grid-column: 1 / -1; justify-content: flex-start; } }
 .challenge-gate { display: grid; justify-items: start; gap: 10px; }
 .challenge-gate h1, .challenge-gate h2 { font-size: clamp(24px, 3vw, 30px); margin: 0; }
 .challenge-gate p { margin: 0; color: var(--ink-2); max-width: 60ch; }

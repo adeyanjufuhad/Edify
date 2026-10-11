@@ -20,11 +20,12 @@ export function isReportReason(value: unknown): value is ReportReason {
   return REPORT_REASONS.some((reason) => reason.id === value);
 }
 
-// The four switches a parent controls for each learner.
+// The switches a parent controls for each learner.
 export const SWITCHES = [
   { id: "challenges", label: "Challenges and classmates", help: "Can be linked with classmates you approve, take part in challenges and appear on their leaderboard." },
-  { id: "presence", label: "Show when online", help: "Linked classmates can see a green “Online” mark while this learner has Edify open. Nothing else about what they are doing." },
-  { id: "chat", label: "Text chat", help: "Can send short text messages to linked classmates who also have chat on. You can read and delete every message." },
+  { id: "classVisible", label: "Visible to my class", help: "Other children in the same school and class whose parents also chose this can see this learner’s first name and class, and send a classmate request with a challenge. Chat only opens if this learner accepts." },
+  { id: "presence", label: "Show when online", help: "Classmates this learner can see (linked ones, and the class list when it is on) see an “Online now” mark while this learner has Edify open, if they share theirs too. Nothing else about what they are doing." },
+  { id: "chat", label: "Text chat", help: "Can send short text messages to classmates they are linked with (or whose request they accepted) who also have chat on. You can read and delete every message." },
   { id: "voice", label: "Voice notes", help: "Can send short recorded voice notes in chat. You can listen to and delete every one." },
 ] as const;
 
