@@ -134,7 +134,7 @@ const SECTIONS: LegalSection[] = [
         <li><b>Off by default.</b> For each learner, a parent separately switches on: challenges and classmates, showing when they are online, text chat, and voice notes. A feature only works between two children if <b>both</b> parents have switched it on.</li>
         <li><b>No searching, no strangers.</b> There is no list of learners and no way to look someone up. Two learners can only be linked if they are in the <b>same school and the same class</b> and their two parents agree: one parent makes a one-time code and sends it to the other parent, who types it in. Either parent can remove the link at any time.</li>
         <li><b>First name and class only.</b> A linked classmate (and their parents) sees a child’s first name, class, challenge results and, if both parents allow it, an “Online” mark. They never see the school, surname, plan, progress, notes or anything else.</li>
-        <li><b>The leaderboard</b> lists a learner and their linked classmates with first names, classes and challenge results, to the learners and parents involved. It looks back 90 days.</li>
+        <li><b>The leaderboard</b> lists a learner and their linked classmates with first names, classes and challenge results, shown to those learners. It looks back 90 days.</li>
       </ul>
       <h3>What parents can see and do</h3>
       <ul>
