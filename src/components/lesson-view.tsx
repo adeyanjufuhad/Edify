@@ -207,7 +207,7 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
           </>)}
 
           <section id="hidden-facts" className="lesson-section">
-            <span className="kicker">03 / EXAM SMARTS</span><h2>Hidden facts &amp; exam tips</h2>
+            <span className="kicker">03 / EXAM SMARTS</span><h2>Exam traps &amp; tips</h2>
             <ol className="tips-list">{lesson.hiddenFacts.map((tip) => <li key={tip}>{tip}</li>)}</ol>
           </section>
 
