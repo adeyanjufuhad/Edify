@@ -257,6 +257,7 @@
 .complete-button { background: var(--red); border-color: var(--red); color: var(--white); }
 .complete-button:hover { background: var(--red-deep); border-color: var(--red-deep); }
 .complete-button.completed { background: var(--navy); border-color: var(--navy); }
+.answer-toggle:disabled, .complete-button:disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
 .lesson-section textarea { width: 100%; min-height: 170px; border: 2px solid var(--line); border-radius: var(--r); padding: 14px 16px; background: var(--white); resize: vertical; display: block; margin: 16px 0; font-size: 16px; color: var(--ink); }
 .lesson-section textarea:focus-visible { outline: none; border-color: var(--navy); }
 .note-actions { display: flex; gap: 10px; flex-wrap: wrap; }

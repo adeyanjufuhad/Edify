@@ -26,7 +26,7 @@ const AUTOSAVE_DELAY_MS = 1500;
 export default function LessonView({ lesson, crumbs, initialCompleted, initialNote, loadFailed, initialView, next, back, practiceAvailable }: Props) {
   const [complete, setComplete] = useState(initialCompleted);
   const [note, setNote] = useState(initialNote);
-  const [saveStatus, setSaveStatus] = useState(loadFailed ? "Your saved notes could not be loaded. Please refresh before writing." : "");
+  const [saveStatus, setSaveStatus] = useState(loadFailed ? "Your saved notes could not be loaded, so saving is paused. Refresh the page to try again." : "");
   const [picks, setPicks] = useState<Record<number, string>>({});
   const [shownTheory, setShownTheory] = useState<Set<number>>(new Set());
   const [view, setView] = useState<"quick" | "full">(lesson.quick && initialView !== "full" ? "quick" : "full");
@@ -273,19 +273,23 @@ export default function LessonView({ lesson, crumbs, initialCompleted, initialNo
                 ];
               })}
             </div>
-            <button type="button" className="answer-toggle" onClick={() => setShownTheory(allTheoryShown ? new Set() : new Set(theory.map((q) => q.number)))}>
-              {allTheoryShown ? "Hide all theory answers" : "Show all theory answers"}
-            </button>
+            {theory.length > 0 && (
+              <button type="button" className="answer-toggle" onClick={() => setShownTheory(allTheoryShown ? new Set() : new Set(theory.map((q) => q.number)))}>
+                {allTheoryShown ? "Hide all theory answers" : "Show all theory answers"}
+              </button>
+            )}
             </>}
           </section>
 
           <section id="my-notes" className="lesson-section">
             <span className="kicker">06 / YOUR SPACE</span><h2>My notes</h2>
             <p>Write down a question, example, or idea you want to remember. Notes save automatically to your private account, so they are on your other devices too.</p>
-            <textarea aria-label="My lesson notes" name="notes" autoComplete="off" maxLength={10000} value={note} onChange={onNoteChange} placeholder="e.g. A question for my teacher, or a trick to remember…" />
+            {/* Saving sends the note and the tick together, so while the saved ones are unknown nothing may be saved:
+                an empty box would overwrite the learner's real note. */}
+            <textarea aria-label="My lesson notes" name="notes" autoComplete="off" maxLength={10000} value={note} onChange={onNoteChange} disabled={loadFailed} placeholder="e.g. A question for my teacher, or a trick to remember…" />
             <div className="note-actions">
-              <button type="button" className="answer-toggle" onClick={() => persist(completeRef.current, noteRef.current)}>Save now</button>
-              <button type="button" className={`complete-button ${complete ? "completed" : ""}`} onClick={() => persist(!complete, noteRef.current)}>{complete ? <><Check size={15} /> Lesson completed</> : "Mark lesson complete"}</button>
+              <button type="button" className="answer-toggle" disabled={loadFailed} onClick={() => persist(completeRef.current, noteRef.current)}>Save now</button>
+              <button type="button" className={`complete-button ${complete ? "completed" : ""}`} disabled={loadFailed} onClick={() => persist(!complete, noteRef.current)}>{complete ? <><Check size={15} /> Lesson completed</> : "Mark lesson complete"}</button>
             </div>
             <p role="status" className="save-status">{saveStatus}</p>
           </section>

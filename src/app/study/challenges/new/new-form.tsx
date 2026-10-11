@@ -11,7 +11,8 @@ type Props = { classmates: { linkId: string; name: string; classLevel: string }[
 
 export default function NewChallengeForm({ classmates, subjects, counts, initialLink, validDays }: Props) {
   const [state, action, pending] = useActionState<ActionState, FormData>(createChallengeAction, {});
-  const [linkId, setLinkId] = useState(initialLink || classmates[0]?.linkId || "");
+  // `?with=` can name a classmate who is no longer on the list (blocked or removed); then start with the first one.
+  const [linkId, setLinkId] = useState(classmates.some((entry) => entry.linkId === initialLink) ? initialLink : classmates[0]?.linkId ?? "");
   const [subjectSlug, setSubjectSlug] = useState(subjects[0]?.slug ?? "");
   const subject = subjects.find((entry) => entry.slug === subjectSlug) ?? subjects[0];
   // "All terms" is only offered when more than one term has questions.

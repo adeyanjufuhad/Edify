@@ -12,6 +12,8 @@ export const LETTERS = ["A", "B", "C", "D"] as const;
 export type Letter = (typeof LETTERS)[number];
 
 const MAX_MINUTES = 180;
+// cbt_attempts.total allows at most 200 questions (db/migrations/004), so a longer paper could never be saved.
+export const MAX_QUESTIONS = 200;
 const MIDTERM_DEFAULT: [number, number] = [1, 6];
 const DEFAULT_COUNT: Record<CbtMode, number> = { week: 20, weeks: 30, term: 40, midterm: 30 };
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -86,7 +88,7 @@ export function parsePaperSpec(params: URLSearchParams): PaperSpec | { error: st
   }
 
   const available = lessons.reduce((sum, lesson) => sum + lesson.questions.length, 0);
-  const count = Math.min(Math.max(intParam(params, "count") ?? DEFAULT_COUNT[mode as CbtMode], 1), available);
+  const count = Math.min(Math.max(intParam(params, "count") ?? DEFAULT_COUNT[mode as CbtMode], 1), available, MAX_QUESTIONS);
   const minutes = Math.min(Math.max(intParam(params, "minutes") ?? count, 1), MAX_MINUTES);
   const seed = intParam(params, "seed") ?? 0;
   return { bank, mode: mode as CbtMode, lessons, range, count, shuffle: params.get("shuffle") !== "0", minutes, seed: seed >>> 0 };

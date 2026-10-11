@@ -13,6 +13,9 @@ const MODES: { id: CbtMode; label: string; text: string; icon: typeof Target }[]
 ];
 const DEFAULT_COUNT: Record<CbtMode, number> = { week: 20, weeks: 30, term: 40, midterm: 30 };
 const COUNT_PRESETS = [5, 10, 20, 30, 40, 60, 80];
+// The same limits as src/lib/cbt.ts (MAX_QUESTIONS, MAX_MINUTES): a saved attempt holds at most 200 questions.
+const MAX_COUNT = 200;
+const MAX_MINUTES = 180;
 
 export default function CbtSetup({ banks }: { banks: BankSummary[] }) {
   const router = useRouter();
@@ -33,9 +36,10 @@ export default function CbtSetup({ banks }: { banks: BankSummary[] }) {
     : mode === "weeks" ? bank.lessons.filter((lesson) => chosen.includes(lesson.id))
     : mode === "term" ? bank.lessons
     : bank.lessons.filter((lesson) => lesson.from <= to && lesson.to >= from);
-  const available = lessons.reduce((sum, lesson) => sum + lesson.count, 0);
+  const inLessons = lessons.reduce((sum, lesson) => sum + lesson.count, 0);
+  const available = Math.min(inLessons, MAX_COUNT);
   const count = Math.min(countChoice ?? DEFAULT_COUNT[mode], available);
-  const minutes = minutesChoice ?? Math.max(count, 1);
+  const minutes = minutesChoice ?? Math.min(Math.max(count, 1), MAX_MINUTES);
   const presets = [...COUNT_PRESETS.filter((value) => value < available), available].filter((value) => value > 0);
   const problem = mode === "weeks" && !chosen.length ? "Tick at least one week." : mode === "midterm" && from > to ? "The first week must come before the last week." : !available ? "No questions are ready for that choice yet." : "";
 
@@ -60,7 +64,7 @@ export default function CbtSetup({ banks }: { banks: BankSummary[] }) {
       {banks.length > 1 && (
         <div className="field">
           <label htmlFor="cbt-bank">Subject</label>
-          <select id="cbt-bank" value={bankKey} onChange={(event) => { setBankKey(event.target.value); setChosen([]); setSingle(banks.find((entry) => entry.key === event.target.value)?.lessons[0]?.id ?? ""); }}>
+          <select id="cbt-bank" value={bankKey} onChange={(event) => { const next = banks.find((entry) => entry.key === event.target.value); setBankKey(event.target.value); setChosen([]); setSingle(next?.lessons[0]?.id ?? ""); setFrom(1); setTo(Math.min(6, Math.max(1, ...(next?.lessons.map((lesson) => lesson.to) ?? [1])))); }}>
             {banks.map((entry) => <option key={entry.key} value={entry.key}>{entry.subject} · {entry.term}</option>)}
           </select>
         </div>
@@ -110,7 +114,7 @@ export default function CbtSetup({ banks }: { banks: BankSummary[] }) {
             ))}
           </div>
         </>}
-        {mode === "term" && <p className="cbt-summary">All {bank.lessons.length} ready weeks of {bank.subject}, {bank.term}: {available} questions to draw from.</p>}
+        {mode === "term" && <p className="cbt-summary">All {bank.lessons.length} ready weeks of {bank.subject}, {bank.term}: {inLessons} questions to draw from{inLessons > MAX_COUNT ? `, up to ${MAX_COUNT} in one test` : ""}.</p>}
         {mode === "midterm" && <>
           <div className="cbt-range">
             <div className="field">
@@ -132,12 +136,12 @@ export default function CbtSetup({ banks }: { banks: BankSummary[] }) {
           <div className="field">
             <label htmlFor="cbt-count">Number of questions</label>
             <select id="cbt-count" value={count} disabled={!available} onChange={(event) => setCountChoice(Number(event.target.value))}>
-              {presets.map((value) => <option key={value} value={value}>{value === available ? `All ${value}` : value}</option>)}
+              {presets.map((value) => <option key={value} value={value}>{value === inLessons ? `All ${value}` : value}</option>)}
             </select>
           </div>
           <div className="field">
             <label htmlFor="cbt-minutes">Time (minutes)</label>
-            <input id="cbt-minutes" type="number" inputMode="numeric" min={1} max={180} value={minutes} onChange={(event) => setMinutesChoice(event.target.value ? Math.min(Math.max(Number(event.target.value), 1), 180) : null)} aria-describedby="cbt-minutes-help" />
+            <input id="cbt-minutes" type="number" inputMode="numeric" min={1} max={MAX_MINUTES} value={minutes} onChange={(event) => setMinutesChoice(event.target.value ? Math.min(Math.max(Number(event.target.value), 1), MAX_MINUTES) : null)} aria-describedby="cbt-minutes-help" />
             <span className="field-help" id="cbt-minutes-help">{minutesChoice === null ? "About 1 minute per question." : <button type="button" className="text-button small" onClick={() => setMinutesChoice(null)}>Use 1 minute per question</button>}</span>
           </div>
           <label className="cbt-switch">

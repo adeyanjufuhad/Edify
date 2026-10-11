@@ -35,7 +35,7 @@ export const LIMITS = {
 };
 
 // OWNER DECISION: every number here is a proposal. Messages and voice notes are hidden from reads once older than
-// this, and deleted by the daily purge (src/lib/social/purge.ts).
+// this, and deleted by the daily purge (src/app/api/cron/social-purge/route.ts).
 export const RETENTION_DAYS = {
   textMessages: 14,
   voiceNotes: 7,
