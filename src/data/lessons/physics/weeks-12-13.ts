@@ -1,0 +1,153 @@
+import type { Lesson, LessonSection, PracticeQuestion } from "../types";
+
+export const phyWeeks1213: Lesson = {
+  id: "ss1-first-physics-weeks-12-13",
+  week: "Weeks 12–13",
+  title: "Revision & examination",
+  subtitle: "Pull together Weeks 1 to 11: key facts, a formula sheet, diagrams and graphs to practise, exam technique and a 30-question mock paper.",
+  source: "Written by Edify as revision for the SS1 First Term Physics scheme of work. The revision notes and the mock examination are original.",
+  objectives: [
+    "Recall the key definitions, units and facts from Weeks 1 to 11 of First Term Physics.",
+    "Write down and use the main formulas without looking at the notes.",
+    "Draw and read the graphs and instrument scales that are most often asked for.",
+    "Use command words correctly and set out calculations clearly.",
+    "Sit a timed mock paper and use the results to find topics that need more revision.",
+  ],
+  sections: [
+    {
+      heading: "1. Key facts by week",
+      paragraphs: [
+        "Weeks 1 and 2: physics is the science of matter and energy and how they interact; its branches include mechanics, heat, optics, acoustics, electricity and magnetism, atomic and nuclear physics and electronics. Scientists observe, make a hypothesis, test it, analyse and conclude. Safety: no running, eating or tasting, dry hands near electricity, no water on electrical or oil fires. The SI base quantities are length, mass, time, electric current, temperature, amount of substance and luminous intensity (m, kg, s, A, K, mol, cd). Derived units come from defining equations (N = kg m s⁻², J = kg m² s⁻², W = kg m² s⁻³, Pa = kg m⁻¹ s⁻²); dimensions L, M and T test an equation.",
+        "Weeks 3 to 5: position is relative to a reference point; bearings are measured clockwise from north. Distance is a scalar path length and displacement is a vector from start to finish. Vernier calipers read to 0.01 cm, micrometers to 0.01 mm, with zero error subtracted; the volume of an irregular solid is found by displacement; mass (kg) is not weight (N). Systematic errors are corrected, random errors are averaged out. Motion is the change of position with time, relative to a reference. The types are translational, rotational, oscillatory and random, and relative speed is found by subtracting speeds for the same direction and adding them for opposite directions.",
+        "Weeks 6 to 11: speed = distance ÷ time; velocity = displacement ÷ time; acceleration = (v − u) ÷ t. The equations of motion are v = u + at, s = ½(u + v)t, s = ut + ½at² and v² = u² + 2as, and in free fall a = g = 10 m/s². On graphs, the gradient of a distance–time graph is speed, the gradient of a velocity–time graph is acceleration, and the area under it is distance. A force is a push or pull measured in newtons; F = ma; friction opposes motion and F = μR. In circular motion v = ωr, a = v² ÷ r and F = mv² ÷ r towards the centre. Density = mass ÷ volume and relative density = density of substance ÷ density of water.",
+      ],
+    },
+    {
+      heading: "2. Formula and unit sheet",
+      paragraphs: [
+        "Copy this sheet out from memory every day for a week before the examination.",
+      ],
+      points: [
+        "Speed = distance ÷ time (m/s). Velocity = displacement ÷ time (m/s). a = (v − u) ÷ t (m/s²).",
+        "v = u + at · s = ½(u + v)t · s = ut + ½at² · v² = u² + 2as.",
+        "Free fall: h = ½gt², v = gt, v² = 2gh (g = 10 m/s²).",
+        "Weight W = mg (N). Resultant force F = ma (N). Friction F = μR.",
+        "Vernier: main + n × 0.01 cm. Micrometer: sleeve + n × 0.01 mm. True = observed − zero error.",
+        "T = 1 ÷ f. ω = 2π ÷ T = 2πf. v = ωr. a = v² ÷ r. F = mv² ÷ r.",
+        "Density = m ÷ V (kg/m³). 1 g/cm³ = 1000 kg/m³. R.D. = ρ(substance) ÷ ρ(water).",
+        "Distance between points: d = √[(x₂ − x₁)² + (y₂ − y₁)²]. km/h ÷ 3.6 = m/s.",
+      ],
+    },
+    {
+      heading: "3. Diagrams and graphs to practise",
+      paragraphs: [
+        "Practise these until you can draw them neatly in a few minutes: a velocity–time graph with three stages (acceleration, constant velocity, retardation) with the areas shaded; a distance–time graph with a rest period; a vernier calipers reading and a micrometer reading; a measuring cylinder with a stone; a block on a table with the four forces W, R, P and F; and a body in circular motion with v along the tangent and a towards the centre. Use a sharp pencil and a rule, label both axes with units, choose sensible scales and give each diagram a title.",
+      ],
+      diagram: "Draw a velocity–time graph for a car: a straight line from (0, 0) to (5, 15), a horizontal line to (15, 15) and a straight line down to (20, 0). Shade the two triangles and the rectangle and write their areas.",
+    },
+    {
+      heading: "4. Exam technique and presenting calculations",
+      paragraphs: [
+        "Read each question twice and underline the command word. ‘State’ and ‘name’ need a short fact. ‘Define’ needs a complete definition. ‘Describe’ needs the steps or features in order. ‘Explain’ needs a reason, often with the word ‘because’. ‘Distinguish’ or ‘differentiate’ needs both sides, for example ‘distance is a scalar whereas displacement is a vector’. ‘Calculate’ needs working and a unit.",
+        "In calculations, write the formula, substitute the numbers with their units, work out the answer and give it with the correct unit and a sensible number of significant figures. Convert units first: km/h to m/s, g/cm³ to kg/m³, minutes to seconds. If you are not sure how to start, list the quantities given and the quantity wanted, and look for the formula that links them. Always check whether the answer is reasonable. In objective papers answer the easy questions first, make an intelligent guess if you must, and never leave a question blank.",
+      ],
+    },
+    {
+      heading: "5. Using the mock paper",
+      paragraphs: [
+        "The 30 questions on this page form a mock paper. Try the 22 objective questions in about 25 minutes without help, then check the answers. Next, write full answers to the 8 theory questions in about 60 minutes before looking at the model answers. Mark yourself honestly, make a list of the weeks in which you lost marks, and go back to those lessons. The Week 13 examination follows the same pattern: objective questions on all the topics, followed by theory and calculation questions.",
+      ],
+    },
+  ] as LessonSection[],
+  hiddenFacts: [
+    "Define physics with ‘matter and energy’. Define relative density as a ratio that has no unit.",
+    "Convert before you calculate. Kilometres per hour, grams per cubic centimetre, minutes and centimetres are the usual traps.",
+    "Distance and speed are scalars; displacement and velocity are vectors. A round trip has zero displacement.",
+    "Vernier calipers and micrometers must be corrected for zero error by subtracting it with its sign.",
+    "Average speed is total distance ÷ total time, not the average of two speeds.",
+    "‘From rest’ means u = 0, ‘stops’ means v = 0. At the top of a throw v = 0, but a = g.",
+    "On a v–t graph the gradient is acceleration and the area is distance. On an s–t graph the gradient is velocity.",
+    "R = mg only on a level surface. Coefficient of friction has no unit; limiting friction is greater than kinetic friction.",
+    "Centripetal force acts towards the centre and is supplied by tension, friction or gravity. A broken string sends the body along the tangent.",
+    "Mass (kg) is constant everywhere, weight (N) depends on g. Density has a unit; relative density does not.",
+  ],
+  summary:
+    "This revision brings together Weeks 1 to 11: the nature and branches of physics, quantities, units and dimensions, position, distance and displacement, measuring instruments and errors, motion and relative motion, speed, velocity and acceleration, the equations of motion and free fall, motion graphs, forces and friction, circular motion, density and relative density. Learn the formula sheet, practise the diagrams, use command words and clear working, and use the mock paper to decide where to revise.",
+  quick: {
+    intro: "A quick tour of the whole term. If a line is not clear, go back to that week.",
+    blocks: [
+      {
+        heading: "1. Weeks 1–4: Foundations",
+        points: [
+          "Physics: matter and energy; branches; safety; scientific method.",
+          "Base units: m, kg, s, A, K, mol, cd. N, J, W and Pa in base units.",
+          "Distance (scalar) vs displacement (vector); bearings; Pythagoras for right-angled vectors.",
+          "Vernier 0.01 cm; micrometer 0.01 mm; zero error; systematic vs random errors.",
+        ],
+      },
+      {
+        heading: "2. Weeks 5–9: Motion",
+        points: [
+          "Types of motion: translational, rotational, oscillatory, random.",
+          "Relative speed: same way subtract; opposite way add.",
+          "v = s ÷ t; a = (v − u) ÷ t; four equations of motion; g = 10 m/s².",
+          "v–t graph: gradient = a; area = distance. s–t graph: gradient = velocity.",
+        ],
+        memory: "Equations: v = u + at, s = ½(u + v)t, s = ut + ½at², v² = u² + 2as.",
+      },
+      {
+        heading: "3. Weeks 10–11: Forces, circles and density",
+        points: [
+          "F = ma; W = mg; F = μR; limiting friction > kinetic friction.",
+          "Contact forces vs field forces (gravitational, electric, magnetic).",
+          "ω = 2πf; v = ωr; a = v² ÷ r; F = mv² ÷ r, towards the centre.",
+          "ρ = m ÷ V; R.D. = ρ ÷ ρ(water); R.D. < 1 floats.",
+        ],
+        warning: "Convert units and read the question twice.",
+      },
+    ],
+    likely: [
+      { question: "Define physics and name four branches.", answer: "Physics is the science of matter and energy and how they interact. Branches: mechanics, heat, optics, acoustics (also electricity and magnetism, nuclear physics)." },
+      { question: "State the SI base units of force, work and pressure.", answer: "Force: kg m s⁻²; work: kg m² s⁻²; pressure: kg m⁻¹ s⁻²." },
+      { question: "Differentiate between distance and displacement.", answer: "Distance is the total path length (scalar); displacement is the straight-line change in position in a given direction (vector)." },
+      { question: "Differentiate between mass and weight.", answer: "Mass is the quantity of matter in kg and is constant; weight is the gravitational force in N and depends on g." },
+      { question: "State the four equations of motion.", answer: "v = u + at; s = ½(u + v)t; s = ut + ½at²; v² = u² + 2as." },
+      { question: "State what the gradient and the area of a velocity–time graph represent.", answer: "Gradient: acceleration. Area: distance (or displacement)." },
+      { question: "State the laws of solid friction.", answer: "Friction opposes motion; depends on the nature of the surfaces; independent of the area of contact; proportional to the normal reaction." },
+      { question: "Why does a body moving round a circle at constant speed accelerate?", answer: "Because its direction, and hence its velocity, keeps changing; the acceleration is towards the centre." },
+      { question: "Define density and relative density.", answer: "Density is mass per unit volume; relative density is the ratio of the density of a substance to that of water." },
+    ],
+  },
+  questions: [
+    { number: 1, kind: "Objective", prompt: "A pupil gets a minor burn from a hot metal rod in the laboratory. The first thing to do is to", options: ["cool the burn under running water", "burst any blisters at once", "rub oil on the burn", "wrap the burn tightly in a bandage"], answer: "A" },
+    { number: 2, kind: "Objective", prompt: "The SI unit of pressure, the pascal, written in base units is", options: ["kg m s⁻²", "kg m⁻¹ s⁻²", "kg m² s⁻²", "kg m⁻² s⁻¹"], answer: "B" },
+    { number: 3, kind: "Objective", prompt: "Which of the following equations is NOT dimensionally consistent? (s is distance, u and v are velocities, a is acceleration and t is time.)", options: ["v = u + at", "s = ut + ½at²", "v² = u² + 2as", "s = ut + at"], answer: "D" },
+    { number: 4, kind: "Objective", prompt: "A taxi travels 3 km east and then 4 km north. The magnitude of its displacement is", options: ["1 km", "5 km", "7 km", "12 km"], answer: "B" },
+    { number: 5, kind: "Objective", prompt: "The back bearing of 125° is", options: ["055°", "235°", "305°", "325°"], answer: "C" },
+    { number: 6, kind: "Objective", prompt: "A micrometer screw gauge has a sleeve reading of 4.5 mm and a thimble reading of 38. The measurement is", options: ["4.88 mm", "8.3 mm", "4.53 mm", "5.30 mm"], answer: "A", explanation: "4.5 + 38 × 0.01 = 4.88 mm." },
+    { number: 7, kind: "Objective", prompt: "A micrometer has a zero error of +0.04 mm and reads 3.17 mm on a wire. The true diameter is", options: ["3.17 mm", "3.21 mm", "3.13 mm", "3.57 mm"], answer: "C", explanation: "True reading = 3.17 − 0.04 = 3.13 mm." },
+    { number: 8, kind: "Objective", prompt: "Which type of error can be reduced by taking the average of many readings?", options: ["Zero error", "A worn end of a rule", "A wrongly marked scale", "Random error"], answer: "D" },
+    { number: 9, kind: "Objective", prompt: "A boat that can travel at 8 m/s in still water goes upstream in a river flowing at 3 m/s. Its speed relative to the river bank is", options: ["11 m/s", "5 m/s", "24 m/s", "2.7 m/s"], answer: "B" },
+    { number: 10, kind: "Objective", prompt: "A pollen grain in water follows a zigzag path because", options: ["the pollen grain is alive", "gravity pulls it sideways", "it is hit by moving water molecules", "the water is boiling"], answer: "C" },
+    { number: 11, kind: "Objective", prompt: "A car travels 60 km at 30 km/h and then another 60 km at 60 km/h. Its average speed for the whole journey is", options: ["40 km/h", "45 km/h", "50 km/h", "90 km/h"], answer: "A", explanation: "Times: 2 h and 1 h. Total distance 120 km ÷ 3 h = 40 km/h." },
+    { number: 12, kind: "Objective", prompt: "The velocity of a car changes from 12 m/s to 27 m/s in 5 s. Its acceleration is", options: ["5.4 m/s²", "75 m/s²", "0.33 m/s²", "3 m/s²"], answer: "D" },
+    { number: 13, kind: "Objective", prompt: "A train starts from rest and accelerates at 0.5 m/s². The distance covered in 20 s is", options: ["10 m", "100 m", "200 m", "400 m"], answer: "B", explanation: "s = ½at² = ½ × 0.5 × 400 = 100 m." },
+    { number: 14, kind: "Objective", prompt: "A stone is thrown vertically upwards at 40 m/s. The time taken to reach the highest point is (g = 10 m/s²)", options: ["2 s", "40 s", "4 s", "8 s"], answer: "C" },
+    { number: 15, kind: "Objective", prompt: "A ball dropped from rest hits the ground at 30 m/s. The height from which it was dropped is (g = 10 m/s²)", options: ["45 m", "15 m", "30 m", "90 m"], answer: "A", explanation: "v² = 2gh gives 900 = 20h, so h = 45 m." },
+    { number: 16, kind: "Objective", prompt: "A velocity–time graph is a straight line from (0 s, 10 m/s) to (5 s, 30 m/s). The acceleration is", options: ["2 m/s²", "6 m/s²", "20 m/s²", "4 m/s²"], answer: "D" },
+    { number: 17, kind: "Objective", prompt: "A displacement–time graph is a straight line sloping downwards. This shows that the body is", options: ["at rest", "moving back towards the start at constant velocity", "accelerating uniformly", "moving away from the start at constant velocity"], answer: "B" },
+    { number: 18, kind: "Objective", prompt: "A body of mass 4 kg is acted on by a resultant force of 20 N. Its acceleration is", options: ["5 m/s²", "80 m/s²", "0.2 m/s²", "24 m/s²"], answer: "A" },
+    { number: 19, kind: "Objective", prompt: "A crate of mass 25 kg on a level floor needs a horizontal force of 100 N to just start sliding. The coefficient of static friction is (g = 10 m/s²)", options: ["0.1", "0.25", "0.4", "4.0"], answer: "C", explanation: "R = 250 N, so μ = 100 ÷ 250 = 0.4." },
+    { number: 20, kind: "Objective", prompt: "The centripetal force on a 0.5 kg ball moving at 4 m/s in a circle of radius 2 m is", options: ["4 N", "1 N", "16 N", "64 N"], answer: "A", explanation: "F = mv² ÷ r = 0.5 × 16 ÷ 2 = 4 N." },
+    { number: 21, kind: "Objective", prompt: "A metal cube of side 2 cm has a mass of 21.6 g. Its density is", options: ["10.8 g/cm³", "0.37 g/cm³", "43.2 g/cm³", "2.7 g/cm³"], answer: "D", explanation: "Volume = 8 cm³, so density = 21.6 ÷ 8 = 2.7 g/cm³." },
+    { number: 22, kind: "Objective", prompt: "A liquid has a relative density of 1.2. Its density in kg/m³ is", options: ["0.0012", "1.2", "1200", "120"], answer: "C" },
+    { number: 23, kind: "Theory", prompt: "(a) Name the seven SI base quantities and their units. (b) Derive the SI unit of work in base units and write its dimensions.", answer: "(a) Length, metre; mass, kilogram; time, second; electric current, ampere; temperature, kelvin; amount of substance, mole; luminous intensity, candela. (b) Work = force × distance = (kg m s⁻²) × m = kg m² s⁻² (joule). Dimensions: ML²T⁻²." },
+    { number: 24, kind: "Theory", prompt: "A girl cycles 5 km due west and then 12 km due south. Find (a) the distance she travelled, (b) the magnitude of her displacement and (c) the three-figure bearing of her final position from the start.", answer: "(a) Distance = 5 + 12 = 17 km. (b) Displacement = √(5² + 12²) = 13 km. (c) The point is south-west of the start. The angle from south towards west is tan⁻¹(5 ÷ 12) = 22.6°, so the bearing is 180° + 22.6° ≈ 203°." },
+    { number: 25, kind: "Theory", prompt: "(a) Distinguish between mass and weight. (b) A boy has a mass of 45 kg. Find his weight on Earth (g = 10 N/kg) and on a planet where g = 4 N/kg. (c) Name the instrument used to measure each.", answer: "(a) Mass is the quantity of matter in a body, in kg, and is the same everywhere; weight is the force of gravity on the body, in N, and depends on g. (b) On Earth W = 45 × 10 = 450 N. On the planet W = 45 × 4 = 180 N. (c) Mass: a beam or electronic balance. Weight: a spring balance." },
+    { number: 26, kind: "Theory", prompt: "(a) Convert 54 km/h to m/s. (b) A passenger walks along the aisle of a bus moving at 54 km/h at 1.5 m/s towards the back. Find his speed relative to the road. (c) The bus then brakes uniformly from 15 m/s to rest in 6 s. Find the retardation and the braking distance.", answer: "(a) 54 ÷ 3.6 = 15 m/s. (b) He moves against the bus’s motion, so 15 − 1.5 = 13.5 m/s. (c) Retardation = 15 ÷ 6 = 2.5 m/s². Distance = ½ × (15 + 0) × 6 = 45 m." },
+    { number: 27, kind: "Theory", prompt: "A car travelling at 28 m/s on a straight road sees a stationary lorry 100 m ahead. The driver brakes at once, giving a retardation of 4 m/s². Calculate the stopping distance and the time to stop, and say whether the car hits the lorry.", answer: "Using v² = u² + 2as with v = 0, u = 28, a = −4: 0 = 784 − 8s, so s = 98 m. Time: t = (0 − 28) ÷ (−4) = 7 s. The stopping distance of 98 m is less than 100 m, so the car stops 2 m short of the lorry and does not hit it." },
+    { number: 28, kind: "Theory", prompt: "A motorcycle accelerates uniformly from rest to 15 m/s in 5 s, moves at 15 m/s for 10 s and then slows uniformly to rest in 5 s. Sketch the velocity–time graph and use it to find (a) the acceleration in the first stage, (b) the total distance and (c) the average speed.", answer: "The graph rises in a straight line from (0, 0) to (5, 15), stays horizontal to (15, 15) and falls in a straight line to (20, 0). (a) a = 15 ÷ 5 = 3 m/s². (b) Distance = area = ½ × 5 × 15 + 10 × 15 + ½ × 5 × 15 = 37.5 + 150 + 37.5 = 225 m. (c) Average speed = 225 ÷ 20 = 11.25 m/s." },
+    { number: 29, kind: "Theory", prompt: "(a) State the laws of solid friction. (b) A 12 kg box on a level floor is pulled by a horizontal force of 50 N and the friction is 20 N. Find its acceleration and the coefficient of kinetic friction. (g = 10 m/s²)", answer: "(a) Friction opposes motion; depends on the nature of the surfaces; independent of the area of contact; proportional to the normal reaction. (b) Net force = 50 − 20 = 30 N, so a = 30 ÷ 12 = 2.5 m/s². R = mg = 120 N, so μ = 20 ÷ 120 ≈ 0.17." },
+    { number: 30, kind: "Theory", prompt: "(a) A car of mass 800 kg goes round a bend of radius 40 m at 20 m/s. Calculate the centripetal force and name the force that supplies it. (b) A stone weighs 3.0 N in air and 1.8 N when fully immersed in water. Calculate the upthrust on it and its relative density.", answer: "(a) F = mv² ÷ r = 800 × 400 ÷ 40 = 8000 N, supplied by the friction between the tyres and the road. (b) Upthrust = 3.0 − 1.8 = 1.2 N. Relative density = weight in air ÷ upthrust = 3.0 ÷ 1.2 = 2.5." },
+  ] as PracticeQuestion[],
+};
