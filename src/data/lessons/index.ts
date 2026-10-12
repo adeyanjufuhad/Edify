@@ -31,6 +31,18 @@ import { phyWeek9 } from "./physics/week-9";
 import { phyWeek10 } from "./physics/week-10";
 import { phyWeek11 } from "./physics/week-11";
 import { phyWeeks1213 } from "./physics/weeks-12-13";
+import { matWeek1 } from "./mathematics/week-1";
+import { matWeek2 } from "./mathematics/week-2";
+import { matWeek3 } from "./mathematics/week-3";
+import { matWeek4 } from "./mathematics/week-4";
+import { matWeek5 } from "./mathematics/week-5";
+import { matWeek6 } from "./mathematics/week-6";
+import { matWeek7 } from "./mathematics/week-7";
+import { matWeek8 } from "./mathematics/week-8";
+import { matWeek9 } from "./mathematics/week-9";
+import { matWeek10 } from "./mathematics/week-10";
+import { matWeek11 } from "./mathematics/week-11";
+import { matWeeks1213 } from "./mathematics/weeks-12-13";
 
 // To publish a lesson: create its data file, then register it here under
 // "<term>/<subject>/<week slug>" (the slugs used in src/data/curriculum.ts).
@@ -67,6 +79,18 @@ export const lessons: Record<string, Lesson> = {
   "first-term/physics/week-10": phyWeek10,
   "first-term/physics/week-11": phyWeek11,
   "first-term/physics/weeks-12-13": phyWeeks1213,
+  "first-term/mathematics/week-1": matWeek1,
+  "first-term/mathematics/week-2": matWeek2,
+  "first-term/mathematics/week-3": matWeek3,
+  "first-term/mathematics/week-4": matWeek4,
+  "first-term/mathematics/week-5": matWeek5,
+  "first-term/mathematics/week-6": matWeek6,
+  "first-term/mathematics/week-7": matWeek7,
+  "first-term/mathematics/week-8": matWeek8,
+  "first-term/mathematics/week-9": matWeek9,
+  "first-term/mathematics/week-10": matWeek10,
+  "first-term/mathematics/week-11": matWeek11,
+  "first-term/mathematics/weeks-12-13": matWeeks1213,
 };
 
 export const lessonIds: ReadonlySet<string> = new Set(Object.values(lessons).map((lesson) => lesson.id));
