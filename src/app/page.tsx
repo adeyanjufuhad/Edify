@@ -4,7 +4,7 @@ import Brand from "@/components/brand";
 import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Message, Monitor, Note, Pencil, Shield, Target, Trophy, Users } from "@/components/icons";
 import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@/lib/social/flags";
 import { catalog, listWords, readySubjects, totals } from "@/data/catalog";
-import { PLANS, naira, type Plan } from "@/data/plans";
+import { naira, plansForDisplay, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
 import ScrollMotion from "@/components/scroll-motion";
 import SiteFooter from "@/components/site-footer";
@@ -370,7 +370,7 @@ export default function Home() {
             <Link href="/billing" className="pill-button">Choose a plan <ArrowRight /></Link>
           </div>
           <ol className="plan-steps" data-stagger="stairs">
-            {PLANS.map((plan, index) => (
+            {plansForDisplay(social.on).map((plan, index) => (
               <li key={plan.id} className={`plan plan-${plan.id}`}>
                 {plan.popular && <span className="plan-sticker">Most popular</span>}
                 <Medal plan={plan} tier={index} />

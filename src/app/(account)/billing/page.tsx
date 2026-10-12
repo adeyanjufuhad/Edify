@@ -3,7 +3,8 @@ import { requireConsentedParent } from "@/lib/account";
 import { listProfiles } from "@/lib/profiles";
 import { database } from "@/lib/db";
 import { paymentSettings } from "@/lib/paystack";
-import { PLANS, PLAN_NAMES, PLAN_RANK, naira, isPlanId } from "@/data/plans";
+import { PLAN_NAMES, PLAN_RANK, naira, isPlanId, plansForDisplay } from "@/data/plans";
+import { challengesEnabled } from "@/lib/social/flags";
 import { CURRICULUM_CLASS } from "@/data/curriculum";
 import { catalog, listWords } from "@/data/catalog";
 import CheckoutForm from "./checkout-form";
@@ -38,7 +39,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
       </section>
       {!selected.sponsored && <>
         {selected.plan !== "free" && <p>Moving to a higher plan starts a new 105-day period at the full price shown. Unused days aren’t credited. Renewals are available after your current access expires.</p>}
-        <div className="billing-plans">{PLANS.map((plan) => <section className="account-card billing-plan" key={plan.id}>
+        <div className="billing-plans">{plansForDisplay(challengesEnabled()).map((plan) => <section className="account-card billing-plan" key={plan.id}>
           <div><h2>{plan.name}</h2><strong>{naira(plan.price)} <small>per learner / 105 days</small></strong><ul>{plan.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div>
           {PLAN_RANK[selected.plan] >= PLAN_RANK[plan.id] ? <p>Included in your current plan</p> : <CheckoutForm profileId={selected.id} plan={plan} disabled={!settings.enabled} />}
         </section>)}</div>

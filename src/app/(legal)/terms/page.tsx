@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { PLANS, naira } from "@/data/plans";
+import { PLAN_NAMES, naira, plansForDisplay } from "@/data/plans";
+import { CHALLENGE_MIN_PLAN } from "@/data/challenges";
+import { challengesEnabled } from "@/lib/social/flags";
 import { MAX_PROFILES } from "@/lib/profiles";
 import LegalDoc, { ContactEmail, OperatorAddress, OperatorName, Todo, type LegalSection } from "../legal-doc";
 
@@ -42,7 +44,7 @@ const SECTIONS: LegalSection[] = [
       <ul>
         <li><b>Content is added over time.</b> Not every class and subject has lessons yet. The billing page says what is available now. Check it before you pay, and only buy a plan if the available content suits your learner.</li>
         <li><b>It is a study aid.</b> We work hard to keep lessons and answers correct, but we can’t promise that a learner will pass or improve in any exam. Edify is independent of exam bodies such as WAEC and NECO, and of schools. Practice questions are exam-style; they are not real past papers unless a page says so.</li>
-        <li>Features described as coming later (for example, “AI study help, when it arrives”) are not part of a plan until they are released. Classmate challenges, chat and voice notes are only available once we switch them on and you switch them on for your child.</li>
+        <li>Features described as coming later (for example, “AI study help, when it arrives”) are not part of a plan until they are released. Classmate challenges, chat and voice notes are part of the {PLAN_NAMES[CHALLENGE_MIN_PLAN]} plan, and are only available once we switch them on and you switch them on for your child.</li>
       </ul>
     </>,
   },
@@ -52,7 +54,7 @@ const SECTIONS: LegalSection[] = [
     body: <>
       <p>Each learner needs their own plan to study. Prices are in naira, per learner:</p>
       <div className="legal-data">
-        <dl>{PLANS.map((plan) => <div key={plan.id}><dt>{plan.name}: {naira(plan.price)}</dt><dd>{plan.features.join(", ")}.</dd></div>)}</dl>
+        <dl>{plansForDisplay(challengesEnabled()).map((plan) => <div key={plan.id}><dt>{plan.name}: {naira(plan.price)}</dt><dd>{plan.features.join(", ")}.</dd></div>)}</dl>
       </div>
       <ul>
         <li><b>105 days.</b> One payment gives the learner access to that plan for 105 days (3½ months), counted from the time Paystack confirms the payment.</li>
@@ -120,7 +122,7 @@ const SECTIONS: LegalSection[] = [
         <li><b>Messages are kept briefly.</b> Text messages, voice notes and challenge results are deleted after the periods in the <Link href="/privacy#classmates" className="text-link">Privacy policy</Link>. We can’t guarantee that a message you want to keep will still be there.</li>
         <li><b>Availability.</b> Online status, chat and voice notes can be slow, delayed or unavailable, and we can change or stop them. A classmate who deletes their account or learner takes their conversations and challenge results with them.</li>
       </ul>
-      <p><Todo>owner to decide which plan includes challenges (today the draft says Gold, like CBT tests) and say so in the plans section; lawyer to confirm the parent’s responsibilities above, the limit on Edify’s responsibility for what children say to each other, and the moderation and takedown process</Todo></p>
+      <p><Todo>owner to confirm that classmate features stay in Gold, like CBT tests (the plans section lists them under Gold while they are switched on); lawyer to confirm the parent’s responsibilities above, the limit on Edify’s responsibility for what children say to each other, and the moderation and takedown process</Todo></p>
     </>,
   },
   {
