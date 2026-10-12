@@ -130,3 +130,43 @@
 .danger-zone .account-form .pill-button:disabled { box-shadow: none; }
 
 .profiles-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
+
+/* Progress on each learner card (no learner PIN needed) */
+.card-stats { display: grid; gap: 4px; margin: 4px 12px 8px; padding: 8px 10px; border-radius: var(--r-sm); background: var(--mist); font-size: 13px; }
+.card-stats div { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 8px; }
+.card-stats dt { color: var(--ink-2); font-weight: 600; }
+.card-stats dd { margin: 0; color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.card-stats .stat-when { font-weight: 500; color: var(--ink-2); }
+
+/* Editing a learner: the card takes the full row so the fields have room */
+.profile-card.is-editing { grid-column: 1 / -1; }
+.edit-form { margin: 0 6px; padding: 4px 12px 12px; border-radius: var(--r-sm); background: var(--tint-slate); }
+.edit-form .field-help.full { margin-top: 8px; font-size: 14px; color: var(--ink-2); }
+.edit-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; }
+.account-form .edit-actions .pill-button { margin-top: 0; width: auto; }
+
+/* Parent PIN (on /profiles and the classmate settings page) */
+.parent-lock h2 { display: flex; align-items: center; gap: 10px; }
+.parent-lock h2 svg { flex: none; color: var(--red); }
+.parent-lock > p { font-size: 16px; color: var(--ink-2); margin: 0 0 4px; max-width: 62ch; }
+.parent-lock .form-error, .parent-lock .form-success { margin: 12px 0 0; }
+.lock-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 12px; margin-top: 12px; }
+.lock-field { display: grid; gap: 6px; flex: 1 1 150px; min-width: 0; }
+.lock-field label { font-size: 15px; font-weight: 600; }
+.lock-field input { width: 100%; min-height: 48px; padding: 8px 14px; font-size: 20px; letter-spacing: 0.3em; font-variant-numeric: tabular-nums; color: var(--ink); background: var(--white); border: 2px solid var(--line); border-radius: var(--r); transition: border-color 0.15s; }
+.lock-field input:hover { border-color: var(--line-strong); }
+.lock-field input:focus-visible { outline: none; border-color: var(--navy); }
+.lock-field input::placeholder { color: var(--ink-3); }
+.lock-form > .pill-button { flex: 0 0 auto; }
+.lock-change { padding: 12px; border-radius: var(--r-sm); background: var(--tint-slate); }
+.lock-change .form-error { flex-basis: 100%; }
+.lock-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; flex-basis: 100%; }
+.parent-lock.is-open { display: grid; gap: 8px; justify-items: start; padding-top: 16px; padding-bottom: 16px; }
+.parent-lock.is-open .lock-change { justify-self: stretch; }
+.lock-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; width: 100%; }
+.lock-bar p { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 15px; color: var(--ink); }
+.lock-bar p svg { flex: none; color: var(--navy); }
+.lock-hint { margin: 0; }
+@media (max-width: 600px) {
+  .lock-form > .pill-button { flex: 1 1 100%; }
+}
