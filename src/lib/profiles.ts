@@ -1,12 +1,9 @@
-import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
-import { promisify } from "node:util";
 import { database } from "@/lib/db";
 import { isPlanId, type PlanId } from "@/data/plans";
 import { isStreamId, type StreamId } from "@/data/streams";
 import { paidAccess } from "@/lib/access";
 import { deleteLearnerData } from "@/lib/account-deletion";
-
-const scrypt = promisify(scryptCallback) as (password: string, salt: Buffer, keylen: number) => Promise<Buffer>;
+import { hashPin, pinMatches } from "@/lib/pin-hash";
 
 // `sponsored` is true when a referral code set the learner's plan. `stream` is null for JSS learners.
 export type LearnerProfile = { id: string; name: string; classLevel: string; school: string | null; stream: StreamId | null; plan: PlanId; sponsored: boolean; expiresAt?: string | null };
@@ -15,20 +12,6 @@ type NewProfile = { name: string; pin: string; classLevel: string; school: strin
 export const MAX_PROFILES = 6;
 export const PIN_PATTERN = /^\d{4}$/;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-async function hashPin(pin: string) {
-  const salt = randomBytes(16);
-  const hash = await scrypt(pin, salt, 32);
-  return `${salt.toString("hex")}:${hash.toString("hex")}`;
-}
-
-async function pinMatches(pin: string, stored: string) {
-  const [saltHex, hashHex] = stored.split(":");
-  if (!saltHex || !hashHex) return false;
-  const expected = Buffer.from(hashHex, "hex");
-  const actual = await scrypt(pin, Buffer.from(saltHex, "hex"), expected.length);
-  return timingSafeEqual(actual, expected);
-}
 
 async function toProfile(row: Record<string, unknown>): Promise<LearnerProfile> {
   const sponsored = !!row.referral_code && row.plan === "gold";
@@ -79,6 +62,17 @@ export async function setStream(parentId: string, profileId: string, stream: Str
   const rows = await database()`update public.learner_profiles set stream = ${stream}
     where id = ${profileId} and parent_id = ${parentId} and stream is null and class_level in ('SS1', 'SS2', 'SS3')
     returning id`;
+  return rows.length > 0;
+}
+
+// A parent corrects a learner's first name, class, stream or school. The plan, referral code and PIN are not touched.
+// Classmate links are kept on purpose: both parents agreed to each one, and either can still remove it. Only who
+// shows up under "In your class" follows the new class and school.
+export type LearnerDetails = { name: string; classLevel: string; school: string; stream: StreamId | null };
+export async function updateProfile(parentId: string, profileId: string, { name, classLevel, school, stream }: LearnerDetails): Promise<boolean> {
+  if (!UUID_PATTERN.test(profileId)) return false;
+  const rows = await database()`update public.learner_profiles set name = ${name}, class_level = ${classLevel}, school = ${school}, stream = ${stream}
+    where id = ${profileId} and parent_id = ${parentId} returning id`;
   return rows.length > 0;
 }
 

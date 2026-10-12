@@ -10,7 +10,7 @@ import { test } from "node:test";
 import * as rules from "../src/lib/social-rules.ts";
 import * as q from "../src/lib/social-sql.ts";
 import * as qq from "../src/lib/social-queries.ts";
-import { PRESENT_SOCIAL_TABLES_QUERY, SOCIAL_TABLES, accountDeletionStatements, learnerDeletionStatements } from "../src/lib/account-deletion-sql.ts";
+import { OPTIONAL_TABLES, PRESENT_SOCIAL_TABLES_QUERY, SOCIAL_TABLES, accountDeletionStatements, learnerDeletionStatements } from "../src/lib/account-deletion-sql.ts";
 import { loadPGlite } from "./pglite.mjs";
 
 const PGlite = await loadPGlite();
@@ -142,7 +142,7 @@ const B1 = "b1b1b1b1-0000-4000-8000-000000000003"; // parent 2, Chi
 const C1 = "c1c1c1c1-0000-4000-8000-000000000004"; // parent 3, Dayo
 
 const BASE = ["../neon/schema.sql", "../db/migrations/001_learner_profiles.sql", "../db/migrations/002_learner_school.sql", "../db/migrations/003_learner_plan.sql", "../db/migrations/004_cbt_attempts.sql", "../db/migrations/006_payments.sql", "../db/migrations/007_parent_consents.sql", "../db/migrations/008_learner_stream.sql", "../db/migrations/009_stream_names.sql"];
-const SOCIAL = ["../db/migrations/010_classmates_challenges.sql", "../db/migrations/011_presence.sql", "../db/migrations/012_chat.sql", "../db/migrations/013_voice_notes.sql", "../db/migrations/014_class_visibility.sql"];
+const SOCIAL = ["../db/migrations/010_classmates_challenges.sql", "../db/migrations/011_presence.sql", "../db/migrations/012_chat.sql", "../db/migrations/013_voice_notes.sql", "../db/migrations/014_class_visibility.sql", "../db/migrations/015_parent_pin.sql"];
 
 async function freshDatabase({ social = true } = {}) {
   const db = new PGlite();
@@ -165,11 +165,11 @@ const one = async (db, text) => (await db.query(text)).rows[0];
 const count = async (db, text) => Number((await one(db, text)).n);
 const link = (x, y) => (x < y ? [x, y] : [y, x]);
 
-test("migrations apply twice without error, and every classmate table has row level security", async () => {
+test("migrations apply twice without error, and every classmate table and parent_settings has row level security", async () => {
   const db = await freshDatabase();
   for (const file of SOCIAL) await db.exec(await read(file));
-  const rows = (await db.query(`select relname, relrowsecurity from pg_class where relnamespace = 'public'::regnamespace and relname = any($1::text[])`, [[...SOCIAL_TABLES]])).rows;
-  assert.equal(rows.length, SOCIAL_TABLES.length);
+  const rows = (await db.query(`select relname, relrowsecurity from pg_class where relnamespace = 'public'::regnamespace and relname = any($1::text[])`, [[...OPTIONAL_TABLES]])).rows;
+  assert.equal(rows.length, OPTIONAL_TABLES.length);
   assert.ok(rows.every((r) => r.relrowsecurity), "RLS must be on for " + rows.filter((r) => !r.relrowsecurity).map((r) => r.relname));
 });
 
@@ -207,6 +207,38 @@ test("rate limit: allows up to the limit then refuses, per actor and per kind, a
 async function makeInvite(db, { learner = A1, parent = P1, hash = "a".repeat(64), expires = "now() + interval '7 days'" } = {}) {
   return (await db.query(`insert into public.classmate_invites (learner_id, parent_id, code_hash, expires_at) values ('${learner}', '${parent}', '${hash}', ${expires}) returning id`)).rows[0].id;
 }
+
+test("wrong PIN counting: counts only this parent's events of this kind in the window, and says when the oldest leaves it", async () => {
+  const db = await freshDatabase();
+  const recent = async (parentId, kind) => (await run(db, q.recentEventsQuery({ parentId }, kind, 900))).rows[0];
+  assert.deepEqual(await recent(P1, "pin-fail"), { n: 0, wait_seconds: 0 });
+  for (let i = 0; i < 3; i++) await run(db, q.recordEventQuery({ parentId: P1 }, "pin-fail"));
+  await run(db, q.recordEventQuery({ parentId: P1 }, "parent-pin-fail"));
+  await run(db, q.recordEventQuery({ parentId: P2 }, "pin-fail"));
+  // An old failure outside the 15-minute window does not count.
+  await db.query(`insert into public.social_events (parent_id, kind, created_at) values ('${P1}', 'pin-fail', now() - interval '20 minutes')`);
+  const now = await recent(P1, "pin-fail");
+  assert.equal(now.n, 3);
+  assert.ok(now.wait_seconds > 890 && now.wait_seconds <= 900, `wait ${now.wait_seconds}`);
+  assert.equal((await recent(P1, "parent-pin-fail")).n, 1, "the parent PIN has its own count");
+  assert.equal((await recent(P2, "pin-fail")).n, 1, "another family has its own count");
+  // The wait is measured from the oldest failure still in the window.
+  await db.query(`update public.social_events set created_at = now() - interval '10 minutes' where parent_id = '${P1}' and kind = 'pin-fail' and created_at > now() - interval '1 minute'`);
+  const later = await recent(P1, "pin-fail");
+  assert.ok(later.wait_seconds > 290 && later.wait_seconds <= 300, `wait ${later.wait_seconds}`);
+});
+
+test("parent_settings: one row per parent, no PIN stored as digits, and it goes with the parent's sign-in", async () => {
+  const db = await freshDatabase();
+  const upsert = "insert into public.parent_settings (parent_id, pin_hash, updated_at) values ($1, $2, now()) on conflict (parent_id) do update set pin_hash = excluded.pin_hash, updated_at = now()";
+  await db.query(upsert, [P1, `${"a".repeat(32)}:${"b".repeat(64)}`]);
+  await db.query(upsert, [P1, null]);
+  assert.equal(await count(db, `select count(*) n from public.parent_settings where parent_id = '${P1}' and pin_hash is null`), 1);
+  await assert.rejects(db.query(upsert, [P2, "1234"]), /check/i, "a bare 4-digit PIN is refused");
+  await db.query(upsert, [P3, `${"a".repeat(32)}:${"b".repeat(64)}`]);
+  await db.query(`delete from neon_auth."user" where id = '${P3}'`);
+  assert.equal(await count(db, `select count(*) n from public.parent_settings where parent_id = '${P3}'`), 0);
+});
 
 test("claiming a code makes one ordered link, once; expired and used codes do nothing", async () => {
   const db = await freshDatabase();
@@ -594,7 +626,7 @@ test("retention: old data is removed, recent data and reported messages stay", a
 test("every query's parameters are all used and ids are never part of the SQL text", () => {
   const ids = [A1, B1, P1, "f".repeat(64)];
   const queries = [
-    q.rateLimitQuery({ learnerId: A1 }, "msg", 3, 60), q.rateLimitQuery({ parentId: P1 }, "invite", 3, 60), q.claimInviteQuery(A1, B1), q.startEntryQuery(A1, B1),
+    q.rateLimitQuery({ learnerId: A1 }, "msg", 3, 60), q.rateLimitQuery({ parentId: P1 }, "invite", 3, 60), q.recentEventsQuery({ parentId: P1 }, "pin-fail", 900), q.recordEventQuery({ parentId: P1 }, "pin-fail"), q.claimInviteQuery(A1, B1), q.startEntryQuery(A1, B1),
     q.submitEntryQuery(A1, B1, 3, 5, "[]", 60), q.finishChallengeQuery(A1), q.settleOverdueQuery(A1, 60), q.finishSettledQuery(A1), q.leaderboardQuery([A1], 90, null),
     qq.settingsQuery(A1), qq.settingsForQuery([A1]), qq.saveSettingsQuery(P1, A1, { challenges: true, presence: false, chat: false, voice: false }), qq.classmatesQuery(A1),
     qq.parentLinksQuery(P1), qq.linkOwnLearnersQuery(P1, A1, A2), qq.classDirectoryQuery(A1, 75, 100), qq.conversationsQuery(A1, 14, 7, 75), qq.theirReadQuery(A1, B1), qq.requestLinkQuery(A1, B1), qq.pendingLinksQuery(A1), qq.acceptLinkQuery(A1, B1), qq.acceptByChallengeQuery(A1, B1), qq.declineLinkQuery(A1, B1), qq.linkBetweenQuery(A1, B1), qq.linkCountQuery(A1), qq.linkForLearnerQuery(A1, B1), qq.createInviteQuery(P1, A1, "f".repeat(64), 7),
@@ -941,8 +973,8 @@ async function exec(db, statements) {
   }
 }
 
-test("all eleven classmate tables are found, and a database without them reports none", async () => {
-  assert.equal((await presentTables(await freshDatabase())).length, SOCIAL_TABLES.length);
+test("all eleven classmate tables and parent_settings are found, and a database without them reports none", async () => {
+  assert.equal((await presentTables(await freshDatabase())).length, OPTIONAL_TABLES.length);
   assert.deepEqual(await presentTables(await freshDatabase({ social: false })), []);
 });
 
@@ -1023,7 +1055,7 @@ test("deleting an account or a learner still works where the classmate migration
 });
 
 test("deletion statements carry ids as parameters, never in the SQL text, and every parameter is used", () => {
-  const all = [...accountDeletionStatements(P1, "o'brien@example.com", [...SOCIAL_TABLES]), ...learnerDeletionStatements(P1, A1, [...SOCIAL_TABLES])];
+  const all = [...accountDeletionStatements(P1, "o'brien@example.com", [...OPTIONAL_TABLES]), ...learnerDeletionStatements(P1, A1, [...OPTIONAL_TABLES])];
   for (const { text, params } of all) {
     assert.ok(!text.includes(P1) && !text.includes(A1) && !text.includes("brien"), text);
     params.forEach((_, index) => assert.ok(text.includes(`$${index + 1}`), `parameter $${index + 1} unused in: ${text}`));

@@ -7,7 +7,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
-import { accountDeletionStatements } from "../src/lib/account-deletion-sql.ts";
+import { PRESENT_SOCIAL_TABLES_QUERY, accountDeletionStatements } from "../src/lib/account-deletion-sql.ts";
 import { loadPGlite } from "./pglite.mjs";
 
 const PGlite = await loadPGlite();
@@ -28,7 +28,7 @@ async function freshDatabase() {
     create table neon_auth.account (id uuid primary key, "userId" uuid not null references neon_auth."user"(id) on delete cascade, password text);
     create table neon_auth.verification (id uuid primary key, identifier text not null, value text not null);
   `);
-  for (const file of ["../neon/schema.sql", "../db/migrations/001_learner_profiles.sql", "../db/migrations/002_learner_school.sql", "../db/migrations/003_learner_plan.sql", "../db/migrations/004_cbt_attempts.sql", "../db/migrations/006_payments.sql", "../db/migrations/007_parent_consents.sql"]) {
+  for (const file of ["../neon/schema.sql", "../db/migrations/001_learner_profiles.sql", "../db/migrations/002_learner_school.sql", "../db/migrations/003_learner_plan.sql", "../db/migrations/004_cbt_attempts.sql", "../db/migrations/006_payments.sql", "../db/migrations/007_parent_consents.sql", "../db/migrations/015_parent_pin.sql"]) {
     await db.exec(await read(file));
   }
   await db.exec(`
@@ -44,6 +44,7 @@ async function freshDatabase() {
     insert into public.cbt_attempts (learner_id, mode, lesson_ids, total, score, duration_seconds, answers) values
       ('${LEARNER_A1}', 'week', array['w1'], 10, 7, 300, '[]'), ('${LEARNER_A2}', 'week', array['w1'], 10, 5, 300, '[]'), ('${LEARNER_B1}', 'week', array['w1'], 10, 9, 300, '[]');
     insert into public.parent_consents (parent_id, legal_version) values ('${PARENT_A}', 'v1'), ('${PARENT_B}', 'v1');
+    insert into public.parent_settings (parent_id, pin_hash) values ('${PARENT_A}', '${"a".repeat(32)}:${"b".repeat(64)}'), ('${PARENT_B}', '${"c".repeat(32)}:${"d".repeat(64)}');
     insert into public.payments (reference, parent_id, profile_id, plan, amount, customer_email, mode, status, paid_at, term_end) values
       ('edify-paid-a', '${PARENT_A}', '${LEARNER_A1}', 'silver', 300000, 'Parent.A@Example.com', 'live', 'success', now(), now() + interval '105 days'),
       ('edify-open-a', '${PARENT_A}', '${LEARNER_A2}', 'gold', 500000, 'Parent.A@Example.com', 'live', 'pending', null, null),
@@ -52,10 +53,12 @@ async function freshDatabase() {
   return db;
 }
 
+// Like the app, the statements are built for the optional tables that exist (here parent_settings, from 015).
 async function run(db, parentId, email) {
+  const present = (await db.query(PRESENT_SOCIAL_TABLES_QUERY.text, PRESENT_SOCIAL_TABLES_QUERY.params)).rows.map((row) => row.name);
   await db.query("begin");
   try {
-    for (const { text, params } of accountDeletionStatements(parentId, email)) await db.query(text, params);
+    for (const { text, params } of accountDeletionStatements(parentId, email, present)) await db.query(text, params);
     await db.query("commit");
   } catch (error) {
     await db.query("rollback");
@@ -91,6 +94,17 @@ test("another family and old progress rows are untouched", async () => {
   assert.equal(await count(db, `select count(*) n from public.lesson_progress where user_id = 'taiwo-old'`), 1);
   const paid = (await db.query(`select parent_id, profile_id from public.payments where reference = 'edify-paid-b'`)).rows[0];
   assert.deepEqual(paid, { parent_id: PARENT_B, profile_id: LEARNER_B1 });
+});
+
+test("deleting a parent removes their parent PIN settings with an explicit statement, and not another family's", async () => {
+  const db = await freshDatabase();
+  const present = (await db.query(PRESENT_SOCIAL_TABLES_QUERY.text, PRESENT_SOCIAL_TABLES_QUERY.params)).rows.map((row) => row.name);
+  assert.deepEqual(present, ["parent_settings"]);
+  assert.ok(accountDeletionStatements(PARENT_A, "parent.a@example.com", present).some(({ text }) => text.startsWith("delete from public.parent_settings")));
+  assert.ok(!accountDeletionStatements(PARENT_A, "parent.a@example.com", []).some(({ text }) => text.includes("parent_settings")), "no statement where the table is missing");
+  await run(db, PARENT_A, "parent.a@example.com");
+  assert.equal(await count(db, `select count(*) n from public.parent_settings where parent_id = '${PARENT_A}'`), 0);
+  assert.equal(await count(db, `select count(*) n from public.parent_settings where parent_id = '${PARENT_B}'`), 1);
 });
 
 test("payment records are kept, unlinked from the parent and learners, with their amounts and dates", async () => {

@@ -3,8 +3,8 @@
 //
 // Deleted with a parent: every learner of the parent and their lesson progress and notes (lesson_progress has no
 // foreign key, so it is removed first), their CBT attempts, everything the classmate features hold for them (links,
-// chat messages, voice-note files, challenges, presence, reports, codes), the parent's agreement records, leftover
-// sign-in codes, and the Neon Auth user (which cascades to its sessions, accounts and organisation memberships).
+// chat messages, voice-note files, challenges, presence, reports, codes), the parent's agreement records and parent PIN,
+// leftover sign-in codes, and the Neon Auth user (which cascades to its sessions, accounts and organisation memberships).
 //
 // Kept on purpose: public.payments rows. They are unlinked from the parent and the learner but still hold the
 // checkout email, plan, amount, reference and dates, for accounting, refunds and disputes. Unpaid orders are
@@ -19,10 +19,14 @@ export const SOCIAL_TABLES = [
   "social_events", "learner_presence", "chat_messages", "chat_reads", "chat_voice_clips",
 ] as const;
 
-// Returns the names, out of SOCIAL_TABLES, that exist in the public schema.
+// Tables from later migrations that may not be applied yet, deleted only where they exist: the classmate tables and
+// public.parent_settings (015, the parent PIN).
+export const OPTIONAL_TABLES = [...SOCIAL_TABLES, "parent_settings"] as const;
+
+// Returns the names, out of OPTIONAL_TABLES, that exist in the public schema.
 export const PRESENT_SOCIAL_TABLES_QUERY = {
   text: "select name from unnest($1::text[]) as name where to_regclass('public.' || name) is not null",
-  params: [SOCIAL_TABLES as unknown as string[]],
+  params: [OPTIONAL_TABLES as unknown as string[]],
 };
 
 type Statement = { text: string; params: string[] };
@@ -54,7 +58,8 @@ function socialDeletionStatements(scope: { parentId: string; learnerId?: string 
   return out;
 }
 
-// `socialTables` are the classmate tables that exist in the database (see PRESENT_SOCIAL_TABLES_QUERY).
+// `socialTables` are the optional tables (classmate tables and parent_settings) that exist in the database (see
+// PRESENT_SOCIAL_TABLES_QUERY).
 export function accountDeletionStatements(parentId: string, parentEmail: string, socialTables: readonly string[] = []): Statement[] {
   return [
     { text: "update public.payments set parent_id = null, profile_id = null where parent_id = $1", params: [parentId] },
@@ -63,6 +68,8 @@ export function accountDeletionStatements(parentId: string, parentEmail: string,
     ...socialDeletionStatements({ parentId }, socialTables),
     { text: "delete from public.learner_profiles where parent_id = $1", params: [parentId] },
     { text: "delete from public.parent_consents where parent_id = $1", params: [parentId] },
+    // The parent PIN (its row would also go with the user below, by on delete cascade).
+    ...(socialTables.includes("parent_settings") ? [{ text: "delete from public.parent_settings where parent_id = $1", params: [parentId] }] : []),
     // The length check keeps an empty email (which would "match" every row) from ever clearing other people's codes.
     { text: "delete from neon_auth.verification where char_length(btrim($1)) > 3 and position(lower($1) in lower(identifier)) > 0", params: [parentEmail] },
     { text: 'delete from neon_auth."user" where id = $1', params: [parentId] },

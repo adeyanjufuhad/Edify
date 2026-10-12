@@ -5,6 +5,8 @@ import { REPORT_REASONS, type SwitchId } from "@/data/challenges";
 import { requireConsentedParent } from "@/lib/account";
 import { requireLearner } from "@/lib/session";
 import { listProfiles, type LearnerProfile } from "@/lib/profiles";
+import { getParentLock } from "@/lib/parent-lock";
+import { ParentUnlock, ParentUnlocked } from "@/components/parent-lock";
 import { LIMITS, RETENTION_DAYS, areClassmates } from "@/lib/social-rules";
 import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@/lib/social/flags";
 import { listParentLinks, listPendingInvites, listReportsByParent, type ParentLink, type PendingInvite, type SentReport } from "@/lib/social/links";
@@ -19,6 +21,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Classmates and safety — Edify" };
 
 const WHEN = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", timeZone: "Africa/Lagos" });
+const TIME = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" });
 
 export default async function ClassmatesPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   if (!challengesEnabled()) notFound();
@@ -26,6 +29,22 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
   // Opened from inside the study app, so a learner is open; their tab is shown first.
   const current = await requireLearner();
   const { learner: wanted, chat: wantedChat } = await searchParams;
+
+  // With a parent PIN set, nothing on this page is shown or changed until the parent unlocks it (the actions check too).
+  const lock = await getParentLock(parent.id, parent.signedInAt);
+  if (!lock.canManage) {
+    return (
+      <div className="classmates-page">
+        <Link href="/study/challenges" className="text-link small"><ArrowLeft size={14} /> Back to challenges</Link>
+        <header>
+          <span className="kicker">Classmates and safety</span>
+          <h1>For <span className="hl">parents</span> only</h1>
+          <p>This page holds the classmate and safety settings for every child on the account.</p>
+        </header>
+        <ParentUnlock intro="Enter your parent PIN to see and change the classmate settings. They lock again after a few minutes, and whenever a learner’s space is opened." recentSignIn={lock.recentSignIn} failed={lock.failed} />
+      </div>
+    );
+  }
 
   let profiles: LearnerProfile[] = [];
   let settings = new Map<string, SocialSettings>();
@@ -57,6 +76,9 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
         <h1>Who can your child <span className="hl">play with?</span></h1>
         <p>Three steps for each child: switch on what they can use, add the classmates they may play with, then manage them. Nothing is on until you switch it on. Children only ever meet others in their own school and class.</p>
       </header>
+
+      {lock.hasPin ? <ParentUnlocked untilLabel={lock.unlockedUntil ? TIME.format(lock.unlockedUntil) : ""} recentSignIn={lock.recentSignIn} />
+        : lock.available && <p className="account-note lock-hint">Children can open this page on your signed-in device. <Link href="/profiles" className="text-link small">Set a parent PIN</Link> on your family page so only you can change these settings.</p>}
 
       {loadFailed && <p role="alert" className="form-error">This page could not be loaded. Refresh to try again.</p>}
       {!profiles.length && !loadFailed && <p className="form-success">Add a learner first, then come back here.</p>}
@@ -158,7 +180,7 @@ export default async function ClassmatesPage({ searchParams }: { searchParams: P
           <li>Chat messages are deleted after {RETENTION_DAYS.textMessages} days and voice notes after {RETENTION_DAYS.voiceNotes} days. <span className="legal-hint">Proposed period, to be confirmed.</span></li>
           <li>Your children can block or report a classmate. Reports reach the Edify team.</li>
           <li>Deleting a learner or your account deletes their classmate links, challenges, messages and voice notes too. Read the <Link href="/privacy#classmates" className="text-link small">privacy policy</Link> and <Link href="/terms#classmates" className="text-link small">terms</Link> for the details.</li>
-          <li>These settings are part of your signed-in family account. A child using your signed-in device can reach this page, so sign out when you hand a device over.</li>
+          <li>These settings are part of your signed-in family account. Set a parent PIN so a child using your signed-in device can’t open or change them; without one, sign out when you hand a device over.</li>
         </ul>
       </section>
     </div>

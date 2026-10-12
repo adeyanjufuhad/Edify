@@ -22,6 +22,26 @@ export function rateLimitQuery(actor: { learnerId: string } | { parentId: string
   };
 }
 
+// Counting without recording, for limits on failures only (wrong PINs): how many `kind` events the actor has in the
+// window, and in how many seconds the oldest of them leaves it (0 when there are none).
+export function recentEventsQuery(actor: { learnerId: string } | { parentId: string }, kind: string, windowSeconds: number): Query {
+  const column = "learnerId" in actor ? "learner_id" : "parent_id";
+  const id = "learnerId" in actor ? actor.learnerId : actor.parentId;
+  return {
+    text: `select count(*)::int as n,
+        coalesce(greatest(ceil(extract(epoch from (min(created_at) + make_interval(secs => $3::double precision) - now()))), 0), 0)::int as wait_seconds
+      from public.social_events where ${column} = $1::uuid and kind = $2::text and created_at > now() - make_interval(secs => $3::double precision)`,
+    params: [id, kind, windowSeconds],
+  };
+}
+
+// Records one event (a wrong PIN) for the actor.
+export function recordEventQuery(actor: { learnerId: string } | { parentId: string }, kind: string): Query {
+  const column = "learnerId" in actor ? "learner_id" : "parent_id";
+  const id = "learnerId" in actor ? actor.learnerId : actor.parentId;
+  return { text: `insert into public.social_events (${column}, kind) values ($1::uuid, $2::text)`, params: [id, kind] };
+}
+
 // ---------- Classmate codes ----------
 // Claims a code and creates the link in one statement. `claimed` is 0 when the code was already used or has expired.
 export function claimInviteQuery(inviteId: string, redeemerLearnerId: string): Query {

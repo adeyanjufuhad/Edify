@@ -1,5 +1,6 @@
 import { hasAcceptedLegal } from "@/lib/consent";
 import { getParent, getLearner } from "@/lib/account";
+import { parentCanManage } from "@/lib/parent-lock";
 import { parseRange } from "@/lib/social-rules";
 import { voiceEnabled } from "@/lib/social/flags";
 import { actionActor } from "@/lib/social/guard";
@@ -18,7 +19,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ mess
     const parent = await getParent();
     const learner = parent ? await getLearner() : null;
     const actor = learner ? await actionActor() : null;
-    const consented = parent ? await hasAcceptedLegal(parent.id) : false;
+    // A parent listens from the classmate settings page, so with a parent PIN set the parent area must be unlocked.
+    const consented = parent ? (await hasAcceptedLegal(parent.id)) && (await parentCanManage(parent)) : false;
     clip = await getClip({ learnerId: actor?.ok && actor.settings.voice ? actor.learner.id : undefined, parentId: parent && consented ? parent.id : undefined }, messageId);
   } catch {
     return Response.json({ error: "Temporarily unavailable" }, { status: 503 });
