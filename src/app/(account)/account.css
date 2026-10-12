@@ -105,6 +105,8 @@
   .add-form { grid-template-columns: 1fr; }
   .profile-grid { grid-template-columns: 1fr 1fr; }
 }
+/* Narrow phones (320 to 360px): two cards would be about 140px wide each, so names and schools wrap into tall strips. One column reads better. */
+@media (max-width: 360px) { .profile-grid { grid-template-columns: 1fr; } }
 
 /* Fun layer */
 .auth-mascot { display: grid; justify-items: start; gap: 16px; }

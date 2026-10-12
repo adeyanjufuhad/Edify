@@ -117,3 +117,9 @@
   .room-challenge span { display: none; }
   .msg-bubble { max-width: 86%; }
 }
+
+/* Landscape phones: the shell bars are slimmer (see src/app/study/app.css), so the list pane is taller. */
+@media (max-width: 860px) and (max-height: 520px) {
+  .chats { height: calc(100dvh - 48px - 52px - env(safe-area-inset-bottom)); }
+  .chats.has-open { height: 100dvh; }
+}

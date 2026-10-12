@@ -372,10 +372,27 @@
 .quiz-score { border-radius: 999px; }
 .continue-card, .summary-box { border-radius: var(--r-xl); }
 .continue-card b { border-radius: 50%; }
-/* Phones: Edi sits beside the greeting instead of on a row of his own. */
-@media (max-width: 600px) { .hello-head { flex-wrap: nowrap; align-items: flex-start; gap: 12px; } .hello-head > div { flex: 1 1 auto; min-width: 0; } .hello-mascot { width: 56px; margin-top: 4px; } .quiz-score { border-radius: var(--r); } }
+/* Phones: Edi sits beside the greeting instead of on a row of his own, and the "Continue learning" button takes the
+   row below. The text column has a zero flex basis so it fills what Edi leaves instead of wrapping under him, and the
+   button's full-width row stops it fighting the greeting for space (it used to squeeze the text to about 100px). */
+@media (max-width: 600px) { .hello-head { flex-wrap: wrap; align-items: flex-start; gap: 12px; } .hello-head > div { flex: 1 1 0; min-width: 0; } .hello-head > .pill-button { flex: 1 1 100%; } .hello-mascot { width: 56px; margin-top: 4px; } .quiz-score { border-radius: var(--r); } }
 .coming-class { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; padding: 32px; border-radius: var(--r-xl); }
 .coming-class h2 { font-size: clamp(24px, 3vw, 32px); margin: 6px 0 10px; }
 .coming-class p { color: var(--ink-2); margin: 0 0 20px; max-width: 60ch; }
 .coming-mascot { width: 150px; }
 @media (max-width: 600px) { .coming-class { grid-template-columns: 1fr; justify-items: start; padding: 22px; } .coming-mascot { width: 110px; } }
+
+/* Landscape phones are only about 375px tall, so a sticky top bar (60px) and a bottom tab bar (64px) together took a
+   third of the screen. Slim both, and let the top bar scroll away. The chat pane subtracts the same heights
+   (src/app/study/chats/chats.css). */
+@media (max-width: 860px) and (max-height: 520px) {
+  .mobile-bar { position: static; height: 48px; }
+  .tab-bar > a, .tab-menu-button { height: 52px; padding-bottom: 5px; }
+  .tab-menu-circle { width: 46px; height: 46px; margin-top: -18px; border-width: 3px; }
+  .tab-menu { bottom: calc(60px + env(safe-area-inset-bottom)); max-height: calc(100dvh - 72px - env(safe-area-inset-bottom)); }
+  .app-main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .quiz-score { top: 8px; }
+}
+
+/* Touch screens: the back link above a lesson or scheme of work gets a 44px tap area too. */
+@media (pointer: coarse) { .back-link { min-height: 44px; } }

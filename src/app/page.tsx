@@ -3,7 +3,7 @@ import Link from "next/link";
 import Brand from "@/components/brand";
 import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Message, Monitor, Note, Pencil, Shield, Target, Trophy, Users } from "@/components/icons";
 import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@/lib/social/flags";
-import { catalog, departmentNotes, listWords, notForLabel, readySubjects, totals } from "@/data/catalog";
+import { catalog, departmentNotes, listWords, notForLabel, plural, readySubjects, totals } from "@/data/catalog";
 import { naira, plansForDisplay, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
 import ScrollMotion from "@/components/scroll-motion";
@@ -21,6 +21,10 @@ const NAV = [
   { href: "#plans", label: "Plans" },
   { href: "#faq", label: "FAQ" },
 ];
+
+// On phones each subject card shows only its first weeks (the rest are one line: "+ 7 more weeks"), so the page does not
+// grow by a screen for every subject that is added. Keep in step with the `nth-child` rule in src/app/home.css.
+const PHONE_WEEKS = 4;
 
 // A slow, endless strip of what Edify covers. Purely decorative, so the whole band is hidden from screen readers.
 const TICKER: { text: string; kind: "class" | "feature" }[] = [
@@ -325,7 +329,7 @@ export default function Home() {
           {catalog.map(({ term, subject, weeks, ready }) => (
             <article className="subject-card" key={`${term.slug}/${subject.slug}`}>
               <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}{notForLabel(subject) ? ` · ${notForLabel(subject)}` : ""}</small><h3>{subject.name}</h3></div><span className="status-pill ready">{ready} of {weeks.length} ready</span></header>
-              <ol data-stagger="fast">{weeks.map(({ week, lesson }) => <li key={week.slug} className={lesson ? "" : "soon"}><span>{week.label}</span><span>{week.topic}</span>{lesson ? <Check size={16} /> : <small>Soon</small>}</li>)}</ol>
+              <ol data-stagger="fast">{weeks.map(({ week, lesson }) => <li key={week.slug} className={lesson ? "" : "soon"}><span>{week.label}</span><span>{week.topic}</span>{lesson ? <Check size={16} /> : <small>Soon</small>}</li>)}{weeks.length > PHONE_WEEKS && <li className="more-weeks">+ {plural(weeks.length - PHONE_WEEKS, "more week")}</li>}</ol>
             </article>
           ))}
           <article className="subject-card more">

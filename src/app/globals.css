@@ -152,3 +152,9 @@ svg { flex: none; }
 
 /* Visually hidden, still read by screen readers. */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Touch screens: standalone text links and text buttons get a 44px tap area. They look the same (the text stays
+   put); only the area you can hit grows. Buttons that sit inside a paragraph are left alone so lines keep their spacing. */
+@media (pointer: coarse) {
+  .text-link:not(p .text-link), .text-button:not(p .text-button), .brand { min-height: 44px; }
+}

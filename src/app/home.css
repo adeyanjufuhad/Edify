@@ -158,7 +158,8 @@
 
 /* Subjects */
 .subjects { padding-block: 32px 88px; }
-.subject-cards { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+/* Equal columns, as many as fit (two on a laptop). It was a fixed 1.6fr / 1fr pair made for one subject plus the "more" card, which left every other card narrow. */
+.subject-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; align-items: start; }
 .subject-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px; }
 .subject-card header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
 .subject-card header small { font-size: 13px; font-weight: 600; color: var(--ink-3); }
@@ -169,10 +170,11 @@
 .subject-card li span:first-child { font-size: 13px; font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .subject-card li svg { color: var(--red); }
 .subject-card li.soon { color: var(--ink-3); }
+.subject-card li.more-weeks { display: none; font-size: 14px; font-weight: 700; color: var(--ink-2); }
 .subject-card li small { font-size: 13px; color: var(--ink-3); }
-.subject-card.more { display: grid; gap: 10px; justify-items: start; background: var(--navy); border-color: var(--navy); }
+.subject-card.more { grid-column: 1 / -1; display: grid; gap: 10px; justify-items: start; background: var(--navy); border-color: var(--navy); }
 .subject-card.more h3 { color: var(--white); font-size: 22px; margin: 6px 0 0; }
-.subject-card.more p { margin: 0 0 8px; color: var(--on-navy-2); font-size: 15px; }
+.subject-card.more p { margin: 0 0 8px; max-width: 60ch; color: var(--on-navy-2); font-size: 15px; }
 .subject-card.more .pill-outline { background: transparent; color: var(--white); border-color: var(--white); }
 .subject-card.more .pill-outline:hover { background: var(--white); color: var(--navy); }
 .subject-card.more .pill-outline:focus-visible { outline-color: var(--white); }
@@ -247,7 +249,6 @@
   .tile-wide { grid-column: span 2; }
   .playbook-list { grid-template-columns: 1fr 1fr; }
   .playbook-list li:nth-child(3) { padding-left: 0; border-left: 0; }
-  .subject-cards { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; gap: 36px; }
 }
 @media (max-width: 680px) {
@@ -271,6 +272,8 @@
   .subject-card li span:first-child { grid-column: 1 / -1; }
   .subject-card header { flex-wrap: wrap; }
   .subject-card header .status-pill { margin-left: 0; }
+  .subject-card ol li:nth-child(n + 5):not(.more-weeks) { display: none; } /* PHONE_WEEKS in src/app/page.tsx */
+  .subject-card li.more-weeks { display: block; }
   .demo-question div { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; }
   .footer-links { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
@@ -384,3 +387,10 @@
 .confetti { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .confetti i { position: absolute; display: block; border-radius: 3px; rotate: var(--rot, 0deg); }
 @media (max-width: 680px) { .confetti i:nth-child(n + 9) { display: none; } .ticker-group li { font-size: 18px; } }
+
+/* Touch screens: every footer link gets a 44px tap area (they were 24px tall). */
+@media (pointer: coarse) {
+  .footer-links div { gap: 0; }
+  .footer-links a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+  .footer-links strong { padding-bottom: 6px; }
+}
