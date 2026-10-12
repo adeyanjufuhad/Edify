@@ -5,7 +5,7 @@ import { Mic, Send, Stop, Trash } from "@/components/icons";
 import type { Message } from "./chat-room";
 
 type Props = { linkId: string; maxSeconds: number; onSent: (message: Message) => void; onCancel: () => void };
-type Phase = "idle" | "recording" | "recorded" | "sending";
+type Phase = "idle" | "requesting" | "recording" | "recorded" | "sending";
 
 // The best format this browser can record: Chrome and Android give webm, iPhone Safari gives mp4, Firefox gives ogg.
 const noSubscribe = () => () => {};
@@ -23,6 +23,7 @@ export default function VoiceRecorder({ linkId, maxSeconds, onSent, onCancel }: 
   const chunks = useRef<Blob[]>([]);
   const started = useRef(0);
   const timer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+  const requestId = useRef(0);
   // The browser decides what it can record, so this is only known after the page has loaded.
   const supported = useSyncExternalStore(noSubscribe, () => typeof MediaRecorder !== "undefined" && !!navigator.mediaDevices?.getUserMedia, () => false);
 
@@ -32,30 +33,58 @@ export default function VoiceRecorder({ linkId, maxSeconds, onSent, onCancel }: 
     stream.current = null;
   }, []);
 
-  // Let go of the microphone and any preview when the page is left.
-  useEffect(() => () => {
+  // Invalidate pending microphone requests too: permission can arrive after Cancel or navigation.
+  const cancelRecording = useCallback(() => {
+    requestId.current += 1;
+    const rec = recorder.current;
+    recorder.current = null;
+    if (rec) {
+      rec.onstop = null;
+      rec.ondataavailable = null;
+      rec.onerror = null;
+      if (rec.state !== "inactive") rec.stop();
+    }
     release();
-    if (recorder.current?.state === "recording") recorder.current.stop();
   }, [release]);
+  useEffect(() => cancelRecording, [cancelRecording]);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview.url); }, [preview]);
 
   const stop = useCallback(() => { if (recorder.current?.state === "recording") recorder.current.stop(); }, []);
 
   async function start() {
+    if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices?.getUserMedia) return;
+    const request = ++requestId.current;
     setError("");
+    setPhase("requesting");
     try {
       const media = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (request !== requestId.current) {
+        media.getTracks().forEach((track) => track.stop());
+        return;
+      }
       stream.current = media;
       const type = FORMATS.find((format) => MediaRecorder.isTypeSupported(format));
       const rec = new MediaRecorder(media, type ? { mimeType: type, audioBitsPerSecond: 24000 } : { audioBitsPerSecond: 24000 });
       chunks.current = [];
       rec.ondataavailable = (event) => { if (event.data.size) chunks.current.push(event.data); };
       rec.onstop = () => {
+        if (request !== requestId.current) return;
         release();
         const taken = Math.min(maxSeconds, Math.max(1, Math.round((Date.now() - started.current) / 1000)));
         const blob = new Blob(chunks.current, { type: rec.mimeType || type || "audio/webm" });
+        if (!blob.size) {
+          setError("No audio was recorded. Try recording again.");
+          setPhase("idle");
+          return;
+        }
         setPreview({ url: URL.createObjectURL(blob), blob, seconds: taken });
         setPhase("recorded");
+      };
+      rec.onerror = () => {
+        if (request !== requestId.current) return;
+        cancelRecording();
+        setError("Recording stopped unexpectedly. Try recording again.");
+        setPhase("idle");
       };
       recorder.current = rec;
       started.current = Date.now();
@@ -68,7 +97,8 @@ export default function VoiceRecorder({ linkId, maxSeconds, onSent, onCancel }: 
         if (elapsed >= maxSeconds) stop();
       }, 250);
     } catch {
-      release();
+      if (request !== requestId.current) return;
+      cancelRecording();
       setError("We couldn’t use your microphone. Allow microphone access in your browser, then try again.");
       setPhase("idle");
     }
@@ -100,12 +130,13 @@ export default function VoiceRecorder({ linkId, maxSeconds, onSent, onCancel }: 
     }
   }
 
-  if (!supported) return <p className="chat-hint">Voice notes need a newer browser. Text chat still works.</p>;
+  if (!supported) return <div className="voice-bar"><p className="chat-hint">Voice recording isn’t available in this browser. Try a newer browser with microphone access.</p><button type="button" className="text-button small" onClick={onCancel}>Back to typing</button></div>;
 
   return (
     <div className="voice-bar" aria-label="Voice note">
       {phase === "idle" && <button type="button" className="pill-outline small" onClick={() => void start()}><Mic size={16} /> Record again</button>}
-      {phase !== "sending" && <button type="button" className="text-button small" onClick={() => { if (recorder.current?.state === "recording") { recorder.current.onstop = null; recorder.current.stop(); } release(); onCancel(); }}>Cancel</button>}
+      {phase !== "sending" && <button type="button" className="text-button small" onClick={() => { cancelRecording(); onCancel(); }}>Cancel</button>}
+      {phase === "requesting" && <p role="status">Waiting for microphone access…</p>}
       {phase === "recording" && <>
         <span className="rec-dot" aria-hidden="true" />
         <span className="rec-time" role="timer" aria-label={`Recording, ${seconds} seconds of ${maxSeconds}`}>{seconds}s / {maxSeconds}s</span>
