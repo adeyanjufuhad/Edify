@@ -45,7 +45,7 @@ export default async function ProfilesPage() {
   const [lock, overviews] = await Promise.all([
     getParentLock(parent.id, parent.signedInAt),
     // Progress is a nice-to-have on this page: if it fails, the cards simply show none.
-    learnerOverviews(profiles.map((profile) => profile.id)).catch((): Record<string, LearnerOverview> => ({})),
+    learnerOverviews(profiles.map((profile) => ({ id: profile.id, stream: profile.stream }))).catch((): Record<string, LearnerOverview> => ({})),
   ]);
   const manage = lock.canManage;
   const onboarding = !profiles.length && !loadFailed;

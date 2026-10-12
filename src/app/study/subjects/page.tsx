@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "@/components/icons";
-import { curriculum, type Subject, type Term } from "@/data/curriculum";
+import { curriculum, subjectOpenTo, type Subject, type Term } from "@/data/curriculum";
 import { plural } from "@/data/catalog";
 import { requireLearner } from "@/lib/session";
 import { loadStudy, percent } from "@/lib/study";
@@ -12,7 +12,7 @@ const schemePath = (term: Term, subject: Subject) => `/study/ss1/${term.slug}/${
 
 export default async function SubjectsPage() {
   const learner = await requireLearner();
-  const { loadFailed, term, subjects, ownClass, contentClass } = await loadStudy(learner.id, learner.classLevel);
+  const { loadFailed, term, subjects, ownClass, contentClass } = await loadStudy(learner.id, learner.classLevel, learner.stream);
 
   return (
     <div className="page">
@@ -29,7 +29,8 @@ export default async function SubjectsPage() {
       <nav className="term-tabs" aria-label="Terms">
         {curriculum.map((t) => {
           const active = t.slug === term.slug;
-          return <span key={t.slug} className={`term-tab ${active ? "active" : ""}`} aria-current={active ? "true" : undefined}>{t.name}<small>{t.subjects.length ? plural(t.subjects.length, "subject") : "Soon"}</small></span>;
+          const count = t.subjects.filter((subject) => subjectOpenTo(subject, learner.stream)).length;
+          return <span key={t.slug} className={`term-tab ${active ? "active" : ""}`} aria-current={active ? "true" : undefined}>{t.name}<small>{count ? plural(count, "subject") : "Soon"}</small></span>;
         })}
       </nav>
 

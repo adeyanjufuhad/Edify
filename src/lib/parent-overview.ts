@@ -1,5 +1,6 @@
 import "server-only";
-import { lessonIndex, totals } from "@/data/catalog";
+import { lessonOpenTo, readyLessonsFor } from "@/data/catalog";
+import type { StreamId } from "@/data/streams";
 import { database } from "@/lib/db";
 import { examGrade } from "@/lib/grades";
 import { RETENTION_DAYS } from "@/lib/social-rules";
@@ -30,8 +31,11 @@ async function rows(text: string, params: unknown[]): Promise<Row[] | null> {
   }
 }
 
-export async function learnerOverviews(learnerIds: string[]): Promise<Record<string, LearnerOverview>> {
-  if (!learnerIds.length) return {};
+// Each learner's lesson total and count only cover the subjects offered to their department (stream).
+export async function learnerOverviews(learners: { id: string; stream: StreamId | null }[]): Promise<Record<string, LearnerOverview>> {
+  if (!learners.length) return {};
+  const learnerIds = learners.map((learner) => learner.id);
+  const streams = new Map(learners.map((learner) => [learner.id, learner.stream] as const));
   const windowDays = RETENTION_DAYS.leaderboardWindow;
   const board = challengesEnabled() ? leaderboardQuery(learnerIds, windowDays, null) : null;
   const [lessons, attempts, played] = await Promise.all([
@@ -44,11 +48,11 @@ export async function learnerOverviews(learnerIds: string[]): Promise<Record<str
   ]);
 
   const out: Record<string, LearnerOverview> = {};
-  for (const id of learnerIds) out[id] = { lessonsDone: lessons ? 0 : null, lessonsTotal: totals.readyTopics, lastCbt: null, cbtLoaded: attempts !== null, challenges: null };
-  // Only lessons that are still published count, so the number never passes the total.
+  for (const learner of learners) out[learner.id] = { lessonsDone: lessons ? 0 : null, lessonsTotal: readyLessonsFor(learner.stream), lastCbt: null, cbtLoaded: attempts !== null, challenges: null };
+  // Only lessons that are still published and offered to the learner's department count, so the number never passes the total.
   for (const row of lessons ?? []) {
     const entry = out[String(row.user_id)];
-    if (entry && entry.lessonsDone !== null && lessonIndex.has(String(row.lesson_id))) entry.lessonsDone += 1;
+    if (entry && entry.lessonsDone !== null && lessonOpenTo(String(row.lesson_id), streams.get(String(row.user_id)))) entry.lessonsDone += 1;
   }
   for (const row of attempts ?? []) {
     const entry = out[String(row.learner_id)];

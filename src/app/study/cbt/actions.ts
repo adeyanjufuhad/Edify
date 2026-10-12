@@ -11,7 +11,7 @@ export async function submitCbt(input: Submission): Promise<{ id?: string; error
   if (!input || typeof input.params !== "string" || input.params.length > 2000 || typeof input.picks !== "object" || input.picks === null) {
     return { error: "That test could not be read. Start a new one from the CBT page." };
   }
-  const attempt = gradeSubmission(input);
+  const attempt = gradeSubmission(input, learner.stream);
   if ("error" in attempt) return { error: attempt.error ?? "That test could not be marked." };
   try {
     return { id: await saveAttempt(learner.id, attempt) };

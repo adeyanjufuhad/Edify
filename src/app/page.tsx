@@ -3,7 +3,7 @@ import Link from "next/link";
 import Brand from "@/components/brand";
 import { ArrowRight, Bolt, Check, Clock, Flag, Layers, Message, Monitor, Note, Pencil, Shield, Target, Trophy, Users } from "@/components/icons";
 import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@/lib/social/flags";
-import { catalog, listWords, readySubjects, totals } from "@/data/catalog";
+import { catalog, departmentNotes, listWords, notForLabel, readySubjects, totals } from "@/data/catalog";
 import { naira, plansForDisplay, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
 import ScrollMotion from "@/components/scroll-motion";
@@ -67,7 +67,7 @@ const SOCIAL_FAQ = { q: "Can my child talk to strangers on Edify?", a: "No. Chil
 const FAQS = [
   { q: "How much does Edify cost?", a: "Creating a family account is free. Study access costs ₦1,000 for Bronze, ₦3,000 for Silver or ₦5,000 for Gold per learner for 105 days (3½ months). Pay through Paystack, with no automatic renewal. Valid partner-school referral codes still unlock sponsored Gold." },
   { q: "Which classes is Edify for?", a: "Every secondary school class in Nigeria, from JSS1 to SS3. SS1 lessons are ready first; other classes are added as their lessons are written and checked." },
-  { q: "Which subjects are covered?", a: `Edify is built for every school subject. ${listWords(readySubjects)} ${readySubjects.length === 1 ? "is" : "are"} ready first, and more subjects are added one by one.` },
+  { q: "Which subjects are covered?", a: `Edify is built for every school subject. ${listWords(readySubjects)} ${readySubjects.length === 1 ? "is" : "are"} ready first, and more subjects are added one by one.${departmentNotes.length ? ` ${departmentNotes.join(" ")}` : ""}` },
   { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the Nigerian scheme of work for each class, term by term and week by week, so what you read matches what was taught in class." },
   { q: "Who creates the account?", a: "A parent or guardian. They add each child as a learner, so one family account covers brothers and sisters." },
   { q: "Does it work on a phone?", a: "Yes. Edify is a website that works in any phone or computer browser. There’s nothing to install." },
@@ -324,7 +324,7 @@ export default function Home() {
         <div className="subject-cards" data-stagger>
           {catalog.map(({ term, subject, weeks, ready }) => (
             <article className="subject-card" key={`${term.slug}/${subject.slug}`}>
-              <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}</small><h3>{subject.name}</h3></div><span className="status-pill ready">{ready} of {weeks.length} ready</span></header>
+              <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}{notForLabel(subject) ? ` · ${notForLabel(subject)}` : ""}</small><h3>{subject.name}</h3></div><span className="status-pill ready">{ready} of {weeks.length} ready</span></header>
               <ol data-stagger="fast">{weeks.map(({ week, lesson }) => <li key={week.slug} className={lesson ? "" : "soon"}><span>{week.label}</span><span>{week.topic}</span>{lesson ? <Check size={16} /> : <small>Soon</small>}</li>)}</ol>
             </article>
           ))}

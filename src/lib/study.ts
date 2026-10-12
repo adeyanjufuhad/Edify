@@ -1,18 +1,20 @@
 import { CURRICULUM_CLASS, curriculum } from "@/data/curriculum";
-import { catalog } from "@/data/catalog";
+import { catalogFor } from "@/data/catalog";
+import type { StreamId } from "@/data/streams";
 import { getLearnerRecords, type LessonRecord } from "@/lib/progress";
 
 // Everything the study pages need about one learner: their saved records and per-subject progress
 // for the current term (the first term that has subjects). `ownClass` is false while the learner's
 // class has no lessons yet; the lessons that do exist (CURRICULUM_CLASS) are still returned to browse.
-export async function loadStudy(learnerId: string, classLevel: string) {
+// Only the subjects offered to the learner's department (`stream`) are returned.
+export async function loadStudy(learnerId: string, classLevel: string, stream: StreamId | null) {
   let records: LessonRecord[] = [];
   let loadFailed = false;
   try { records = await getLearnerRecords(learnerId); } catch { loadFailed = true; }
 
   const done = new Set(records.filter((record) => record.completed).map((record) => record.lessonId));
   const term = curriculum.find((t) => t.subjects.length) ?? curriculum[0];
-  const subjects = catalog.filter((entry) => entry.term.slug === term.slug).map((entry) => {
+  const subjects = catalogFor(stream).filter((entry) => entry.term.slug === term.slug).map((entry) => {
     const weeks = entry.weeks.map((row) => ({ ...row, completed: !!row.lesson && done.has(row.lesson.id) }));
     return { ...entry, weeks, completed: weeks.filter((row) => row.completed).length };
   });

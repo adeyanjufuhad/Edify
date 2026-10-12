@@ -1,5 +1,6 @@
 import "server-only";
-import { LETTERS, buildPaper, cbtBanks, type CbtBank } from "@/lib/cbt";
+import type { StreamId } from "@/data/streams";
+import { LETTERS, banksFor, buildPaper, cbtBanks, type CbtBank } from "@/lib/cbt";
 import type { FrozenQuestion } from "@/lib/social-rules";
 
 // Challenge papers are built by the CBT engine (seeded, shuffled, spread across the lessons) and then frozen: the
@@ -16,9 +17,10 @@ export type WeekOption = { id: string; label: string; topic: string; questions: 
 export type SubjectOption = { slug: string; name: string; terms: { slug: string; name: string; questions: number; weeks: WeekOption[] }[] };
 
 // The subjects that have lessons with questions, and the terms of each. Computed from the lessons, never hard-coded.
-export function challengeSubjects(): SubjectOption[] {
+// Given a department (stream), only the subjects offered to it are listed.
+export function challengeSubjects(stream: StreamId | null = null): SubjectOption[] {
   const subjects = new Map<string, SubjectOption>();
-  for (const bank of cbtBanks) {
+  for (const bank of banksFor(stream)) {
     const { termSlug, subjectSlug } = split(bank);
     const entry = subjects.get(subjectSlug) ?? { slug: subjectSlug, name: bank.subject, terms: [] };
     entry.terms.push({

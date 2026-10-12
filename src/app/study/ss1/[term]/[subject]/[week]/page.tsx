@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import LessonView from "@/components/lesson-view";
-import { curriculum, lessonPath } from "@/data/curriculum";
+import { curriculum, lessonPath, subjectOpenTo } from "@/data/curriculum";
 import { getLesson } from "@/data/lessons";
 import { requireLearner } from "@/lib/session";
 import { getProgress } from "@/lib/progress";
@@ -20,6 +20,9 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
   const lesson = getLesson(term, subject, week);
   if (!lesson) notFound();
   const learner = await requireLearner();
+  // A subject that is not offered to this learner's department is treated as if it does not exist.
+  const offered = curriculum.find((t) => t.slug === term)?.subjects.find((s) => s.slug === subject);
+  if (!offered || !subjectOpenTo(offered, learner.stream)) notFound();
   const practiceAvailable = hasPlan(learner, "silver");
   // Remove paid practice data on the server, before serializing client props.
   const visibleLesson = practiceAvailable ? lesson : { ...lesson, questions: [], quick: lesson.quick ? { ...lesson.quick, likely: [] } : undefined };

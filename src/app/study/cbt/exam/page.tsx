@@ -15,7 +15,7 @@ export default async function ExamPage({ searchParams }: { searchParams: Promise
   if (!hasPlan(learner, "gold")) redirect(`/billing?learner=${learner.id}`);
   const raw = await searchParams;
   const params = new URLSearchParams(Object.entries(raw).flatMap(([key, value]) => (typeof value === "string" ? [[key, value]] : [])));
-  const spec = parsePaperSpec(params);
+  const spec = parsePaperSpec(params, learner.stream);
 
   if ("error" in spec) {
     return (

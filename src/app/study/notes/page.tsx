@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "@/components/icons";
-import { lessonIndex, plural } from "@/data/catalog";
+import { lessonIndex, lessonOpenTo, plural } from "@/data/catalog";
 import { requireLearner } from "@/lib/session";
 import Mascot from "@/components/mascot";
 import { loadStudy } from "@/lib/study";
@@ -11,8 +11,8 @@ const dateFormat = new Intl.DateTimeFormat("en-NG", { day: "numeric", month: "sh
 
 export default async function NotesPage() {
   const learner = await requireLearner();
-  const { records, loadFailed } = await loadStudy(learner.id, learner.classLevel);
-  const notes = records.filter((record) => record.notes.trim() && lessonIndex.has(record.lessonId));
+  const { records, loadFailed } = await loadStudy(learner.id, learner.classLevel, learner.stream);
+  const notes = records.filter((record) => record.notes.trim() && lessonOpenTo(record.lessonId, learner.stream));
 
   return (
     <div className="page">

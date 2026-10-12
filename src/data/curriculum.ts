@@ -1,3 +1,5 @@
+import type { StreamId } from "./streams";
+
 // Nigerian secondary school classes. Lessons are published class by class; SS1 is first.
 export const CLASS_LEVELS = ["JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"] as const;
 export type ClassLevel = (typeof CLASS_LEVELS)[number];
@@ -8,7 +10,8 @@ export function isClassLevel(value: string): value is ClassLevel {
 }
 
 export type Week = { slug: string; label: string; topic: string };
-export type Subject = { slug: string; name: string; weeks: Week[] };
+// `excludedStreams` lists the senior departments a subject is NOT offered to. A subject with none is for everyone.
+export type Subject = { slug: string; name: string; weeks: Week[]; excludedStreams?: readonly StreamId[] };
 export type Term = { slug: string; name: string; subjects: Subject[] };
 
 export const curriculum: Term[] = [
@@ -52,7 +55,7 @@ export const curriculum: Term[] = [
         { slug: "week-11", label: "Week 11", topic: "Circular motion, density and relative density" },
         { slug: "weeks-12-13", label: "Weeks 12–13", topic: "Revision & examination" },
       ] },
-      { slug: "mathematics", name: "Mathematics", weeks: [
+      { slug: "mathematics", name: "Mathematics", excludedStreams: ["arts"], weeks: [
         { slug: "week-1", label: "Week 01", topic: "Number bases (Part 1)" },
         { slug: "week-2", label: "Week 02", topic: "Number bases (Part 2)" },
         { slug: "week-3", label: "Week 03", topic: "Modular arithmetic" },
@@ -71,6 +74,12 @@ export const curriculum: Term[] = [
   { slug: "second-term", name: "Second Term", subjects: [] },
   { slug: "third-term", name: "Third Term", subjects: [] },
 ];
+
+// Whether a learner in this department can see the subject. A learner with no department (JSS, or a senior
+// profile that has not chosen one yet) sees every subject.
+export function subjectOpenTo(subject: Subject, stream: StreamId | null | undefined) {
+  return !stream || !subject.excludedStreams?.includes(stream);
+}
 
 export function lessonPath(term: Term, subject: Subject, week: Week) {
   return `/study/ss1/${term.slug}/${subject.slug}/${week.slug}`;

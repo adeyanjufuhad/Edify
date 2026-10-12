@@ -1,6 +1,7 @@
-import { curriculum, lessonPath, type Subject, type Term, type Week } from "./curriculum";
+import { curriculum, lessonPath, subjectOpenTo, type Subject, type Term, type Week } from "./curriculum";
 import { getLesson, lessons } from "./lessons";
 import type { Lesson } from "./lessons/types";
+import { streamLabel, type StreamId } from "./streams";
 
 export type CatalogWeek = { week: Week; lesson: Lesson | undefined; href: string };
 export type CatalogSubject = { term: Term; subject: Subject; weeks: CatalogWeek[]; ready: number };
@@ -33,3 +34,19 @@ export type LessonEntry = CatalogWeek & { term: Term; subject: Subject; lesson: 
 export const lessonIndex: ReadonlyMap<string, LessonEntry> = new Map(
   catalog.flatMap(({ term, subject, weeks }) => weeks.flatMap((entry) => (entry.lesson ? [[entry.lesson.id, { ...entry, term, subject, lesson: entry.lesson }] as const] : []))),
 );
+
+// What one learner can see, by department (stream). Everything that lists subjects or opens a lesson for a
+// signed-in learner goes through these, so a subject that is not offered to a department stays out of sight.
+export const catalogFor = (stream: StreamId | null | undefined) => catalog.filter((entry) => subjectOpenTo(entry.subject, stream));
+export const readyLessonsFor = (stream: StreamId | null | undefined) => catalogFor(stream).reduce((sum, entry) => sum + entry.ready, 0);
+export function lessonOpenTo(lessonId: string, stream: StreamId | null | undefined) {
+  const entry = lessonIndex.get(lessonId);
+  return !!entry && subjectOpenTo(entry.subject, stream);
+}
+
+// "Not for Arts" on a subject card, or null when the subject is for every department.
+export const notForLabel = (subject: Subject) => subject.excludedStreams?.length ? `Not for ${listWords(subject.excludedStreams.map((id) => streamLabel(id) ?? id))}` : null;
+
+// "Mathematics is for every department except Arts." One sentence per subject that leaves a department out.
+export const departmentNotes: string[] = [...new Map(catalog.filter((entry) => entry.subject.excludedStreams?.length).map((entry) => [entry.subject.name, entry.subject] as const)).values()]
+  .map((subject) => `${subject.name} is for every department except ${listWords((subject.excludedStreams ?? []).map((id) => streamLabel(id) ?? id))}.`);

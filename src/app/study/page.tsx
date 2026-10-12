@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Monitor, Note } from "@/components/icons";
 import Mascot from "@/components/mascot";
 import { Sparkle, Star } from "@/components/doodles";
-import { lessonIndex, plural, totals } from "@/data/catalog";
+import { lessonIndex, lessonOpenTo, plural } from "@/data/catalog";
 import { listAttempts, type AttemptSummary } from "@/lib/cbt";
 import AttemptList from "./cbt/attempt-list";
 import "./cbt/cbt.css";
@@ -18,8 +18,8 @@ function greeting() {
 
 export default async function DashboardPage() {
   const learner = await requireLearner();
-  const { records, loadFailed, term, subjects, rows, upcoming, next, completedCount, ownClass, contentClass } = await loadStudy(learner.id, learner.classLevel);
-  const notes = records.filter((record) => record.notes.trim() && lessonIndex.has(record.lessonId));
+  const { records, loadFailed, term, subjects, rows, upcoming, next, completedCount, ownClass, contentClass } = await loadStudy(learner.id, learner.classLevel, learner.stream);
+  const notes = records.filter((record) => record.notes.trim() && lessonOpenTo(record.lessonId, learner.stream));
   const firstName = learner.name.split(" ")[0];
   const readyQuestions = rows.reduce((sum, row) => sum + (row.lesson?.questions.length ?? 0), 0);
   let attempts: AttemptSummary[] = [];
@@ -58,7 +58,7 @@ export default async function DashboardPage() {
         </div>
         <div className="stat-tile"><span>Term progress</span><strong>{percent(completedCount, rows.length)}%</strong><small>of {term.name.toLowerCase()} lessons</small></div>
         <div className="stat-tile"><span>Notes written</span><strong>{notes.length}</strong><small>{notes.length ? "saved to your account" : "add one in any lesson"}</small></div>
-        <div className="stat-tile"><span>Practice questions</span><strong>{readyQuestions}</strong><small>across {plural(totals.readyTopics, "ready lesson")}</small></div>
+        <div className="stat-tile"><span>Practice questions</span><strong>{readyQuestions}</strong><small>across {plural(rows.filter((row) => row.lesson).length, "ready lesson")}</small></div>
       </section>
 
       <div className="overview-grid">

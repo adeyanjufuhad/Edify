@@ -2,7 +2,7 @@ import "server-only";
 import { randomInt } from "node:crypto";
 import { CHALLENGE_MIN_PLAN } from "@/data/challenges";
 import { PLAN_RANK } from "@/data/plans";
-import { planForLearner } from "@/lib/profiles";
+import { planForLearner, streamForLearner } from "@/lib/profiles";
 import {
   LIMITS, RETENTION_DAYS, challengeStatus, decideWinner, gradePicks, phaseOf, rankBoard, viewerSlot,
   type BoardRow, type ChallengeStatus, type FrozenQuestion, type PlayerPhase, type ViewerSlot,
@@ -90,8 +90,11 @@ export async function getChallenge(learnerId: string, challengeId: string): Prom
 export async function createChallenge(learnerId: string, input: { linkId: string; subjectSlug: string; termSlug: string; count: number; lessonIds?: string[] }): Promise<{ id: string } | { error: string }> {
   const link = await getLinkForLearner(learnerId, input.linkId);
   if (!link || (link.status !== "active" && link.status !== "pending") || !link.otherSwitches.challenges) return { error: "That classmate isn’t available for challenges." };
-  const subject = challengeSubjects().find((entry) => entry.slug === input.subjectSlug);
+  // Both players must be able to open the subject, so it has to be offered to both of their departments.
+  const [myStream, theirStream] = await Promise.all([streamForLearner(learnerId), streamForLearner(link.other.id)]);
+  const subject = challengeSubjects(myStream).find((entry) => entry.slug === input.subjectSlug);
   if (!subject) return { error: "Choose a subject from the list." };
+  if (!challengeSubjects(theirStream).some((entry) => entry.slug === subject.slug)) return { error: `${subject.name} is not part of ${link.other.name}’s department. Choose another subject.` };
   const termSlug = input.termSlug === "all" ? null : input.termSlug;
   if (termSlug !== null && !subject.terms.some((term) => term.slug === termSlug)) return { error: "Choose a term from the list." };
   if (!LIMITS.challengeCounts.includes(input.count)) return { error: "Choose how many questions from the list." };

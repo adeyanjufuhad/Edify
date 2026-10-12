@@ -14,7 +14,7 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
   const { learner, blocked } = await pageActor();
   if (blocked) return <Gate blocked={blocked} learnerId={learner.id} />;
   const { subject } = await searchParams;
-  const subjects = challengeSubjects();
+  const subjects = challengeSubjects(learner.stream);
   const chosen = typeof subject === "string" && subjects.some((entry) => entry.slug === subject) ? subject : null;
   let board: BoardEntry[] = [];
   let loadFailed = false;

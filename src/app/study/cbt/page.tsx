@@ -14,7 +14,7 @@ export const metadata = { title: "CBT tests — Edify" };
 export default async function CbtPage() {
   const learner = await requireLearner();
   if (!hasPlan(learner, "gold")) return <div className="page"><section className="panel"><h1>CBT tests are included in Gold.</h1><p>Ask your parent to choose Gold for timed exam-style tests and a full review of your answers.</p><Link href={`/billing?learner=${learner.id}`} className="pill-button">View plans</Link></section></div>;
-  const banks = bankSummaries();
+  const banks = bankSummaries(learner.stream);
   let attempts: AttemptSummary[] = [];
   let loadFailed = false;
   try { attempts = await listAttempts(learner.id, 8); } catch { loadFailed = true; }

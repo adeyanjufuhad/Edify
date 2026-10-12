@@ -20,7 +20,7 @@ export default async function SchemeOfWorkPage({ params }: { params: Promise<Par
   const { term: termSlug, subject: subjectSlug } = await params;
   if (!findSubject(termSlug, subjectSlug)) notFound();
   const learner = await requireLearner();
-  const { loadFailed, term, subjects, ownClass, contentClass } = await loadStudy(learner.id, learner.classLevel);
+  const { loadFailed, term, subjects, ownClass, contentClass } = await loadStudy(learner.id, learner.classLevel, learner.stream);
   const entry = subjects.find((row) => row.term.slug === termSlug && row.subject.slug === subjectSlug);
   if (!entry) notFound();
 

@@ -1,4 +1,5 @@
 import { catalog } from "@/data/catalog";
+import type { StreamId } from "@/data/streams";
 import { database } from "@/lib/db";
 import { examGrade } from "@/lib/grades";
 
@@ -20,7 +21,8 @@ const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 
 type BankQuestion = { key: string; number: number; prompt: string; options: string[]; answer: Letter; explanation?: string };
 export type BankLesson = { id: string; label: string; topic: string; href: string; from: number; to: number; questions: BankQuestion[] };
-export type CbtBank = { key: string; subject: string; term: string; lessons: BankLesson[] };
+// `excludedStreams`: the departments this subject is not offered to (see src/data/curriculum.ts).
+export type CbtBank = { key: string; subject: string; term: string; lessons: BankLesson[]; excludedStreams?: readonly StreamId[] };
 
 // "week-3" -> [3, 3], "weeks-4-5" -> [4, 5]
 function weekSpan(slug: string): [number, number] {
@@ -40,15 +42,19 @@ export const cbtBanks: CbtBank[] = catalog.flatMap(({ term, subject, weeks }) =>
     const [from, to] = weekSpan(week.slug);
     return questions.length ? [{ id: lesson.id, label: week.label, topic: week.topic, href, from, to, questions }] : [];
   });
-  return lessons.length ? [{ key: `${term.slug}/${subject.slug}`, subject: subject.name, term: term.name, lessons }] : [];
+  return lessons.length ? [{ key: `${term.slug}/${subject.slug}`, subject: subject.name, term: term.name, lessons, excludedStreams: subject.excludedStreams }] : [];
 });
+
+// The banks one learner may use. Marking and old attempts still look questions up in every bank.
+const bankOpenTo = (bank: CbtBank, stream: StreamId | null | undefined) => !stream || !bank.excludedStreams?.includes(stream);
+export const banksFor = (stream: StreamId | null | undefined) => cbtBanks.filter((bank) => bankOpenTo(bank, stream));
 
 const questionIndex = new Map(cbtBanks.flatMap((bank) => bank.lessons.flatMap((lesson) => lesson.questions.map((q) => [q.key, { q, lesson }] as const))));
 const lessonIndex = new Map(cbtBanks.flatMap((bank) => bank.lessons.map((lesson) => [lesson.id, { lesson, bank }] as const)));
 
 // What the setup screen needs (no questions or answers).
-export function bankSummaries() {
-  return cbtBanks.map(({ key, subject, term, lessons }) => ({
+export function bankSummaries(stream: StreamId | null) {
+  return banksFor(stream).map(({ key, subject, term, lessons }) => ({
     key, subject, term,
     lessons: lessons.map(({ id, label, topic, from, to, questions }) => ({ id, label, topic, from, to, count: questions.length })),
   }));
@@ -63,10 +69,14 @@ function intParam(params: URLSearchParams, name: string) {
 }
 
 // Reads a paper's settings from the exam URL. Missing count/time fall back to the defaults.
-export function parsePaperSpec(params: URLSearchParams): PaperSpec | { error: string } {
+// `stream` is the learner's department: a subject that is not offered to it cannot be asked for.
+export function parsePaperSpec(params: URLSearchParams, stream: StreamId | null): PaperSpec | { error: string } {
   const mode = params.get("mode");
   if (!mode || !(mode in CBT_MODES)) return { error: "Choose a test type." };
-  const bank = cbtBanks.find((entry) => entry.key === params.get("bank")) ?? cbtBanks[0];
+  const allowed = banksFor(stream);
+  const wanted = params.get("bank");
+  if (wanted && cbtBanks.some((entry) => entry.key === wanted) && !allowed.some((entry) => entry.key === wanted)) return { error: "That subject is not part of your department." };
+  const bank = allowed.find((entry) => entry.key === wanted) ?? allowed[0];
   if (!bank) return { error: "No lessons are ready for tests yet." };
 
   let lessons: BankLesson[] = [];
@@ -168,8 +178,8 @@ export type AttemptAnswer = { q: string; picked: Letter | null; correct: Letter;
 export type Submission = { params: string; picks: Record<string, string>; flags: string[]; durationSeconds: number };
 
 // Rebuilds the paper from its settings and marks it. The browser only sends the settings and the picks.
-export function gradeSubmission(input: Submission) {
-  const spec = parsePaperSpec(new URLSearchParams(input.params));
+export function gradeSubmission(input: Submission, stream: StreamId | null) {
+  const spec = parsePaperSpec(new URLSearchParams(input.params), stream);
   if ("error" in spec) return { error: spec.error };
   const paper = buildPaper(spec);
   const flags = new Set(Array.isArray(input.flags) ? input.flags : []);

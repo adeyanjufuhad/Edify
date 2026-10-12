@@ -1,6 +1,7 @@
 import { getLearner } from "@/lib/session";
 import { hasPlan } from "@/lib/access";
 import { lessonIds } from "@/data/lessons";
+import { lessonOpenTo } from "@/data/catalog";
 import { getCompletedLessons, getProgress, saveProgress } from "@/lib/progress";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export async function GET(request: Request) {
   try {
     const lessonId = new URL(request.url).searchParams.get("lessonId");
     if (lessonId) {
-      if (!lessonIds.has(lessonId)) return Response.json({ error: "Unknown lesson" }, { status: 400 });
+      if (!lessonIds.has(lessonId) || !lessonOpenTo(lessonId, learner.stream)) return Response.json({ error: "Unknown lesson" }, { status: 400 });
       return Response.json({ record: await getProgress(learner.id, lessonId) });
     }
     return Response.json({ completed: await getCompletedLessons(learner.id) });
@@ -32,7 +33,7 @@ export async function PUT(request: Request) {
   } catch {
     return Response.json({ error: "Invalid lesson progress" }, { status: 400 });
   }
-  if (typeof input.lessonId !== "string" || !lessonIds.has(input.lessonId) || typeof input.completed !== "boolean" || typeof input.notes !== "string" || input.notes.length > MAX_NOTES_LENGTH) {
+  if (typeof input.lessonId !== "string" || !lessonIds.has(input.lessonId) || !lessonOpenTo(input.lessonId, learner.stream) || typeof input.completed !== "boolean" || typeof input.notes !== "string" || input.notes.length > MAX_NOTES_LENGTH) {
     return Response.json({ error: "Invalid lesson progress" }, { status: 400 });
   }
   try {

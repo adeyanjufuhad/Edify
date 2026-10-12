@@ -90,6 +90,14 @@ export async function deleteProfile(parentId: string, profileId: string) {
   await deleteLearnerData(parentId, profileId);
 }
 
+// The department (stream) of a learner, or null for a junior or a senior who has not chosen one.
+// The caller must already know the id from a trusted place, such as a classmate link.
+export async function streamForLearner(profileId: string): Promise<StreamId | null> {
+  if (!UUID_PATTERN.test(profileId)) return null;
+  const rows = await database()`select stream from public.learner_profiles where id = ${profileId}`;
+  return isStreamId(rows[0]?.stream) ? rows[0].stream : null;
+}
+
 // The plan a learner has right now (paid access, or the sponsored Gold from a referral code).
 // The caller must already know the id from a trusted place, such as a classmate link.
 export async function planForLearner(profileId: string): Promise<PlanId> {
