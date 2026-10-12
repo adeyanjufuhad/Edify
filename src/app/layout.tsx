@@ -6,7 +6,7 @@ import "./motion.css";
 const nunito = Nunito({ subsets: ["latin"], variable: "--font-body" });
 const fredoka = Fredoka({ subsets: ["latin", "latin-ext"], variable: "--font-display" });
 
-const description = "Clear weekly notes, quick exam summaries and exam-style practice for secondary school students in Nigeria, JSS1 to SS3.";
+const description = "Clear weekly notes, quick exam summaries and exam-style practice for senior secondary school students in Nigeria, SS1 to SS3.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://edify-sigma-plum.vercel.app"),

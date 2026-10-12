@@ -2,7 +2,7 @@
 
 import { useActionState, useRef, useState } from "react";
 import type { LearnerProfile } from "@/lib/profiles";
-import { CLASS_LEVELS } from "@/data/curriculum";
+import { OFFERED_CLASS_LEVELS, isClassLevel } from "@/data/curriculum";
 import { SUGGESTED_SCHOOLS } from "@/data/schools";
 import { STREAMS, isSeniorClass, streamLabel } from "@/data/streams";
 import PlanBadge from "@/components/plan-badge";
@@ -143,16 +143,20 @@ export function AddProfileForm() {
 
 // The class, and for SS1 to SS3 learners a stream. The stream picker only appears once a senior class is chosen.
 // `idPrefix` keeps the ids unique when the add form and an edit form are on the page together.
-function ClassAndStream({ initialClass, initialStream, idPrefix = "learner" }: { initialClass?: string; initialStream?: string; idPrefix?: string }) {
+function ClassAndStream({ initialClass, initialStream, currentClass, idPrefix = "learner" }: { initialClass?: string; initialStream?: string; currentClass?: string; idPrefix?: string }) {
   const [level, setLevel] = useState(initialClass ?? "");
   const senior = isSeniorClass(level);
+  // Only the offered (senior) classes can be chosen, plus the class a learner already has, so an edit form for a
+  // junior learner added earlier still shows their class.
+  const classes: readonly string[] = currentClass && isClassLevel(currentClass) && !(OFFERED_CLASS_LEVELS as readonly string[]).includes(currentClass) ? [currentClass, ...OFFERED_CLASS_LEVELS] : OFFERED_CLASS_LEVELS;
   return <>
     <div className="field">
       <label htmlFor={`${idPrefix}-class`}>Class</label>
-      <select id={`${idPrefix}-class`} name="classLevel" value={level} onChange={(event) => setLevel(event.target.value)} required>
+      <select id={`${idPrefix}-class`} name="classLevel" value={classes.includes(level) ? level : ""} onChange={(event) => setLevel(event.target.value)} required aria-describedby={`${idPrefix}-class-help`}>
         <option value="" disabled>Choose a class…</option>
-        {CLASS_LEVELS.map((item) => <option key={item} value={item}>{item}</option>)}
+        {classes.map((item) => <option key={item} value={item}>{item}</option>)}
       </select>
+      <span className="field-help" id={`${idPrefix}-class-help`}>Edify currently focuses on SS1 to SS3. SS1 lessons are available now; SS2 and SS3 lessons are coming later.</span>
     </div>
     {senior && (
       <div className="field">
@@ -199,7 +203,7 @@ function EditProfileForm({ profile, classmates, onClose }: { profile: LearnerPro
         <label htmlFor={`${prefix}-name`}>First name</label>
         <input id={`${prefix}-name`} name="name" autoComplete="off" required maxLength={40} defaultValue={values?.name ?? profile.name} />
       </div>
-      <ClassAndStream idPrefix={prefix} initialClass={values?.classLevel ?? profile.classLevel} initialStream={values?.stream ?? profile.stream ?? ""} />
+      <ClassAndStream idPrefix={prefix} currentClass={profile.classLevel} initialClass={values?.classLevel ?? profile.classLevel} initialStream={values?.stream ?? profile.stream ?? ""} />
       <SchoolField idPrefix={prefix} initial={values?.school ?? profile.school ?? ""} />
       {classmates && <p className="field-help full">Changing the class or school changes who {profile.name} sees under “In your class”. Classmates already linked stay linked; you can remove any of them in Classmate settings.</p>}
       {state.error && <p role="alert" className="form-error full">{state.error}</p>}

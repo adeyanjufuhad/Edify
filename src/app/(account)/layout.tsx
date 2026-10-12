@@ -7,7 +7,7 @@ import "./account.css";
 
 export const metadata = { title: "Your family account — Edify" };
 
-const POINTS = ["Quick exam notes for every week", "Practice questions that mark themselves", "JSS1 to SS3, one account per family"];
+const POINTS = ["Quick exam notes for every week", "Practice questions that mark themselves", "SS1 to SS3, one account per family"];
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (

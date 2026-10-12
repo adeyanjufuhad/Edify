@@ -19,7 +19,7 @@ const COLLECTED: { group: string; rows: { what: string; detail: React.ReactNode 
   {
     group: "About each learner you add",
     rows: [
-      { what: "First name, class and school", detail: "To show the right lessons for their class (JSS1 to SS3) and to tell brothers and sisters apart. We don’t ask for surnames or dates of birth." },
+      { what: "First name, class and school", detail: "To show the right lessons for their class (SS1 to SS3) and to tell brothers and sisters apart. We don’t ask for surnames or dates of birth." },
       { what: "4-digit PIN", detail: "Stored scrambled (hashed), never as the 4 digits themselves. It keeps each child’s progress and notes separate." },
       { what: "Plan and referral code", detail: "Which plan the learner is on and, if their school gave you a referral code, that code." },
       { what: "Lesson progress and notes", detail: "Which lessons they’ve ticked off, when, and anything they type in the “My notes” box at the end of a lesson." },
@@ -62,7 +62,7 @@ const SECTIONS: LegalSection[] = [
     id: "who",
     title: "Who we are",
     body: <>
-      <p>Edify is a study website for secondary school students in Nigeria. It is run by <OperatorName />, <OperatorAddress /> (“Edify”, “we”, “us”).</p>
+      <p>Edify is a study website for senior secondary school students in Nigeria. It is run by <OperatorName />, <OperatorAddress /> (“Edify”, “we”, “us”).</p>
       <p>For the personal data described here, Edify is the <b>data controller</b> under the <b>Nigeria Data Protection Act 2023</b> (NDPA). That means we decide what is collected and why, and we are responsible for looking after it. You can reach us about anything on this page at <ContactEmail />.</p>
       <p><Todo>lawyer to confirm whether Edify must register with the Nigeria Data Protection Commission (for example as a data controller of major importance, given that it handles children’s data) and what annual filings follow</Todo></p>
     </>,

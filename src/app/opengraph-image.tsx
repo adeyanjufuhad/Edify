@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-export const alt = "Edify — Study smart. Ace your exams. Weekly notes and exam-style practice for secondary school students in Nigeria, JSS1–SS3.";
+export const alt = "Edify — Study smart. Ace your exams. Weekly notes and exam-style practice for senior secondary school students in Nigeria, SS1–SS3.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -31,14 +31,14 @@ export default async function Image() {
               fy
             </div>
           </div>
-          <div style={{ display: "flex", background: "#003049", color: "#fdf0d5", borderRadius: 24, padding: "16px 26px", fontSize: 26 }}>JSS1–SS3</div>
+          <div style={{ display: "flex", background: "#003049", color: "#fdf0d5", borderRadius: 24, padding: "16px 26px", fontSize: 26 }}>SS1–SS3</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", marginTop: 42, fontFamily: "Fredoka", fontWeight: 700, fontSize: 86, lineHeight: 1.05, letterSpacing: -2 }}>
           <span>Study smart.</span>
           <span style={{ color: "#c1121f" }}>Ace your exams.</span>
         </div>
         <div style={{ display: "flex", fontSize: 30, marginTop: 26 }}>Weekly notes. Quick summaries. Exam-style practice.</div>
-        <div style={{ display: "flex", alignItems: "center", marginTop: "auto", paddingTop: 22, borderTop: "2px solid #669bbc", fontSize: 25 }}>For secondary school students in Nigeria.</div>
+        <div style={{ display: "flex", alignItems: "center", marginTop: "auto", paddingTop: 22, borderTop: "2px solid #669bbc", fontSize: 25 }}>For senior secondary school students in Nigeria.</div>
       </div>
     ),
     {

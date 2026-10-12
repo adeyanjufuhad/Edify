@@ -9,7 +9,7 @@ import { getAuth } from "@/lib/auth/server";
 import { MAX_PROFILES, PIN_PATTERN, checkPin, createProfile, deleteProfile, getProfile, setPin, setStream, updateProfile, type LearnerDetails } from "@/lib/profiles";
 import { LOCKED_MESSAGE, forgetUnlock, parentCanManage } from "@/lib/parent-lock";
 import { pinAllowance, recordWrongPin, waitMessage, wrongPinMessage, type TryAllowance } from "@/lib/pin-tries";
-import { isClassLevel } from "@/data/curriculum";
+import { OFFERED_CLASS_LEVELS, isClassLevel } from "@/data/curriculum";
 import { normalizeSchool } from "@/data/schools";
 import { isSeniorClass, isStreamId } from "@/data/streams";
 import { SPONSORED_SCHOOLS, applyReferral } from "@/lib/referrals";
@@ -22,14 +22,17 @@ export type FormState = { error?: string; addedAt?: number; values?: FormValues 
 // (src/lib/parent-lock.ts). Checked here on the server; the page only hides the buttons.
 
 // The first name, class, stream and school, checked the same way when adding and editing a learner.
-function readDetails(formData: FormData): { details: LearnerDetails; values: Omit<FormValues, "referralCode"> } | { error: string; values: Omit<FormValues, "referralCode"> } {
+// `currentClass` is the class a learner being edited already has: it stays allowed even when it is no longer offered
+// (a junior learner added earlier), so their name or school can still be corrected.
+function readDetails(formData: FormData, currentClass: string | null = null): { details: LearnerDetails; values: Omit<FormValues, "referralCode"> } | { error: string; values: Omit<FormValues, "referralCode"> } {
   const name = String(formData.get("name") ?? "").trim().replace(/\s+/g, " ");
   const classLevel = String(formData.get("classLevel") ?? "");
   const stream = String(formData.get("stream") ?? "");
   const school = normalizeSchool(String(formData.get("school") ?? ""));
   const values = { name, classLevel, stream, school };
   if (!name || name.length > 40) return { error: "Enter the learner’s first name (up to 40 letters).", values };
-  if (!isClassLevel(classLevel)) return { error: "Choose the learner’s class (JSS1 to SS3).", values };
+  const offered = (OFFERED_CLASS_LEVELS as readonly string[]).includes(classLevel) || (isClassLevel(classLevel) && classLevel === currentClass);
+  if (!offered) return { error: "Choose the learner’s class: SS1, SS2 or SS3.", values };
   // Only SS1 to SS3 learners have a stream; for JSS learners any value sent is ignored.
   const streamId = isSeniorClass(classLevel) && isStreamId(stream) ? stream : null;
   if (isSeniorClass(classLevel) && !streamId) return { error: "Choose the learner’s stream: Medical, Technology, Arts or Business.", values };
@@ -68,13 +71,16 @@ export type EditState = { error?: string; savedAt?: number; values?: Omit<FormVa
 export async function editProfile(_state: EditState, formData: FormData): Promise<EditState> {
   const parent = await requireConsentedParent();
   const profileId = String(formData.get("profileId") ?? "");
-  const read = readDetails(formData);
+  let profile: Awaited<ReturnType<typeof getProfile>> = null;
+  let lookupFailed = false;
+  try { profile = await getProfile(parent.id, profileId); } catch { lookupFailed = true; }
+  const read = readDetails(formData, profile?.classLevel ?? null);
   const fail = (error: string): EditState => ({ error, values: read.values });
   if (!(await parentCanManage(parent))) return fail(LOCKED_MESSAGE);
+  if (lookupFailed) return fail("Could not save the changes. Check your connection and try again.");
+  if (!profile) return fail("That learner isn’t on your account.");
   if ("error" in read) return fail(read.error);
   try {
-    const profile = await getProfile(parent.id, profileId);
-    if (!profile) return fail("That learner isn’t on your account.");
     // A sponsored Gold plan comes from a referral code that only partner schools can use, so it can't follow a learner
     // to another school. Say so rather than quietly dropping the plan.
     if (profile.sponsored && !SPONSORED_SCHOOLS.includes(read.details.school)) {

@@ -7,7 +7,7 @@ export default function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="shell footer-inner">
-        <div className="footer-brand"><Brand /><Squiggle className="footer-squiggle" color="#669bbc" /><p>Clear notes and exam-style practice for secondary school students in Nigeria, JSS1 to SS3.</p></div>
+        <div className="footer-brand"><Brand /><Squiggle className="footer-squiggle" color="#669bbc" /><p>Clear notes and exam-style practice for senior secondary school students in Nigeria, SS1 to SS3.</p></div>
         <nav className="footer-links" aria-label="Footer">
           <div><strong>Study</strong><Link href="/#features">Features</Link><Link href="/#how">How it works</Link><Link href="/#subjects">Subjects</Link></div>
           <div><strong>Parents</strong><Link href="/#parents">For parents</Link><Link href="/#plans">Plans</Link><Link href="/#faq">FAQ</Link></div>

@@ -24,9 +24,9 @@ const NAV = [
 
 // A slow, endless strip of what Edify covers. Purely decorative, so the whole band is hidden from screen readers.
 const TICKER: { text: string; kind: "class" | "feature" }[] = [
-  { text: "JSS1", kind: "class" }, { text: "Quick exam notes", kind: "feature" },
-  { text: "JSS2", kind: "class" }, { text: "Self-marking practice", kind: "feature" },
-  { text: "JSS3", kind: "class" }, { text: "Timed CBT tests", kind: "feature" },
+  { text: "Quick exam notes", kind: "feature" },
+  { text: "Self-marking practice", kind: "feature" },
+  { text: "Timed CBT tests", kind: "feature" },
   { text: "SS1", kind: "class" }, { text: "A1–F9 grades", kind: "feature" },
   { text: "SS2", kind: "class" }, { text: "Exam traps", kind: "feature" },
   { text: "SS3", kind: "class" }, { text: "Your own notes", kind: "feature" },
@@ -44,7 +44,7 @@ const LESSON_PARTS = [
 
 const STEPS = [
   { title: "A parent signs up", text: "Create a free family account with an email address and confirm it with a 6-digit code." },
-  { title: "Add each child", text: "Give every learner a first name, their class (JSS1 to SS3) and their own 4-digit PIN. Up to six per family." },
+  { title: "Add each child", text: "Give every learner a first name, their class (SS1 to SS3) and their own 4-digit PIN. Up to six per family." },
   { title: "Study one week at a time", text: "Read the quick notes, practise the questions and tick the lesson off. Progress saves automatically." },
 ];
 
@@ -66,7 +66,7 @@ const SOCIAL_FAQ = { q: "Can my child talk to strangers on Edify?", a: "No. Chil
 
 const FAQS = [
   { q: "How much does Edify cost?", a: "Creating a family account is free. Study access costs ₦1,000 for Bronze, ₦3,000 for Silver or ₦5,000 for Gold per learner for 105 days (3½ months). Pay through Paystack, with no automatic renewal. Valid partner-school referral codes still unlock sponsored Gold." },
-  { q: "Which classes is Edify for?", a: "Every secondary school class in Nigeria, from JSS1 to SS3. SS1 lessons are ready first; other classes are added as their lessons are written and checked." },
+  { q: "Which classes is Edify for?", a: "Edify currently focuses on senior secondary students in Nigeria: SS1, SS2 and SS3. SS1 lessons are available now; SS2 and SS3 lessons will be added as they are written and checked." },
   { q: "Which subjects are covered?", a: `Edify is built for every school subject. ${listWords(readySubjects)} ${readySubjects.length === 1 ? "is" : "are"} ready first, and more subjects are added one by one.${departmentNotes.length ? ` ${departmentNotes.join(" ")}` : ""}` },
   { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the Nigerian scheme of work for each class, term by term and week by week, so what you read matches what was taught in class." },
   { q: "Who creates the account?", a: "A parent or guardian. They add each child as a learner, so one family account covers brothers and sisters." },
@@ -171,16 +171,16 @@ export default function Home() {
       <section className="hero">
         <div className="shell hero-inner">
           <div className="hero-copy">
-            <span className="kicker kicker-fun"><Sparkle className="kicker-icon" color="#c1121f" /> For secondary school students in Nigeria</span>
+            <span className="kicker kicker-fun"><Sparkle className="kicker-icon" color="#c1121f" /> For senior secondary school students in Nigeria</span>
             <h1><Words text="Study smarter," />{" "}<span className="hl"><Words text="one week" start={2} /></span>{" "}<Words text="at a time." start={4} /></h1>
-            <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for JSS1 to SS3, following the same scheme of work as your school.</p>
+            <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for SS1 to SS3, following the same scheme of work as your school.</p>
             <div className="hero-actions">
               <Link href="/signup" className="pill-button">Create an account <ArrowRight /></Link>
               <a href="#how" className="pill-outline">See how it works</a>
             </div>
             <ul className="hero-facts">
               <li><Check size={16} /> Plans from ₦1,000</li>
-              <li><Check size={16} /> JSS1 to SS3</li>
+              <li><Check size={16} /> SS1 to SS3</li>
               <li><Check size={16} /> Works on any phone</li>
             </ul>
           </div>
@@ -201,7 +201,7 @@ export default function Home() {
           <div><strong><b className="num" data-count={totals.questions}>{totals.questions}</b>+</strong><span>practice questions with answers</span></div>
           <div><strong><b className="num" data-count={totals.readyTopics}>{totals.readyTopics}</b></strong><span>lessons ready to study</span></div>
           <div><strong><b className="num" data-count={totals.likelyQuestions}>{totals.likelyQuestions}</b></strong><span>likely exam questions, answered</span></div>
-          <div><strong>JSS1–SS3</strong><span>one account for every class</span></div>
+          <div><strong>SS1–SS3</strong><span>one account for every class</span></div>
         </div>
       </section>
 
@@ -219,7 +219,7 @@ export default function Home() {
         <div className="compare-copy" data-reveal="left">
           <span className="kicker">Why Edify</span>
           <h2 id="compare-title">Textbooks are long. <span className="hl">The exam is short.</span></h2>
-          <p>Every class builds on the one before, from JSS1 to SS3, and the topics you learn each week come back in your tests and exams. Edify turns each week of the scheme of work into something you can revise in one sitting.</p>
+          <p>Every class builds on the one before, from SS1 to SS3, and the topics you learn each week come back in your tests and exams. Edify turns each week of the scheme of work into something you can revise in one sitting.</p>
         </div>
         <div className="compare-table" data-reveal="right">
           <div className="compare-col is-before">
@@ -331,7 +331,7 @@ export default function Home() {
           <article className="subject-card more">
             <span className="more-mark" aria-hidden="true">+</span>
             <h3>More classes and subjects are on the way</h3>
-            <p>JSS1 to SS3, every subject. Each one appears here as soon as its first lessons are written and checked. One account covers them all.</p>
+            <p>For SS1 to SS3, starting with SS1 lessons. Each subject appears here as soon as its first lessons are written and checked. SS2 and SS3 content is coming later.</p>
             <Link href="/signup" className="pill-outline small">Create an account</Link>
           </article>
         </div>

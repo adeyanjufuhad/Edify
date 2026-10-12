@@ -40,7 +40,7 @@ const SECTIONS: LegalSection[] = [
     id: "service",
     title: "What Edify is",
     body: <>
-      <p>Edify gives secondary school students (JSS1 to SS3) in Nigeria study notes, exam-style practice questions and computer-based (CBT) practice tests.</p>
+      <p>Edify gives senior secondary school students (SS1 to SS3) in Nigeria study notes, exam-style practice questions and computer-based (CBT) practice tests.</p>
       <ul>
         <li><b>Content is added over time.</b> Not every class and subject has lessons yet. The billing page says what is available now. Check it before you pay, and only buy a plan if the available content suits your learner.</li>
         <li><b>It is a study aid.</b> We work hard to keep lessons and answers correct, but we can’t promise that a learner will pass or improve in any exam. Edify is independent of exam bodies such as WAEC and NECO, and of schools. Practice questions are exam-style; they are not real past papers unless a page says so.</li>

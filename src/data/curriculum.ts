@@ -4,6 +4,9 @@ import type { StreamId } from "./streams";
 export const CLASS_LEVELS = ["JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"] as const;
 export type ClassLevel = (typeof CLASS_LEVELS)[number];
 export const CURRICULUM_CLASS: ClassLevel = "SS1";
+// For now Edify is for senior secondary students only, so these are the classes a parent can choose. CLASS_LEVELS
+// stays whole so a junior learner added earlier keeps working; add the JSS classes here again to enrol them.
+export const OFFERED_CLASS_LEVELS = ["SS1", "SS2", "SS3"] as const satisfies readonly ClassLevel[];
 
 export function isClassLevel(value: string): value is ClassLevel {
   return (CLASS_LEVELS as readonly string[]).includes(value);
