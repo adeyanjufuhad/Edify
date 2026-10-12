@@ -173,7 +173,7 @@ export default function Home() {
           <div className="hero-copy">
             <span className="kicker kicker-fun"><Sparkle className="kicker-icon" color="#c1121f" /> For senior secondary school students in Nigeria</span>
             <h1><Words text="Study smarter," />{" "}<span className="hl"><Words text="one week" start={2} /></span>{" "}<Words text="at a time." start={4} /></h1>
-            <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for SS1 to SS3, following the same scheme of work as your school.</p>
+            <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for senior secondary students. Start with SS1 lessons today; SS2 and SS3 lessons are coming later.</p>
             <div className="hero-actions">
               <Link href="/signup" className="pill-button">Create an account <ArrowRight /></Link>
               <a href="#how" className="pill-outline">See how it works</a>
