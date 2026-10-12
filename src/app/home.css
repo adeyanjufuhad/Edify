@@ -6,9 +6,9 @@
 .home-nav { display: flex; gap: 26px; margin-left: 12px; }
 .home-nav a { font-size: 15px; font-weight: 500; color: var(--ink-2); }
 .home-nav a:hover { color: var(--ink); }
-.home-header-actions { margin-left: auto; display: flex; align-items: center; gap: 18px; }
-.home-login { font-size: 15px; font-weight: 600; }
-.home-login:hover { color: var(--red-deep); }
+.home-header-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+/* Log in is an outline pill beside the red Sign up pill, on every screen size. */
+.home-login { font-size: 15px; }
 
 /* Shared section headings */
 .home section { scroll-margin-top: 80px; }
@@ -252,7 +252,8 @@
 }
 @media (max-width: 680px) {
   .home-header-inner { gap: 12px; }
-  .home-login { display: none; }
+  .home-header-actions { gap: 8px; }
+  .home-header-actions .pill-button.small, .home-header-actions .pill-outline.small { padding: 0 14px; font-size: 14px; }
   .hero { padding-block: 32px 48px; }
   .hero-intro { font-size: 17px; }
   .hero-actions a { flex: 1 1 100%; }

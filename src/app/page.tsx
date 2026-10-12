@@ -162,7 +162,7 @@ export default function Home() {
       <div className="shell home-header-inner">
         <Brand />
         <nav className="home-nav" aria-label="Main navigation" data-spy>{nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
-        <div className="home-header-actions"><Link href="/profiles" className="home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up</Link></div>
+        <div className="home-header-actions"><Link href="/login" className="pill-outline small home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up</Link></div>
       </div>
       <span className="scroll-progress" aria-hidden="true" />
     </header>

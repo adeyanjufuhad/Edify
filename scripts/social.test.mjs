@@ -10,7 +10,7 @@ import { test } from "node:test";
 import * as rules from "../src/lib/social-rules.ts";
 import * as q from "../src/lib/social-sql.ts";
 import * as qq from "../src/lib/social-queries.ts";
-import { OPTIONAL_TABLES, PRESENT_SOCIAL_TABLES_QUERY, SOCIAL_TABLES, accountDeletionStatements, learnerDeletionStatements } from "../src/lib/account-deletion-sql.ts";
+import { OPTIONAL_TABLES, PRESENT_SOCIAL_TABLES_QUERY, accountDeletionStatements, learnerDeletionStatements } from "../src/lib/account-deletion-sql.ts";
 import { loadPGlite } from "./pglite.mjs";
 
 const PGlite = await loadPGlite();
