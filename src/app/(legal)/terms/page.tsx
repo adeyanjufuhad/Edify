@@ -29,7 +29,7 @@ const SECTIONS: LegalSection[] = [
     body: <>
       <p>Edify is run by <OperatorName />, <OperatorAddress /> (“Edify”, “we”, “us”). By creating an account you agree to these terms and to our <Link href="/privacy" className="text-link">Privacy policy</Link>.</p>
       <ul>
-        <li><b>Only a parent or guardian can create an account.</b> You must be at least 18 and the parent or legal guardian of every learner you add. <Todo>lawyer to confirm the minimum age and how to treat a guardian, a teacher or a school acting for a family</Todo></li>
+        <li><b>Only a parent or guardian can create an account.</b> You must be at least 18 and the parent or legal guardian of every learner you add. A teacher or school must not create an account on a family’s behalf without the parent’s or legal guardian’s authorisation. Contact us before arranging school-managed access.</li>
         <li>You add each child as a learner. An account can hold up to {MAX_PROFILES} learners. Learners open their own space with a 4-digit PIN that you help them choose.</li>
         <li>You are responsible for everything that happens under your account, for keeping your password and your children’s PINs private, and for supervising how your children use Edify.</li>
         <li>Give us correct details (your name and email address, and each learner’s class and school) and tell us if they change.</li>
@@ -63,7 +63,7 @@ const SECTIONS: LegalSection[] = [
         <li><b>Access belongs to the learner.</b> It can’t be moved to another learner or another account, including when a learner is removed or the account is deleted.</li>
         <li><b>Price changes.</b> We may change prices or plan features for future payments. We will not change what you have already paid for during its 105 days.</li>
       </ul>
-      <p><Todo>owner and lawyer to confirm the plan and price wording, and whether prices include VAT or any other tax</Todo></p>
+      <p>The displayed price is the total Edify charges, including any applicable taxes. Your bank or payment provider may charge a separate fee, which it should disclose. Tax treatment remains subject to professional accounting review.</p>
     </>,
   },
   {
@@ -105,7 +105,7 @@ const SECTIONS: LegalSection[] = [
         <li>Sponsored access has no cash value, can’t be exchanged for money, and can’t be refunded. It follows the learner, not the family: it ends if the learner is removed.</li>
         <li>We don’t give schools learners’ names, progress, notes or results.</li>
       </ul>
-      <p><Todo>owner to decide how long sponsored access lasts (today it has no end date), whether Edify can end a school’s sponsorship with notice, and what happens to learners already studying when it ends</Todo></p>
+      <p>Sponsored access currently has no fixed end date. If we end a school’s sponsorship, we will normally give affected parents at least 30 calendar days’ notice. Existing access continues during that notice period. Afterwards, families may choose a paid plan; we will not charge them automatically. Immediate suspension remains possible for fraud or a serious safety issue.</p>
     </>,
   },
   {
@@ -116,13 +116,13 @@ const SECTIONS: LegalSection[] = [
       <ul>
         <li><b>You decide.</b> Every feature is off for each learner until you switch it on. You can change or switch off anything at any time on your family page. By switching a feature on you agree that your child may use it under these rules, and that the other child’s parent and you can both read and delete their conversation.</li>
         <li><b>Who can meet whom.</b> A learner can only be linked with a child in the same school and class: through a one-time code between two parents (share a code only with a parent you know), by you linking your own two children, or, if you switch on “Visible to my class”, by a classmate request from the class list that your child accepts. School names are typed in by parents and Edify cannot check them, so talk to your child about who they accept. We may cancel links we think were made wrongly.</li>
-        <li><b>You supervise.</b> Edify does not read every message and is not a substitute for you watching what your child does online. Read your child’s conversations from time to time, and talk to your child about being kind and safe. The settings are part of your signed-in family account, so sign out when you hand a device to a child.</li>
+        <li><b>You supervise.</b> Edify does not read every message and is not a substitute for you watching what your child does online. Read your child’s conversations from time to time, and talk to your child about being kind and safe. Set a parent PIN to protect account management and classmate settings. Opening a learner’s space locks parent controls when a parent PIN is set. Keep your password and parent PIN private.</li>
         <li><b>Rules for everyone.</b> Be kind. No bullying, threats, insults, or sharing private information about anyone. Don’t share phone numbers, addresses, emails, links or social media names, and don’t ask others for them. Don’t record, copy or share someone else’s messages or voice notes outside Edify. Don’t help one classmate cheat in a challenge, and don’t use another person’s learner space.</li>
-        <li><b>Reports and action.</b> Children can block and report a classmate or a message. We may read reports and the content they refer to, and we may warn a learner, remove a link, switch classmate features off for a learner or close an account. <Todo>owner to decide and state how reports are reviewed, how fast, by whom, and what action follows; lawyer to check the wording on suspending an account and on telling parents or the authorities</Todo></li>
+        <li><b>Reports and action.</b> Children can block and report a classmate or a message. We may read reports and the content they refer to, and we may warn a learner, remove a link, switch classmate features off for a learner or close an account. Adeyanju Fuhad is the initial contact for reports. We aim to review ordinary reports within 2 working days and prioritise reports indicating a child may be at risk. This is not a 24-hour emergency service. Email the contact address below for urgent concerns, and contact emergency services if someone faces immediate danger. Depending on the facts, we may warn the users, restrict features, remove a link or suspend an account. We will explain our decision to the parent where it is safe and lawful to do so; parents may ask us to reconsider by email.</li>
         <li><b>Messages are kept briefly.</b> Text messages, voice notes and challenge results are deleted after the periods in the <Link href="/privacy#classmates" className="text-link">Privacy policy</Link>. We can’t guarantee that a message you want to keep will still be there.</li>
         <li><b>Availability.</b> Online status, chat and voice notes can be slow, delayed or unavailable, and we can change or stop them. A classmate who deletes their account or learner takes their conversations and challenge results with them.</li>
       </ul>
-      <p><Todo>owner to confirm that classmate features stay in Gold, like CBT tests (the plans section lists them under Gold while they are switched on); lawyer to confirm the parent’s responsibilities above, the limit on Edify’s responsibility for what children say to each other, and the moderation and takedown process</Todo></p>
+      <p>Classmate challenges, chat and voice notes remain part of Gold, including sponsored Gold. Parent permissions still apply. These rules do not exclude any safeguarding or other responsibility Edify has under applicable law.</p>
     </>,
   },
   {
@@ -138,7 +138,7 @@ const SECTIONS: LegalSection[] = [
         <li>type unlawful, abusive or private content into notes, or put personal details such as phone numbers or home addresses in them;</li>
         <li>use Edify to cheat in a real examination.</li>
       </ul>
-      <p>If these rules are broken we may warn you, suspend or close the account, and refuse future access. Where we close an account for a reason that isn’t your fault, we will refund the unused part of any payment. <Todo>lawyer to confirm the suspension and closing wording</Todo></p>
+      <p>If these rules are broken we may warn you, suspend or close the account, and refuse future access. Where we close an account for a reason that isn’t your fault, we will refund the unused part of any payment. We will normally explain a restriction and give the parent a chance to respond. We may act immediately to protect a child, prevent fraud or comply with the law. Contact us by email to challenge a decision. Rights that cannot lawfully be excluded remain unaffected.</p>
     </>,
   },
   {
@@ -159,8 +159,8 @@ const SECTIONS: LegalSection[] = [
     body: <>
       <ul>
         <li>We aim to keep Edify available, but we can’t promise it will always work without interruption. It depends on services we don’t control, including our hosting, database and sign-in providers, Paystack, and your own internet connection.</li>
-        <li>We may fix, change, add or remove lessons and features. If we remove something that a paid plan clearly included, we will tell you and put things right. <Todo>owner and lawyer to decide the remedy, for example extending access or a partial refund</Todo></li>
-        <li>We may stop running Edify. If we do, we will give notice and refund the unused part of paid plans. <Todo>owner and lawyer to confirm</Todo></li>
+        <li>We may fix, change, add or remove lessons and features. If we remove something that a paid plan clearly included, we will tell you and put things right. For a substantial loss of a paid feature, we will offer a suitable extension of access or a proportionate refund for the affected period. If an extension is not suitable, you may request the proportionate refund.</li>
+        <li>We may stop running Edify. If we do, we will give notice and refund the unused part of paid plans. We will normally give at least 30 calendar days’ notice before a planned closure. If an urgent legal or security issue prevents this, we will give as much notice as we reasonably can. Unused paid access will be refunded proportionately.</li>
       </ul>
     </>,
   },
@@ -178,7 +178,7 @@ const SECTIONS: LegalSection[] = [
     title: "Governing law and disputes",
     body: <>
       <p>If something goes wrong, please contact us first at <ContactEmail />, and we will try to sort it out.</p>
-      <p><Todo>lawyer to set the governing law (the laws of the Federal Republic of Nigeria), which courts or dispute process applies, and how consumer complaints are handled</Todo></p>
+      <p>These terms are governed by the laws of the Federal Republic of Nigeria. Please first send complaints to our contact email; we aim to acknowledge them within 2 working days and provide an outcome or progress update within 14 calendar days. You may also approach a competent Nigerian regulator or court. Informal resolution is encouraged, but it is not a condition for exercising your legal rights. Any mediation must be agreed by both sides.</p>
     </>,
   },
   {
