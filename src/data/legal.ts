@@ -1,7 +1,7 @@
 // Shared facts for /privacy, /terms and the sign-up consent record.
 // Bump LEGAL_VERSION whenever either page changes in a way parents must agree to again;
 // it is saved with each parent's consent in public.parent_consents.
-export const LEGAL_VERSION = "2026-10-13-1-draft";
+export const LEGAL_VERSION = "2026-10-13-2-draft";
 export const LEGAL_UPDATED = "13 October 2026";
 
 // Filled in by the owner before launch. Anything left empty shows on the pages as a highlighted placeholder.

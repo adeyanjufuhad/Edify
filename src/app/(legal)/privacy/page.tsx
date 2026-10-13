@@ -77,7 +77,7 @@ const SECTIONS: LegalSection[] = [
       <li>We store the least we need: your name and email, and each child’s first name, class, school and study progress.</li>
       <li>We don’t sell data, show adverts, or use tracking or analytics tools.</li>
       <li>Classmate challenges, online status, chat and voice notes are off for every child until a parent switches them on. Nobody can search for a child: children only see others in their own school and class, either through a code two parents exchange or, if both parents allow it, a class list. Other families only ever see a child’s first name and class. <a href="#classmates">Read the classmates section.</a></li>
-      <li>Three service providers help us run Edify: Neon (database and sign-in) and Vercel (website hosting), both in London, UK, and Paystack (card and bank payments).</li>
+      <li>Our website service providers include Neon (database and sign-in) and Vercel (website hosting), both in London, UK, and Paystack (card and bank payments).</li>
       <li>You can delete your account and every learner’s data yourself, at any time. Payment records and necessary support correspondence may remain, and <a href="#payments">the payments section</a> explains why.</li>
     </ul>,
   },
@@ -162,7 +162,7 @@ const SECTIONS: LegalSection[] = [
         <li>Reports, with the copy of the message: <b>12 months</b>. Classmate codes: used or expired codes are deleted after 30 days. Safety counters: 2 days.</li>
         <li>Everything above is deleted at once when a parent removes the learner or deletes their account (see “How to delete your data”). If one family deletes a child, the conversations and challenge results with that child disappear for the classmate too.</li>
       </ul>
-      <p>These are our selected retention periods, applied by the scheduled daily clean-up. <Todo>verify successful production clean-up runs and obtain legal review of report retention and any required preservation before treating this schedule as confirmed</Todo></p>
+      <p>These are our selected retention periods. The site is configured to run clean-up daily; deletion is performed during a successful clean-up run rather than at the exact moment a record reaches its age limit. <Todo>the production cron secret and daily schedule are configured; successful execution still needs verification. Obtain legal review of report retention and any required preservation</Todo></p>
       <h3>Legal points still to settle</h3>
       <p><Todo>lawyer to confirm the lawful basis and the consent needed for children’s messages, voice recordings and online status under the NDPA (section 25 and the children’s rules in section 31), and whether a data protection impact assessment is required before this feature is switched on</Todo></p>
       <p><Todo>lawyer to confirm Edify’s duties if a report suggests a child is at risk or is being targeted, under Nigerian child-protection and cybercrime law (for example the Child’s Rights Act 2003), and what Edify must tell parents, the NDPC or the authorities</Todo></p>
@@ -172,12 +172,12 @@ const SECTIONS: LegalSection[] = [
     id: "where",
     title: "Where it’s stored and who helps us",
     body: <>
-      <p>We don’t run our own servers. Three companies store or process data for us, only for the purposes described on this page:</p>
+      <p>We don’t run our own servers. The following companies help run the website. Support emails and attachments are also handled by Google through our Gmail contact address; see <a href="https://policies.google.com/privacy" className="text-link">Google’s privacy policy</a>. Providers may also process information for their own legal and security obligations under their policies:</p>
       <div className="legal-data">
         <dl>
           <div><dt>Neon (Neon, Inc.)</dt><dd>Our database and sign-in service. All the account, learner and payment-record data above is stored in Neon’s database on Amazon Web Services in London, UK (region eu-west-2). Neon also sends our account emails, such as confirmation codes.</dd></div>
           <div><dt>Vercel (Vercel Inc.)</dt><dd>Hosts the website. Our pages run on Vercel’s servers in London, UK (region lhr1). Like any web host, Vercel’s network handles each request on its way to us and keeps short-lived technical logs, such as IP addresses.</dd></div>
-          <div><dt>Paystack (Paystack Payments Limited)</dt><dd>Takes payments. When you pay, we send Paystack your parent email address, the amount and our order reference, and you enter your card or bank details on Paystack’s page, where Paystack is responsible for them under its own privacy notice. Paystack tells us back whether the payment succeeded. We never send Paystack a learner’s name, school or PIN. <Todo>owner to confirm Paystack’s exact legal entity and where it processes data, and link its privacy notice</Todo></dd></div>
+          <div><dt>Paystack (Paystack Payments Limited)</dt><dd>Takes payments. When you pay, we send Paystack your parent email address, the amount and our order reference, and you enter your card or bank details on Paystack’s page, where Paystack is responsible for them under its own privacy notice. Paystack tells us back whether the payment succeeded. We never send Paystack a learner’s name, school or PIN. Paystack may process data outside Nigeria, including through service providers abroad. Read <a href="https://website-v4.paystack.co/privacy-policy" className="text-link">Paystack’s privacy policy</a> for its processing, sharing and retention practices.</dd></div>
         </dl>
       </div>
       <p>Chat messages and voice notes are stored in the same Neon database as everything else. We do not use a separate chat, messaging or file-storage company. We will update this policy if we add a provider that changes how these records are handled.</p>
@@ -248,7 +248,7 @@ const SECTIONS: LegalSection[] = [
         <li>The database password is held only by Edify’s own server; browsers never connect to the database directly.</li>
         <li>Each learner’s PIN keeps brothers and sisters out of each other’s work. It’s a light lock, not a substitute for keeping your own password private.</li>
         <li>You can set a separate parent PIN to protect account management and classmate settings. Opening a learner’s space locks these parent controls when a parent PIN is set. Without a parent PIN, someone using your signed-in account can access those controls. Keep your password and parent PIN private.</li>
-        <li>We use no advertising or tracking cookies, so there is no cookie banner. <Todo>lawyer to confirm no cookie notice is needed</Todo></li>
+        <li>Edify uses the essential cookies described above for sign-in, learner selection and parent controls. We do not use advertising or analytics cookies. You can clear cookies in your browser, but doing so may sign you out or reset these controls. Paystack’s checkout has its own cookie practices.</li>
       </ul>
       <p>If a data breach puts your information at risk, we will tell the NDPC and the affected parents as the law requires. <Todo>lawyer to confirm breach-notice duties and timings under NDPA section 40</Todo></p>
     </>,
