@@ -83,16 +83,16 @@ const SECTIONS: LegalSection[] = [
     title: "Refunds and cancellation",
     body: <>
       <p><b>Cancelling.</b> Plans don’t renew, so there is no subscription to cancel. Access simply ends after 105 days. You can stop using Edify or delete your account whenever you like. Deleting an account does not refund unused days.</p>
-      <p><b>Refunds.</b> Study access starts as soon as your payment is confirmed. This is our draft policy:</p>
+      <p><b>Refunds.</b> Study access starts as soon as your payment is confirmed. The following refund policy applies:</p>
       <ul>
         <li><b>Charged but no access.</b> If you paid and the learner didn’t get the plan, or you were charged twice for the same order, we will give the access or refund the payment in full.</li>
         <li><b>Problem on our side.</b> If a fault in Edify stops a learner from using what they paid for and we can’t fix it within a reasonable time, we will refund the part of the payment for the time they could not use it.</li>
-        <li><b>Change of mind.</b> You can ask for a refund within <Todo>number of days, for example 7</Todo> of payment, as long as <Todo>condition, for example: the learner has not finished more than a few lessons or taken a CBT test</Todo>.</li>
-        <li><b>How to ask.</b> Email <ContactEmail /> from the address on your account with the payment reference or the date and amount. We will answer within <Todo>number of working days</Todo>.</li>
-        <li><b>How you are paid back.</b> Approved refunds go back to the payment method you used, through Paystack, within <Todo>number of days, as Paystack and your bank allow</Todo> of our approval. When a refund is paid, the learner’s access for that payment ends.</li>
+        <li><b>Change of mind.</b> You can ask for a refund within <b>3 calendar days (72 hours)</b> of payment, as long as you provide the payment receipt and the receipt includes the payment session ID.</li>
+        <li><b>How to ask.</b> Email <ContactEmail /> from the address on your account with the receipt showing the payment session ID, the payment date and amount, and the reason for your request. A clear screenshot or PDF is acceptable. Do not send passwords, PINs or full card details. We will acknowledge your request within <b>2 working days</b> (Monday to Friday, excluding Nigerian public holidays). <b>Adeyanju Fuhad</b> reviews and approves refunds. If we need more information, we will explain what is missing; your original request date counts towards the 3-day window.</li>
+        <li><b>How you are paid back.</b> We submit approved refunds to Paystack within <b>24 hours of approval</b>, normally back to the original payment method. This is our processing time, not a guarantee of when your bank credits you. Paystack currently advises <b>3 to 10 working days</b> for receipt. We will provide the refund reference when available. Access covered by a full refund ends; for a partial refund we will explain any access adjustment.</li>
         <li>Please contact us before asking your bank to reverse a payment, so we can sort it out quickly.</li>
       </ul>
-      <p><Todo>owner to decide the refund policy above (the window, the conditions, and who approves refunds) and lawyer to check it against the Federal Competition and Consumer Protection Act 2018 and any other consumer rights that can’t be limited. Paystack asks for a refund and cancellation policy when a business goes live, so this section must be settled first.</Todo></p>
+      <p>The 3-day window and receipt requirement apply to change-of-mind requests. They do not remove rights you have by law, or prevent us investigating duplicate charges, payments without access or service faults. If your payment method did not issue a session ID, contact us with the receipt and transaction reference so we can help identify the payment. <a href="https://support.paystack.com/en/articles/2127106" className="text-link">Paystack’s refund guidance</a>. <Todo>lawyer to review this policy against applicable Nigerian consumer rights</Todo></p>
     </>,
   },
   {
