@@ -41,6 +41,9 @@
   /* ---- Hero: copy ---- */
   .hero-copy > .kicker { animation: rise-in 0.7s var(--ease-out) 0.05s backwards; }
   .hero .hw { display: inline-block; animation: word-in 0.85s var(--ease-out) calc(0.12s + var(--w, 0) * 70ms) backwards; }
+  /* The wavy underline is a background on .hl, so it fades in with its words and no longer shows before them. */
+  .hero h1 .hl { animation: fade-in 0.5s var(--ease-out) 0.28s backwards; }
+  .home-menu-panel { animation: fade-in 0.2s var(--ease-out); }
   .hero-intro { animation: rise-in 0.8s var(--ease-out) 0.55s backwards; }
   .hero-actions { animation: rise-in 0.8s var(--ease-out) 0.68s backwards; }
   .hero-facts li { animation: rise-in 0.7s var(--ease-out) backwards; }

@@ -9,6 +9,14 @@
 .home-header-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 /* Log in is an outline pill beside the red Sign up pill, on every screen size. */
 .home-login { font-size: 15px; }
+/* Section menu for phones and tablets, where the link row above is hidden (src/components/home-menu.tsx). */
+.home-menu { display: none; }
+.home-menu-button { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; border: 2px solid var(--ink); background: var(--white); color: var(--ink); cursor: pointer; transition: background-color 0.15s, color 0.15s; }
+.home-menu-button[aria-expanded="true"] { background: var(--ink); color: var(--white); }
+.home-menu-panel { position: absolute; left: 0; right: 0; top: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 32px 18px; background: var(--white); border-top: 2px solid var(--line); border-bottom: 2px solid var(--navy); }
+.home-menu-panel[hidden] { display: none; }
+.home-menu-panel a { display: flex; align-items: center; min-height: 48px; padding: 0 16px; border-radius: 14px; background: var(--mist); font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--ink); }
+.home-menu-panel a:active { background: var(--tint-red); }
 
 /* Shared section headings */
 .home section { scroll-margin-top: 80px; }
@@ -73,8 +81,9 @@
 .notes-demo { background: var(--mist); border-radius: var(--r); padding: 16px 18px; }
 .notes-demo strong { font-size: 15px; }
 .notes-demo ul { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
-.notes-demo li { font-size: 14px; color: var(--ink-2); }
-.notes-demo b { display: inline-block; min-width: 64px; margin-right: 8px; padding: 2px 8px; border-radius: 6px; background: var(--navy); color: var(--white); font-size: 12px; }
+/* Label and text sit in two columns, so a long line wraps beside its label and never underneath it. */
+.notes-demo li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; color: var(--ink-2); }
+.notes-demo b { padding: 2px 8px; border-radius: 6px; background: var(--navy); color: var(--white); font-size: 12px; line-height: 1.5; }
 .quiz-demo { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--white); border-radius: var(--r-sm); padding: 10px 12px; font-size: 14px; font-weight: 600; color: var(--ink); }
 .quiz-demo .ok { color: var(--ink); }
 .quiz-demo span:last-child { background: var(--navy); color: var(--white); border-radius: 6px; padding: 2px 8px; font-size: 13px; }
@@ -204,10 +213,19 @@
 /* FAQ */
 .faq { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 56px; padding-block: 72px 88px; }
 .faq-intro p { font-size: 17px; color: var(--ink-2); margin: 0; max-width: 38ch; }
-.faq-list { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 28px 32px; }
-.faq-list div { border-top: 2px solid var(--navy); padding-top: 16px; }
-.faq-list dt { font-family: var(--display); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.faq-list dd { margin: 0; font-size: 15px; color: var(--ink-2); }
+/* One question open at a time (the <details> share a name); the first starts open. */
+.faq-list { display: grid; gap: 10px; align-content: start; }
+.faq-list details { background: var(--white); border: 2px solid rgba(0, 48, 73, 0.14); border-radius: var(--r-lg); transition: border-color 0.2s; }
+.faq-list details[open] { border-color: var(--navy); }
+.faq-list summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; padding: 14px 16px 14px 20px; border-radius: inherit; cursor: pointer; list-style: none; font-family: var(--display); font-size: 18px; font-weight: 600; line-height: 1.25; color: var(--ink); }
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-mark { position: relative; flex: none; width: 30px; height: 30px; border-radius: 10px; background: var(--tint-red); color: var(--red-deep); transition: background-color 0.2s, color 0.2s; }
+.faq-mark::before, .faq-mark::after { content: ""; position: absolute; left: 8px; right: 8px; top: 14px; height: 2px; border-radius: 2px; background: currentColor; transition: transform 0.25s; }
+.faq-mark::after { transform: rotate(90deg); }
+.faq-list details[open] .faq-mark { background: var(--red); color: var(--white); }
+.faq-list details[open] .faq-mark::after { transform: rotate(0deg); }
+.faq-list details p { margin: 0; padding: 0 20px 18px; max-width: 64ch; font-size: 15px; color: var(--ink-2); }
+@media (min-width: 1025px) { .faq-intro { position: sticky; top: 104px; align-self: start; } }
 
 /* Final CTA */
 .final-cta { background: var(--red); color: var(--white); padding-block: 72px; }
@@ -238,9 +256,11 @@
 /* Responsive */
 @media (max-width: 1024px) {
   .home-nav { display: none; }
+  .home-menu { display: block; }
   .hero-inner, .compare, .anatomy-inner, .parents-inner, .faq { grid-template-columns: 1fr; }
-  .hero-art { order: -1; }
-  .hero-svg { max-width: 420px; }
+  /* Headline and buttons come first; the picture follows as one centred group, so Edi and his speech bubble stay beside the tablet. */
+  .hero-inner { gap: 40px; }
+  .hero-art { width: 100%; max-width: 460px; margin-inline: auto; }
   .stat-band-inner { grid-template-columns: 1fr 1fr; }
   .stat-band-inner div:nth-child(3) { border-left: 0; padding-left: 0; }
   .stat-band-inner div:nth-child(n + 3) { border-top: 1px solid rgba(102, 155, 188, 0.3); }
@@ -255,7 +275,12 @@
   .home-header-inner { gap: 12px; }
   .home-header-actions { gap: 8px; }
   .home-header-actions .pill-button.small, .home-header-actions .pill-outline.small { padding: 0 14px; font-size: 14px; }
+  .home-menu-panel { padding-inline: 16px; }
   .hero { padding-block: 32px 48px; }
+  /* Room above the tablet for the speech bubble, which used to cover the top of the picture. */
+  .hero-art { padding-top: 44px; }
+  .hero-art .hero-speech { top: 0; }
+  .hero-art .hero-atom { left: auto; right: 22%; top: 6px; width: 40px; }
   .hero-intro { font-size: 17px; }
   .hero-actions a { flex: 1 1 100%; }
   .stat-band-inner div { padding: 20px 16px 20px 0; }
@@ -265,19 +290,30 @@
   .compare-table { grid-template-columns: 1fr; }
   .bento { grid-template-columns: 1fr; }
   .tile, .tile-half, .tile-wide { grid-column: span 1; }
-  .how-steps, .parents-grid, .faq-list, .playbook-list { grid-template-columns: 1fr; }
+  .how-steps, .parents-grid, .playbook-list { grid-template-columns: 1fr; }
+  .faq-list summary { font-size: 17px; padding-left: 16px; }
+  .faq-list details p { padding-inline: 16px; }
   .playbook-list li, .playbook-list li + li { padding: 18px 0; border-left: 0; border-top: 1px solid var(--line); }
   .playbook-list li:first-child { border-top: 0; }
   .subject-card li { grid-template-columns: 1fr auto; gap: 2px 12px; }
   .subject-card li span:first-child { grid-column: 1 / -1; }
-  .subject-card header { flex-wrap: wrap; }
-  .subject-card header .status-pill { margin-left: 0; }
+  /* The "ready" pill always sits on its own row; it used to wrap for long subject names only. */
+  .subject-card header { display: grid; grid-template-columns: 44px minmax(0, 1fr); }
+  .subject-card header .status-pill { grid-column: 1 / -1; justify-self: start; margin-left: 0; }
   .subject-card ol li:nth-child(n + 5):not(.more-weeks) { display: none; } /* PHONE_WEEKS in src/app/page.tsx */
   .subject-card li.more-weeks { display: block; }
   .demo-question div { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; }
   .footer-links { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
 }
+/* Phones: the subject cards become one swipeable row (the next card peeks in), not a stack several screens tall. */
+@media (max-width: 600px) {
+  .subject-cards { display: flex; align-items: flex-start; gap: 12px; margin-inline: -16px; padding: 2px 16px 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 16px; overscroll-behavior-x: contain; scrollbar-width: none; }
+  .subject-cards::-webkit-scrollbar { display: none; }
+  .subject-card { flex: 0 0 86%; scroll-snap-align: start; }
+}
+/* Very narrow phones: the logo mark alone, so Log in, Sign up and the menu button still fit. */
+@media (max-width: 359px) { .home-header .brand-word { display: none; } }
 
 /* Fun layer: Edi the owl, doodles, wavy edges, chunkier cards */
 .kicker-fun { display: inline-flex; align-items: center; gap: 8px; background: var(--white); border: 2px solid var(--ink); border-radius: 999px; padding: 5px 14px 5px 10px; letter-spacing: 0.05em; }
@@ -304,12 +340,12 @@
 .footer-squiggle { width: 96px; height: 14px; margin-top: 14px; }
 .tile, .subject-card, .how-steps li, .compare-table, .anatomy-demo, .demo-head, .demo-block, .demo-question { border-width: 2px; }
 .tile, .subject-card, .how-steps li { border-color: rgba(0, 48, 73, 0.14); }
-.tile:hover, .how-steps li:hover { transform: translateY(-3px) rotate(-0.4deg); }
+/* Hover lifts only where there is a real pointer, so cards do not stay lifted after a tap. */
+@media (hover: hover) { .tile:hover, .how-steps li:hover, .plan:hover { transform: translateY(-3px) rotate(-0.4deg); } }
 .tile, .how-steps li { transition: transform 0.2s ease; }
 .tile-icon, .parent-icon, .how-num, .anatomy-num, .more-mark { border-radius: 14px; }
 .how-num { transform: rotate(-6deg); }
 .stat-band strong { font-weight: 700; }
-.faq-list div { border-top-width: 3px; border-radius: 0; }
 .home-header { border-bottom-width: 2px; }
 @media (max-width: 1024px) { .how-arrow, .head-doodle { display: none; } .hero-mascot { width: 30%; } }
 @media (max-width: 680px) { .hero-speech { max-width: 180px; font-size: 14px; } .anatomy-mascot { width: 84px; top: -56px; right: -8px; } .final-mascot { width: 116px; height: 116px; margin-top: -96px; } }
@@ -351,7 +387,6 @@
 .plan-gold .plan-price small { color: var(--on-navy-2); }
 .plan-sticker { position: absolute; top: -14px; right: 22px; padding: 4px 12px; border-radius: 999px; background: var(--red); color: var(--white); font-family: var(--display); font-size: 14px; font-weight: 600; transform: rotate(3deg); }
 .plan { transition: transform 0.2s ease; }
-.plan:hover { transform: translateY(-3px) rotate(-0.4deg); }
 @media (max-width: 1024px) {
   .plans-inner { grid-template-columns: 1fr; gap: 36px; }
 }
@@ -386,7 +421,8 @@
 .final-inner { position: relative; isolation: isolate; }
 .confetti { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .confetti i { position: absolute; display: block; border-radius: 3px; rotate: var(--rot, 0deg); }
-@media (max-width: 680px) { .confetti i:nth-child(n + 9) { display: none; } .ticker-group li { font-size: 18px; } }
+/* Phones: the text fills the banner, so the confetti moves up into the band beside Edi and stays clear of the words. */
+@media (max-width: 680px) { .confetti { inset: -92px 0 auto; height: 104px; } .confetti i:nth-child(n + 9) { display: none; } .ticker-group li { font-size: 18px; } }
 
 /* Touch screens: every footer link gets a 44px tap area (they were 24px tall). */
 @media (pointer: coarse) {

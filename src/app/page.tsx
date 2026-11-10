@@ -6,6 +6,7 @@ import { chatEnabled, challengesEnabled, presenceEnabled, voiceEnabled } from "@
 import { catalog, departmentNotes, listWords, notForLabel, plural, readySubjects, totals } from "@/data/catalog";
 import { naira, plansForDisplay, type Plan } from "@/data/plans";
 import Mascot from "@/components/mascot";
+import HomeMenu from "@/components/home-menu";
 import ScrollMotion from "@/components/scroll-motion";
 import SiteFooter from "@/components/site-footer";
 import { Arrow, Atom, Pencil as PencilDoodle, Sparkle, SpeechBubble, Star, Wave } from "@/components/doodles";
@@ -80,10 +81,12 @@ const FAQS = [
 
 // Confetti around Edi in the closing banner: [left %, top %, width px, height px, colour, rotation deg, delay s].
 const CONFETTI: [number, number, number, number, string, number, number][] = [
-  [14, 30, 14, 14, "#fdf0d5", 0, 0.1], [22, 62, 10, 22, "#ffffff", 28, 0.25], [30, 18, 12, 12, "#003049", 0, 0.4],
-  [38, 74, 18, 8, "#fdf0d5", -24, 0.15], [62, 20, 10, 20, "#ffffff", -30, 0.3], [70, 70, 14, 14, "#003049", 0, 0.5],
-  [79, 34, 18, 8, "#fdf0d5", 20, 0.2], [86, 64, 12, 12, "#ffffff", 0, 0.35], [8, 70, 16, 8, "#669bbc", 35, 0.45],
-  [92, 22, 10, 10, "#fdf0d5", 0, 0.55], [48, 88, 12, 12, "#669bbc", 0, 0.6], [55, 10, 16, 8, "#ffffff", -18, 0.05],
+  // Every piece sits in the outer fifths, so none lands behind the centred heading, text or buttons. On phones the
+  // whole layer moves up beside Edi instead (see .confetti in home.css).
+  [14, 30, 14, 14, "#fdf0d5", 0, 0.1], [20, 62, 10, 22, "#ffffff", 28, 0.25], [4, 16, 12, 12, "#003049", 0, 0.4],
+  [17, 88, 18, 8, "#fdf0d5", -24, 0.15], [96, 50, 10, 20, "#ffffff", -30, 0.3], [80, 84, 14, 14, "#003049", 0, 0.5],
+  [81, 34, 18, 8, "#fdf0d5", 20, 0.2], [87, 64, 12, 12, "#ffffff", 0, 0.35], [8, 70, 16, 8, "#669bbc", 35, 0.45],
+  [92, 22, 10, 10, "#fdf0d5", 0, 0.55], [19, 8, 12, 12, "#669bbc", 0, 0.6], [80, 8, 16, 8, "#ffffff", -18, 0.05],
 ];
 
 const vars = (values: Record<string, string | number>) => values as React.CSSProperties;
@@ -166,7 +169,7 @@ export default function Home() {
       <div className="shell home-header-inner">
         <Brand />
         <nav className="home-nav" aria-label="Main navigation" data-spy>{nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
-        <div className="home-header-actions"><Link href="/login" className="pill-outline small home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up</Link></div>
+        <div className="home-header-actions"><Link href="/login" className="pill-outline small home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up</Link><HomeMenu items={nav.map(({ href, label }) => ({ href, label }))} /></div>
       </div>
       <span className="scroll-progress" aria-hidden="true" />
     </header>
@@ -392,7 +395,7 @@ export default function Home() {
 
       <section className="shell faq" id="faq" aria-labelledby="faq-title">
         <div className="faq-intro" data-reveal="left"><span className="kicker">Questions</span><h2 id="faq-title">Things parents often ask.</h2><p>Create a family account, add your learners, then choose the right plan for each one.</p></div>
-        <dl className="faq-list" data-stagger="fast">{faqs.map((item) => <div key={item.q}><dt>{item.q}</dt><dd>{item.a}</dd></div>)}</dl>
+        <div className="faq-list" data-stagger="fast">{faqs.map((item, index) => <details key={item.q} name="faq" open={index === 0}><summary>{item.q}<span className="faq-mark" aria-hidden="true" /></summary><p>{item.a}</p></details>)}</div>
       </section>
 
       <Wave fill="#c1121f" className="wave-into" />
