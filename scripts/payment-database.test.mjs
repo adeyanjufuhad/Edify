@@ -11,9 +11,9 @@ const results = await sql.transaction([
   sql`insert into payment_checks (reference, profile_id, plan, amount, customer_email, mode)
     values ('retry', '00000000-0000-0000-0000-000000000001', 'silver', 300000, 'test@example.invalid', 'live')
     on conflict (profile_id, plan, mode) where status = 'pending' do update set profile_id = excluded.profile_id returning reference`,
-  sql`update payment_checks set status = 'success', paid_at = now(), term_end = now() + interval '105 days', paystack_id = 'test-1'
+  sql`update payment_checks set status = 'success', paid_at = now(), term_end = now() + interval '105 days', provider_id = 'test-1'
     where reference = 'first' and status = 'pending' returning reference`,
-  sql`update payment_checks set status = 'success', paid_at = now(), term_end = now() + interval '105 days', paystack_id = 'test-1'
+  sql`update payment_checks set status = 'success', paid_at = now(), term_end = now() + interval '105 days', provider_id = 'test-1'
     where reference = 'first' and status = 'pending' returning reference`,
   sql`insert into payment_checks (reference, profile_id, plan, amount, customer_email, mode, status, term_end)
     values ('expired', '00000000-0000-0000-0000-000000000001', 'gold', 500000, 'test@example.invalid', 'live', 'success', now() - interval '1 second'),

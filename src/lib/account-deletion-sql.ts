@@ -8,7 +8,7 @@
 //
 // Kept on purpose: public.payments rows. They are unlinked from the parent and the learner but still hold the
 // checkout email, plan, amount, reference and dates, for accounting, refunds and disputes. Unpaid orders are
-// kept as well, so a checkout that is still open on Paystack can still be matched when its payment arrives.
+// kept as well, so a checkout that is still open on Monnify can still be matched when its payment arrives.
 
 // The classmate tables (db/migrations 010 to 013). Each also has `on delete cascade` foreign keys, so deleting a
 // learner would remove this data anyway; the explicit statements below say so in plain SQL and keep working if a

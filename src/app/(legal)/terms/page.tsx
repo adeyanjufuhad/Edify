@@ -17,7 +17,7 @@ const SECTIONS: LegalSection[] = [
     body: <ul className="legal-points">
       <li>A parent or guardian opens the account and is responsible for it. Learners study under that account.</li>
       <li>Each learner has their own plan. One payment gives that learner 105 days of access and does not renew by itself.</li>
-      <li>Payments go through Paystack. Your card details never reach Edify.</li>
+      <li>Payments go through Monnify, by card or bank transfer. Your card and bank details never reach Edify.</li>
       <li>Classmate challenges, chat and voice notes are off until you switch them on for each child. <a href="#classmates">The classmates section</a> explains the rules and your part in supervising.</li>
       <li>Edify is a study aid. We can’t promise exam results.</li>
       <li>You can delete your account at any time. <a href="#refunds">The refunds section</a> explains what happens to money already paid.</li>
@@ -57,7 +57,7 @@ const SECTIONS: LegalSection[] = [
         <dl>{plansForDisplay(challengesEnabled()).map((plan) => <div key={plan.id}><dt>{plan.name}: {naira(plan.price)}</dt><dd>{plan.features.join(", ")}.</dd></div>)}</dl>
       </div>
       <ul>
-        <li><b>105 days.</b> One payment gives the learner access to that plan for 105 days (3½ months), counted from the time Paystack confirms the payment.</li>
+        <li><b>105 days.</b> One payment gives the learner access to that plan for 105 days (3½ months), counted from the time Monnify confirms the payment.</li>
         <li><b>No automatic renewal.</b> We never charge you again by ourselves. When the 105 days end, the learner’s access ends, and you can pay again from the billing page if you want to continue. Nothing needs to be cancelled.</li>
         <li><b>Upgrading.</b> You can move a learner to a higher plan. This starts a new 105-day period at the full price of the new plan, and unused days on the old plan are not credited. You can’t buy a plan the learner already has, or a lower one, while their current plan is active.</li>
         <li><b>Access belongs to the learner.</b> It can’t be moved to another learner or another account, including when a learner is removed or the account is deleted.</li>
@@ -71,8 +71,8 @@ const SECTIONS: LegalSection[] = [
     title: "Payments",
     body: <>
       <ul>
-        <li>Payments are taken by <b>Paystack</b>. You complete the payment on Paystack’s own page, using a method Paystack offers. Paystack’s terms and privacy notice apply to its service. Card, bank and mobile-money details are entered with Paystack and never reach Edify.</li>
-        <li>We give access only after Paystack confirms the payment to us. This normally takes moments but can take longer.</li>
+        <li>Payments are taken by <b>Monnify</b>. You complete the payment on Monnify’s own page, by card or bank transfer. Monnify’s terms and privacy notice apply to its service. Card and bank details are entered with Monnify and never reach Edify.</li>
+        <li>We give access only after Monnify confirms the payment to us. This normally takes moments but can take longer.</li>
         <li>If you were charged but the learner’s plan has not appeared, don’t pay again. Open <b>Recent payments</b> on the billing page and check the payment status, then contact us at <ContactEmail /> with the date and amount.</li>
         <li>We keep a record of each payment, as explained in the <Link href="/privacy#payments" className="text-link">Privacy policy</Link>.</li>
       </ul>
@@ -89,10 +89,10 @@ const SECTIONS: LegalSection[] = [
         <li><b>Problem on our side.</b> If a fault in Edify stops a learner from using what they paid for and we can’t fix it within a reasonable time, we will refund the part of the payment for the time they could not use it.</li>
         <li><b>Change of mind.</b> You can ask for a refund within <b>3 calendar days (72 hours)</b> of payment, as long as you provide the payment receipt and the receipt includes the payment session ID.</li>
         <li><b>How to ask.</b> Email <ContactEmail /> from the address on your account with the receipt showing the payment session ID, the payment date and amount, and the reason for your request. A clear screenshot or PDF is acceptable. Do not send passwords, PINs or full card details. We will acknowledge your request within <b>2 working days</b> (Monday to Friday, excluding Nigerian public holidays). <b>Adeyanju Fuhad</b> reviews and approves refunds. If we need more information, we will explain what is missing; your original request date counts towards the 3-day window.</li>
-        <li><b>How you are paid back.</b> We submit approved refunds to Paystack within <b>24 hours of approval</b>, normally back to the original payment method. This is our processing time, not a guarantee of when your bank credits you. Paystack currently advises <b>3 to 10 working days</b> for receipt. We will provide the refund reference when available. Access covered by a full refund ends; for a partial refund we will explain any access adjustment.</li>
+        <li><b>How you are paid back.</b> We submit approved refunds through Monnify within <b>24 hours of approval</b>, normally back to the original payment method. This is our processing time, not a guarantee of when your bank credits you. <Todo>owner to confirm Monnify’s current refund settlement time and state it here</Todo> We will provide the refund reference when available. Access covered by a full refund ends; for a partial refund we will explain any access adjustment.</li>
         <li>Please contact us before asking your bank to reverse a payment, so we can sort it out quickly.</li>
       </ul>
-      <p>The 3-day window and receipt requirement apply to change-of-mind requests. They do not remove rights you have by law, or prevent us investigating duplicate charges, payments without access or service faults. If your payment method did not issue a session ID, contact us with the receipt and transaction reference so we can help identify the payment. <a href="https://support.paystack.com/en/articles/2127106" className="text-link">Paystack’s refund guidance</a>. <Todo>lawyer to review this policy against applicable Nigerian consumer rights</Todo></p>
+      <p>The 3-day window and receipt requirement apply to change-of-mind requests. They do not remove rights you have by law, or prevent us investigating duplicate charges, payments without access or service faults. If your payment method did not issue a session ID, contact us with the receipt and transaction reference so we can help identify the payment. <Todo>lawyer to review this policy against applicable Nigerian consumer rights</Todo></p>
     </>,
   },
   {
@@ -158,7 +158,7 @@ const SECTIONS: LegalSection[] = [
     title: "Availability and changes",
     body: <>
       <ul>
-        <li>We aim to keep Edify available, but we can’t promise it will always work without interruption. It depends on services we don’t control, including our hosting, database and sign-in providers, Paystack, and your own internet connection.</li>
+        <li>We aim to keep Edify available, but we can’t promise it will always work without interruption. It depends on services we don’t control, including our hosting, database and sign-in providers, Monnify, and your own internet connection.</li>
         <li>We may fix, change, add or remove lessons and features. If we remove something that a paid plan clearly included, we will tell you and put things right. For a substantial loss of a paid feature, we will offer a suitable extension of access or a proportionate refund for the affected period. If an extension is not suitable, you may request the proportionate refund.</li>
         <li>We may stop running Edify. If we do, we will give notice and refund the unused part of paid plans. We will normally give at least 30 calendar days’ notice before a planned closure. If an urgent legal or security issue prevents this, we will give as much notice as we reasonably can. Unused paid access will be refunded proportionately.</li>
       </ul>

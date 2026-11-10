@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { requireConsentedParent } from "@/lib/account";
 import { getProfile } from "@/lib/profiles";
 import { isPlanId, PLAN_RANK } from "@/data/plans";
-import { initializePayment } from "@/lib/paystack";
+import { initializePayment } from "@/lib/monnify";
 
 export async function checkout(_state: { error?: string }, form: FormData): Promise<{ error?: string }> {
   const parent = await requireConsentedParent();

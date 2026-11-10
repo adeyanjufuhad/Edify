@@ -70,7 +70,7 @@ const PLAYBOOK = [
 const SOCIAL_FAQ = { q: "Can my child talk to strangers on Edify?", a: "No. Children only ever see classmates in their own school and class, and only after a parent has switched it on. Parents choose whether their child can be seen by the class, show when they are online, chat or send voice notes, can read and delete every message, and can remove or block any classmate. Children can block or report anyone, and other families only ever see a first name and class." };
 
 const FAQS = [
-  { q: "How much does Edify cost?", a: "Creating a family account is free. Study access costs ₦1,000 for Bronze, ₦3,000 for Silver or ₦5,000 for Gold per learner for 105 days (3½ months). Pay through Paystack, with no automatic renewal. Valid partner-school referral codes still unlock sponsored Gold." },
+  { q: "How much does Edify cost?", a: "Creating a family account is free. Study access costs ₦1,000 for Bronze, ₦3,000 for Silver or ₦5,000 for Gold per learner for 105 days (3½ months). Pay by card or bank transfer through Monnify, with no automatic renewal. Valid partner-school referral codes still unlock sponsored Gold." },
   { q: "Which classes is Edify for?", a: "Edify currently focuses on senior secondary students in Nigeria: SS1, SS2 and SS3. SS1 lessons are available now; SS2 and SS3 lessons will be added as they are written and checked." },
   { q: "Which subjects are covered?", a: `Edify is built for every school subject. ${listWords(readySubjects)} ${readySubjects.length === 1 ? "is" : "are"} ready first, and more subjects are added one by one.${departmentNotes.length ? ` ${departmentNotes.join(" ")}` : ""}` },
   { q: "Does it follow the school syllabus?", a: "Yes. Topics follow the Nigerian scheme of work for each class, term by term and week by week, so what you read matches what was taught in class." },
@@ -372,7 +372,7 @@ export default function Home() {
             <p>Pick what each child needs. Brothers and sisters can be on different plans.</p>
             <div className="beta-stamp">
               <Mascot pose="cheer" className="beta-mascot" />
-              <div><strong>Pay securely with Paystack</strong><p>One payment covers 105 days (3½ months). No automatic renewal. Choose a plan for each learner.</p></div>
+              <div><strong>Pay securely with Monnify</strong><p>One payment covers 105 days (3½ months). No automatic renewal. Choose a plan for each learner.</p></div>
             </div>
             <Link href="/billing" className="pill-button">Choose a plan <ArrowRight /></Link>
           </div>

@@ -46,13 +46,13 @@ const COLLECTED: { group: string; rows: { what: string; detail: React.ReactNode 
     rows: [
       { what: "Payment records", detail: <>When you choose a plan for a learner we save an order: its reference, which learner and plan it was for, the amount in naira, the email address used at checkout (your parent email), whether it was paid, and when it was created and paid. A payment gives that learner 105 days of access. These records are treated differently when you delete your account: see <a href="#payments">Payments and payment records</a>.</> },
       { what: "Refund and support correspondence", detail: "If you contact us, we receive your email and the information you provide, including payment receipts, session IDs or transaction references for refunds. Do not send passwords, PINs or full card details. Correspondence may remain in our support email account after you delete your Edify account." },
-      { what: "What never reaches us", detail: "Card numbers, bank details and mobile-money details are entered on Paystack’s own page and never reach Edify. Paystack tells us whether a payment succeeded." },
+      { what: "What never reaches us", detail: "Card numbers, bank details and mobile-money details are entered on Monnify’s own page and never reach Edify. Monnify tells us whether a payment succeeded." },
     ],
   },
   {
     group: "Kept in your browser",
     rows: [
-      { what: "Cookies", detail: "Sign-in cookies from our sign-in service, and Edify cookies that remember which learner is studying for up to 30 days and whether parent controls are unlocked. They are needed for the site to work; we don’t use advertising or tracking cookies. When you go to Paystack to pay, Paystack’s page sets its own cookies under its own policy." },
+      { what: "Cookies", detail: "Sign-in cookies from our sign-in service, and Edify cookies that remember which learner is studying for up to 30 days and whether parent controls are unlocked. They are needed for the site to work; we don’t use advertising or tracking cookies. When you go to Monnify to pay, Monnify’s page sets its own cookies under its own policy." },
       { what: "An unfinished CBT test or challenge", detail: "Saved in the browser while a test or challenge is running, so a dropped connection doesn’t lose answers. It is removed when the test is submitted or quit. If a learner walks away from a test, it stays on that device until they finish or quit it." },
       { what: "While you sign up", detail: "The email address you are confirming, and a note that you ticked the agreement box, are held in the browser tab until you enter the 6-digit code." },
     ],
@@ -77,7 +77,7 @@ const SECTIONS: LegalSection[] = [
       <li>We store the least we need: your name and email, and each child’s first name, class, school and study progress.</li>
       <li>We don’t sell data, show adverts, or use tracking or analytics tools.</li>
       <li>Classmate challenges, online status, chat and voice notes are off for every child until a parent switches them on. Nobody can search for a child: children only see others in their own school and class, either through a code two parents exchange or, if both parents allow it, a class list. Other families only ever see a child’s first name and class. <a href="#classmates">Read the classmates section.</a></li>
-      <li>Our website service providers include Neon (database and sign-in) and Vercel (website hosting), both in London, UK, and Paystack (card and bank payments).</li>
+      <li>Our website service providers include Neon (database and sign-in) and Vercel (website hosting), both in London, UK, and Monnify (card and bank-transfer payments).</li>
       <li>You can delete your account and every learner’s data yourself, at any time. Payment records and necessary support correspondence may remain, and <a href="#payments">the payments section</a> explains why.</li>
     </ul>,
   },
@@ -106,7 +106,7 @@ const SECTIONS: LegalSection[] = [
         <li>to send emails about your account (confirmation codes and password resets). We won’t send marketing emails unless you ask for them;</li>
         <li>to keep the service safe, for example by spotting repeated failed sign-ins;</li>
         <li>to apply a school’s referral code;</li>
-        <li>to take payment for a learner’s plan through Paystack, give the learner the access that was paid for, and keep the financial records we need for accounting, refunds and disputes.</li>
+        <li>to take payment for a learner’s plan through Monnify, give the learner the access that was paid for, and keep the financial records we need for accounting, refunds and disputes.</li>
       </ul>
       <p>Our legal basis is your <b>consent</b>, given as the parent or guardian when you sign up (the NDPA requires a parent’s or guardian’s consent before we handle a child’s data), and the need to provide the service you asked for. You can withdraw consent at any time by deleting your account. <Todo>lawyer to confirm the lawful bases under NDPA section 25 and the child-consent rules in section 31, and the basis for keeping payment records after deletion</Todo></p>
     </>,
@@ -177,21 +177,21 @@ const SECTIONS: LegalSection[] = [
         <dl>
           <div><dt>Neon (Neon, Inc.)</dt><dd>Our database and sign-in service. All the account, learner and payment-record data above is stored in Neon’s database on Amazon Web Services in London, UK (region eu-west-2). Neon also sends our account emails, such as confirmation codes.</dd></div>
           <div><dt>Vercel (Vercel Inc.)</dt><dd>Hosts the website. Our pages run on Vercel’s servers in London, UK (region lhr1). Like any web host, Vercel’s network handles each request on its way to us and keeps short-lived technical logs, such as IP addresses.</dd></div>
-          <div><dt>Paystack (Paystack Payments Limited)</dt><dd>Takes payments. When you pay, we send Paystack your parent email address, the amount and our order reference, and you enter your card or bank details on Paystack’s page, where Paystack is responsible for them under its own privacy notice. Paystack tells us back whether the payment succeeded. We never send Paystack a learner’s name, school or PIN. Paystack may process data outside Nigeria, including through service providers abroad. Read <a href="https://website-v4.paystack.co/privacy-policy" className="text-link">Paystack’s privacy policy</a> for its processing, sharing and retention practices.</dd></div>
+          <div><dt>Monnify (operated by Moniepoint) <Todo>owner to confirm the exact legal name of the Monnify contracting entity from the merchant agreement</Todo></dt><dd>Takes payments. When you pay, we send Monnify your parent email address, the amount and our order reference, and you enter your card or bank details on Monnify’s page, where Monnify is responsible for them under its own privacy notice. Monnify tells us back whether the payment succeeded. We never send Monnify a learner’s name, school or PIN. Monnify may process data outside Nigeria, including through service providers abroad. Read <a href="https://monnify.com/privacy-policy.html" className="text-link">Monnify’s privacy policy</a> for its processing, sharing and retention practices.</dd></div>
         </dl>
       </div>
       <p>Chat messages and voice notes are stored in the same Neon database as everything else. We do not use a separate chat, messaging or file-storage company. We will update this policy if we add a provider that changes how these records are handled.</p>
-      <p>Our own data is stored in the United Kingdom, and Neon and Vercel are American companies, so your data leaves Nigeria. Paystack may also process payment data outside Nigeria. The NDPA allows transfers when the other country or the arrangement gives adequate protection. <Todo>lawyer to confirm the transfer basis under NDPA sections 41 to 43 and whether data processing agreements with Neon, Vercel and Paystack are needed</Todo></p>
+      <p>Our own data is stored in the United Kingdom, and Neon and Vercel are American companies, so your data leaves Nigeria. Monnify may also process payment data outside Nigeria. The NDPA allows transfers when the other country or the arrangement gives adequate protection. <Todo>lawyer to confirm the transfer basis under NDPA sections 41 to 43 and whether data processing agreements with Neon, Vercel and Monnify are needed</Todo></p>
     </>,
   },
   {
     id: "payments",
     title: "Payments and payment records",
     body: <>
-      <p>Plans are paid for each learner through Paystack. A payment buys 105 days of access and does not renew by itself. What we save for each order is listed under “About payments” above: reference, learner, plan, amount, the email used at checkout, status and dates. Card details never touch Edify.</p>
-      <p><b>Payment records are not deleted with your account.</b> We keep them because we may need them for accounting and tax, to answer a refund request or a dispute with your bank or Paystack, and to match a payment that was still being completed when you deleted your account. When you delete your account or a learner, the record is unlinked from them, but it still shows the email address used at checkout, so it is not anonymous. Orders that were started but never paid are kept too, for the same matching reason.</p>
+      <p>Plans are paid for each learner through Monnify. A payment buys 105 days of access and does not renew by itself. What we save for each order is listed under “About payments” above: reference, learner, plan, amount, the email used at checkout, status and dates. Card details never touch Edify.</p>
+      <p><b>Payment records are not deleted with your account.</b> We keep them because we may need them for accounting and tax, to answer a refund request or a dispute with your bank or Monnify, and to match a payment that was still being completed when you deleted your account. When you delete your account or a learner, the record is unlinked from them, but it still shows the email address used at checkout, so it is not anonymous. Orders that were started but never paid are kept too, for the same matching reason.</p>
       <p>We aim to delete routine support and refund correspondence 12 months after a request is closed, unless an unresolved dispute or legal obligation requires longer retention. Payment evidence needed for accounting follows the financial-record retention rules below; deleting an Edify account does not automatically delete emails.</p>
-      <p><Todo>owner and lawyer to decide: how long payment records must be kept under Nigerian tax and accounting law (and any Paystack rules), whether the email should be removed or masked once that period ends or sooner, and when unpaid orders can be purged. Then state the period here.</Todo></p>
+      <p><Todo>owner and lawyer to decide: how long payment records must be kept under Nigerian tax and accounting law (and any Monnify rules), whether the email should be removed or masked once that period ends or sooner, and when unpaid orders can be purged. Then state the period here.</Todo></p>
     </>,
   },
   {
@@ -248,7 +248,7 @@ const SECTIONS: LegalSection[] = [
         <li>The database password is held only by Edify’s own server; browsers never connect to the database directly.</li>
         <li>Each learner’s PIN keeps brothers and sisters out of each other’s work. It’s a light lock, not a substitute for keeping your own password private.</li>
         <li>You can set a separate parent PIN to protect account management and classmate settings. Opening a learner’s space locks these parent controls when a parent PIN is set. Without a parent PIN, someone using your signed-in account can access those controls. Keep your password and parent PIN private.</li>
-        <li>Edify uses the essential cookies described above for sign-in, learner selection and parent controls. We do not use advertising or analytics cookies. You can clear cookies in your browser, but doing so may sign you out or reset these controls. Paystack’s checkout has its own cookie practices.</li>
+        <li>Edify uses the essential cookies described above for sign-in, learner selection and parent controls. We do not use advertising or analytics cookies. You can clear cookies in your browser, but doing so may sign you out or reset these controls. Monnify’s checkout has its own cookie practices.</li>
       </ul>
       <p>If a data breach puts your information at risk, we will tell the NDPC and the affected parents as the law requires. <Todo>lawyer to confirm breach-notice duties and timings under NDPA section 40</Todo></p>
     </>,

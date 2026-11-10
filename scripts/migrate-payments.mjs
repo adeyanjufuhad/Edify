@@ -7,5 +7,7 @@ if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is required.");
 const sql = neon(process.env.DATABASE_URL);
 const migration = await readFile(new URL("../db/migrations/006_payments.sql", import.meta.url), "utf8");
 const statements = migration.split(";").map((statement) => statement.trim()).filter(Boolean);
-await sql.transaction(statements.map((statement) => sql.query(statement)));
-console.log("Payment migration applied successfully.");
+// 016 renames paystack_id to provider_id. It is one do-block, so it is sent whole rather than split on semicolons.
+const provider = await readFile(new URL("../db/migrations/016_payment_provider.sql", import.meta.url), "utf8");
+await sql.transaction([...statements, provider].map((statement) => sql.query(statement)));
+console.log("Payment migrations applied successfully.");

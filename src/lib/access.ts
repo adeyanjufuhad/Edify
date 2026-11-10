@@ -1,10 +1,11 @@
 import "server-only";
 import { database } from "@/lib/db";
+import { paymentSettings } from "@/lib/monnify";
 import { isPlanId, PLAN_RANK, type PlanId } from "@/data/plans";
 import type { LearnerProfile } from "@/lib/profiles";
 
 export async function paidAccess(profileId: string): Promise<{ plan: PlanId; expiresAt: string | null }> {
-  const liveOnly = process.env.VERCEL_ENV === "production" || process.env.PAYSTACK_SECRET_KEY?.startsWith("sk_live_") === true;
+  const liveOnly = process.env.VERCEL_ENV === "production" || paymentSettings().mode === "live";
   const rows = await database()`select plan, term_end from public.payments
     where profile_id = ${profileId} and status = 'success' and term_end > now()
     and (${!liveOnly} or mode = 'live')

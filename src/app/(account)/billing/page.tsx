@@ -2,7 +2,7 @@ import Link from "next/link";
 import { requireConsentedParent } from "@/lib/account";
 import { listProfiles } from "@/lib/profiles";
 import { database } from "@/lib/db";
-import { paymentSettings } from "@/lib/paystack";
+import { paymentSettings } from "@/lib/monnify";
 import { PLAN_NAMES, PLAN_RANK, naira, isPlanId, plansForDisplay } from "@/data/plans";
 import { challengesEnabled } from "@/lib/social/flags";
 import { CURRICULUM_CLASS } from "@/data/curriculum";
@@ -45,13 +45,13 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
           <div><h2>{plan.name}</h2><strong>{naira(plan.price)} <small>per learner / 105 days</small></strong><ul>{plan.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div>
           {PLAN_RANK[selected.plan] >= PLAN_RANK[plan.id] ? <p>Included in your current plan</p> : <CheckoutForm profileId={selected.id} plan={plan} disabled={!settings.enabled} />}
         </section>)}</div>
-        <p className="account-note">You’ll complete payment on Paystack. Your parent email is shared with Paystack for the payment; Edify never receives your card details. By paying you agree to the <Link href="/terms#refunds" className="text-link">Terms of use, including refunds and cancellation</Link>, and the <Link href="/privacy#payments" className="text-link">Privacy policy</Link>.</p>
+        <p className="account-note">You’ll complete payment on Monnify, by card or bank transfer. Your parent email is shared with Monnify for the payment; Edify never receives your card or bank details. By paying you agree to the <Link href="/terms#refunds" className="text-link">Terms of use, including refunds and cancellation</Link>, and the <Link href="/privacy#payments" className="text-link">Privacy policy</Link>.</p>
       </>}
     </>}
     <section className="account-card"><h2>Recent payments</h2>{payments.length ? <ul className="billing-history">{payments.map((payment) => <li key={payment.reference as string}>
       <strong>{profiles.find((profile) => profile.id === payment.profile_id)?.name ?? "Removed learner"} · {isPlanId(payment.plan) ? PLAN_NAMES[payment.plan] : "Plan"} · {naira(Number(payment.amount) / 100)}</strong>
       <span>{payment.status === "success" ? `Paid · access until ${date(String(payment.term_end))}` : "Payment not yet confirmed"}</span>
-      {payment.status !== "success" && <Link href={`/billing/return?reference=${encodeURIComponent(payment.reference as string)}`} className="text-link">Check payment status</Link>}
+      {payment.status !== "success" && <Link href={`/billing/return?paymentReference=${encodeURIComponent(payment.reference as string)}`} className="text-link">Check payment status</Link>}
     </li>)}</ul> : <p>No payments yet.</p>}</section>
   </div>;
 }
