@@ -44,8 +44,7 @@ export default function LoginPage() {
         <p>Log in with your parent account, then choose who’s studying today.</p>
       </div>
       <div className="account-card">
-        <h2>Log in</h2>
-        <form className="account-form" onSubmit={handleSubmit}>
+        <form className="account-form" onSubmit={handleSubmit} aria-label="Log in">
           <label htmlFor="email">Email address</label>
           <input id="email" name="email" type="email" autoComplete="username" spellCheck={false} required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com…" />
           <div className="label-row"><label htmlFor="password">Password</label><Link href="/forgot-password" className="text-link small">Forgot password?</Link></div>

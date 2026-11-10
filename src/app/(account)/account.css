@@ -46,6 +46,64 @@
 .account-switch { font-size: 15px; color: var(--ink-2); margin: 16px 0 0; }
 .account-switch .text-button { padding: 0; }
 
+/* Sign-in flow (log in, sign up, verify, password reset, deleted): everything fits one screen, no page scroll.
+   The form column is exactly one screen tall; on a very short screen only that column scrolls, never the page. */
+.auth:has(.account-grid) { height: 100dvh; min-height: 0; }
+.auth:has(.account-grid) .auth-main { height: 100dvh; overflow-y: auto; padding: 20px 48px; }
+.auth-body:has(> .account-grid) { margin-top: 0; padding-block: 12px; }
+.account-grid { gap: 18px; }
+.account-grid .account-intro h1 { font-size: clamp(28px, 3vw, 36px); margin: 2px 0 6px; }
+.account-grid .account-intro p { font-size: 16px; }
+.account-grid .account-steps { margin-top: 12px; }
+.account-grid .account-card { padding: 22px 24px; }
+.account-grid .account-card > h2 { font-size: 19px; margin-bottom: 4px; }
+.account-grid .account-form { gap: 4px; }
+.account-grid .account-form label { font-size: 14px; margin-top: 8px; }
+.account-grid .account-form .label-row { margin-top: 8px; }
+.account-grid .account-form .pill-button { margin-top: 14px; }
+.account-grid .account-switch { margin-top: 12px; font-size: 14px; }
+.account-grid .consent-check { margin-top: 12px; padding: 10px 12px; font-size: 14px; line-height: 1.45; gap: 10px; }
+/* Name and email side by side when the card is wide enough. */
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+.field-pair > div { display: grid; gap: 4px; align-content: start; min-width: 0; }
+@media (max-width: 520px) { .field-pair { grid-template-columns: 1fr; } }
+/* Links inside the agreement sentence stay inline. The global 44px touch height made each one a line of its own. */
+.consent-check .text-link { display: inline; min-height: 0; }
+.account-grid .account-intro .kicker { margin-bottom: 0; }
+/* Short laptop screens: the side panel drops the speech bubble and the steps strip goes, to keep the form in view. */
+@media (max-height: 780px) and (min-width: 901px) {
+  .auth-side { padding-block: 28px; }
+  .auth-speech { display: none; }
+  .auth-mascot .mascot { width: 110px; height: 110px; }
+  .account-grid .account-steps { display: none; }
+}
+@media (max-width: 900px) {
+  .auth:has(.account-grid) .auth-main { padding: 14px 16px 16px; grid-template-rows: auto 1fr; }
+  .auth-body:has(> .account-grid) { align-self: start; padding-block: 18px 8px; }
+}
+@media (max-width: 600px) {
+  .account-grid { gap: 14px; }
+  .account-grid .account-intro h1 { font-size: 28px; }
+  .account-grid .account-intro p { font-size: 15px; }
+  .account-grid .account-steps { display: none; }
+  .account-grid .account-card { padding: 18px 16px; }
+}
+/* Short screens (small laptops, iPhone SE and smaller): the kicker and intro line go too; the heading still says where you are. */
+@media (max-height: 700px) {
+  .account-grid .account-intro p, .account-grid .account-intro .kicker { display: none; }
+  .account-grid .account-intro h1 { margin-bottom: 0; }
+}
+@media (max-width: 600px) and (max-height: 700px) {
+  .auth:has(.account-grid) .auth-main { padding-top: 8px; }
+  .auth-body:has(> .account-grid) { padding-top: 8px; }
+  .account-grid { gap: 10px; }
+  .account-grid .account-intro h1 { font-size: 24px; }
+  .account-grid .account-card { padding: 14px 14px 16px; }
+  .account-grid .consent-check { padding: 8px 10px; font-size: 13.5px; }
+  .account-grid .account-form input { min-height: 44px; padding-block: 9px; }
+  .account-grid .account-form .pill-button { margin-top: 10px; }
+}
+
 /* Profiles */
 .auth-body:has(.profiles-page) { max-width: 760px; }
 .profiles-page { display: grid; gap: 24px; }
@@ -53,6 +111,7 @@
 .profiles-head h1 { font-size: clamp(30px, 3.4vw, 40px); font-weight: 700; line-height: 1.1; margin: 6px 0 8px; }
 .profiles-head .hl { color: var(--red); }
 .profiles-head p { font-size: 17px; color: var(--ink-2); margin: 0; max-width: 52ch; }
+.profiles-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; flex: none; }
 .profile-picker { display: grid; gap: 16px; }
 .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
 .profile-card { display: grid; gap: 2px; background: var(--white); border: 2px solid var(--line); border-radius: var(--r-lg); padding: 6px 6px 10px; transition: border-color 0.15s; }

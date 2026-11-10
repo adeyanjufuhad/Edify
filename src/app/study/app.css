@@ -396,3 +396,6 @@
 
 /* Touch screens: the back link above a lesson or scheme of work gets a 44px tap area too. */
 @media (pointer: coarse) { .back-link { min-height: 44px; } }
+
+/* "Take the tour" under the greeting (src/components/welcome-guide.tsx). */
+.hello-tour { margin-top: 12px; }

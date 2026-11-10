@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, Monitor, Note } from "@/components/icons";
 import Mascot from "@/components/mascot";
+import WelcomeGuide from "@/components/welcome-guide";
+import { challengesEnabled } from "@/lib/social/flags";
 import { Sparkle, Star } from "@/components/doodles";
 import { lessonIndex, lessonOpenTo, plural } from "@/data/catalog";
 import { listAttempts, type AttemptSummary } from "@/lib/cbt";
@@ -33,6 +35,7 @@ export default async function DashboardPage() {
           <span className="kicker">{learner.classLevel} · {term.name}</span>
           <h1>{greeting()}, {firstName}! <Star className="hello-star" /></h1>
           <p>{!ownClass ? <>Lessons for {learner.classLevel} are being written. You can get a head start with the {contentClass} lessons that are ready.</> : next ? <>Your next lesson is <strong>{next.week.topic}</strong> in {next.subject.name}.</> : "You’ve finished every lesson that’s ready. New lessons are on the way."}</p>
+          <div className="hello-tour"><WelcomeGuide kind="learner" id={learner.id} name={firstName} challenges={challengesEnabled()} /></div>
         </div>
         {ownClass && next && <Link href={next.href} className="pill-button">Continue learning <ArrowRight /></Link>}
       </header>

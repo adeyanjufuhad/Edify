@@ -45,16 +45,17 @@ export default function SignupPage() {
       <div className="account-intro">
         <span className="kicker">FOR PARENTS AND GUARDIANS</span>
         <h1>Create your <span className="hl">family account.</span></h1>
-        <p>One account for the whole family. Add each child as a learner with their class, school and own PIN, so their progress and notes stay separate.</p>
-        <ol className="account-steps"><li><b>1</b>Create your account</li><li><b>2</b>Confirm your email with a 6-digit code</li><li><b>3</b>Add each child’s class and school</li></ol>
+        <p>One account for the whole family. Each child gets their own learner space and PIN.</p>
+        <ol className="account-steps" aria-label="Three steps"><li><b>1</b>Create your account</li><li><b>2</b>Confirm your email</li><li><b>3</b>Add your children</li></ol>
       </div>
       <div className="account-card">
-        <h2>Sign up</h2>
-        <form className="account-form" onSubmit={handleSubmit}>
-          <label htmlFor="name">Your name</label>
-          <input id="name" name="name" autoComplete="name" required maxLength={60} value={name} onChange={(event) => setName(event.target.value)} placeholder="e.g. Mrs Adeyanju…" />
-          <label htmlFor="email">Email address</label>
-          <input id="email" name="email" type="email" autoComplete="email" spellCheck={false} required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com…" />
+        <form className="account-form" onSubmit={handleSubmit} aria-label="Sign up">
+          <div className="field-pair">
+            <div><label htmlFor="name">Your name</label>
+              <input id="name" name="name" autoComplete="name" required maxLength={60} value={name} onChange={(event) => setName(event.target.value)} placeholder="e.g. Mrs Adeyanju…" /></div>
+            <div><label htmlFor="email">Email address</label>
+              <input id="email" name="email" type="email" autoComplete="email" spellCheck={false} required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com…" /></div>
+          </div>
           <label htmlFor="password">Password</label>
           <PasswordField id="password" name="password" autoComplete="new-password" minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 8 characters…" />
           <ConsentField checked={agreed} onChange={(event) => setAgreed(event.target.checked)} />
