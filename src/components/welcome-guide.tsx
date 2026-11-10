@@ -20,7 +20,7 @@ function parentSteps(): Step[] {
     { title: "Welcome to Edify", text: "Edify turns each week of the senior secondary scheme of work into short exam notes, full notes and practice that marks itself. One family account covers every child from SS1 to SS3.", icon: Spark, pose: "wave" },
     { title: "Add each child", text: "Give every learner a first name, their class and school, and their own 4-digit PIN. You can add up to six, and each one keeps their own progress and notes.", icon: Users, pose: "read" },
     { title: "Keep the grown-up controls locked", text: "Set a parent PIN. Children can still pick their name and study, but adding, editing or removing learners and deleting the account need your PIN.", icon: Shield, pose: "think" },
-    { title: "Choose a plan for each learner", text: "Bronze, Silver or Gold, paid per child for 105 days by card or bank transfer through Monnify. Nothing renews by itself, and brothers and sisters can be on different plans.", icon: Target, pose: "read", link: { href: "/billing", label: "See the plans" } },
+    { title: "Choose a plan for each learner", text: "Bronze, Silver or Gold, paid per child for 105 days by card or bank transfer. Nothing renews by itself, and brothers and sisters can be on different plans.", icon: Target, pose: "read", link: { href: "/billing", label: "See the plans" } },
     { title: "Hand over the phone", text: "Your child taps their name on this page, enters their PIN and lands on their own dashboard, which has its own short tour. You can come back here any time to see how far each one has got.", icon: Swap, pose: "cheer" },
   ];
 }
