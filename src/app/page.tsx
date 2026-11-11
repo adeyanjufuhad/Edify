@@ -23,7 +23,7 @@ const NAV = [
   { href: "#faq", label: "FAQ" },
 ];
 
-// The landing page shows each subject as a short summary (what it covers, a few numbers and a taste of the topics),
+// The landing page shows each subject as a short summary (what it covers and a few numbers),
 // not its whole scheme of work. A subject without a line here gets a general one, so new subjects still show up.
 const SUBJECT_PITCH: Record<string, string> = {
   chemistry: "From lab apparatus to electronic configuration, with the calculations and reactions examiners love to ask.",
@@ -31,7 +31,6 @@ const SUBJECT_PITCH: Record<string, string> = {
   physics: "Quantities and units, measurement, motion and density, with every calculation worked step by step.",
   mathematics: "Number bases, indices, logarithms, sets and algebra, with every method shown line by line.",
 };
-const SAMPLE_TOPICS = 3;
 
 const LESSON_PARTS = [
   { title: "Quick exam notes", text: "The must-know points for the week on one screen, with memory aids and “Watch out” boxes for common traps.", icon: Bolt },
@@ -314,22 +313,17 @@ export default function Home() {
             const lessons = weeks.flatMap(({ lesson }) => lesson ? [lesson] : []);
             const questions = lessons.reduce((sum, lesson) => sum + lesson.questions.length, 0);
             const likely = lessons.reduce((sum, lesson) => sum + (lesson.quick?.likely.length ?? 0), 0);
-            const topics = weeks.filter(({ lesson }) => lesson).map(({ week }) => week.topic);
             const note = notForLabel(subject);
             return (
               <article className="subject-card" key={`${term.slug}/${subject.slug}`}>
-                <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}</small><h3>{subject.name}</h3></div></header>
+                <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}{note ? ` · ${note}` : ""}</small><h3>{subject.name}</h3></div></header>
                 <p className="subject-pitch">{SUBJECT_PITCH[subject.slug] ?? `${plural(ready, "weekly lesson")} with quick notes, full notes and practice that marks itself.`}</p>
                 <dl className="subject-stats">
-                  <div><dt>Lessons</dt><dd>{ready}{ready < weeks.length && <small> of {weeks.length}</small>}</dd></div>
-                  <div><dt>Practice questions</dt><dd>{questions}</dd></div>
-                  {likely > 0 && <div><dt>Likely exam questions</dt><dd>{likely}</dd></div>}
+                  <div><dt>weekly lessons</dt><dd>{ready}</dd></div>
+                  <div><dt>practice questions</dt><dd>{questions}</dd></div>
+                  {likely > 0 && <div><dt>likely exam questions</dt><dd>{likely}</dd></div>}
                 </dl>
-                <ul className="subject-topics" aria-label={`Some ${subject.name} topics`}>
-                  {topics.slice(0, SAMPLE_TOPICS).map((topic) => <li key={topic}>{topic}</li>)}
-                  {topics.length > SAMPLE_TOPICS && <li className="more">+{topics.length - SAMPLE_TOPICS} more</li>}
-                </ul>
-                {note && <p className="subject-note">{note} department</p>}
+                <Link href="/signup" className="subject-start">Start {subject.name} <ArrowRight size={16} /></Link>
               </article>
             );
           })}

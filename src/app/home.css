@@ -168,25 +168,21 @@
 /* Subjects */
 .subjects { padding-block: 32px 88px; }
 /* Equal columns, as many as fit (two on a laptop). It was a fixed 1.6fr / 1fr pair made for one subject plus the "more" card, which left every other card narrow. */
-/* Compact summaries: four across on a laptop. Each card says what the subject covers, gives three numbers and a taste of the topics. */
+/* Compact summaries: four across on a laptop. Name, one line on what the subject covers, three numbers as a tidy list, and a link. */
 .subject-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px; align-items: stretch; }
-.subject-card { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 14px; align-content: start; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 22px; }
+.subject-card { display: grid; grid-template-rows: auto 1fr auto auto; gap: 16px; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px 22px 20px; }
 .subject-card header { display: flex; align-items: center; gap: 12px; }
 .subject-card header small { font-size: 13px; font-weight: 600; color: var(--ink-3); }
 .subject-card header h3 { font-size: 23px; font-weight: 700; margin: 0; }
-.subject-pitch { margin: 0; font-size: 15px; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
-.subject-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0; }
-.subject-stats div { display: grid; align-content: start; gap: 2px; padding: 10px 10px 9px; border-radius: var(--r-sm); background: var(--mist); }
-.subject-stats dd { order: -1; margin: 0; font-family: var(--display); font-size: 24px; font-weight: 700; line-height: 1.1; color: var(--ink); font-variant-numeric: tabular-nums; }
-.subject-stats dd small { font-size: 13px; font-weight: 600; color: var(--ink-3); }
-.subject-stats dt { font-size: 12px; font-weight: 600; line-height: 1.3; color: var(--ink-2); }
-.subject-stats div:first-child { background: var(--navy); }
-.subject-stats div:first-child dd, .subject-stats div:first-child dt { color: var(--white); }
-.subject-stats div:first-child dd small { color: var(--on-navy-2); }
-.subject-topics { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-content: start; gap: 6px; }
-.subject-topics li { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; font-weight: 600; color: var(--ink); }
-.subject-topics li.more { border-color: transparent; background: var(--tint-red); color: var(--red-deep); }
-.subject-note { margin: 0; font-size: 13px; font-weight: 600; color: var(--ink-3); }
+.subject-pitch { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ink-2); text-wrap: pretty; }
+.subject-stats { display: grid; margin: 0; border-top: 2px solid var(--tint-slate); }
+.subject-stats div { display: flex; align-items: baseline; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--tint-slate); }
+.subject-stats dd { order: -1; min-width: 46px; margin: 0; font-family: var(--display); font-size: 22px; font-weight: 700; line-height: 1.1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.subject-stats div:first-child dd { color: var(--red); }
+.subject-stats dt { font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.subject-start { display: inline-flex; align-items: center; gap: 6px; justify-self: start; min-height: 40px; font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--red-deep); }
+.subject-start:hover { text-decoration: underline; text-underline-offset: 4px; }
+@media (pointer: coarse) { .subject-start { min-height: 44px; } }
 .subject-card.more { grid-column: 1 / -1; display: grid; gap: 10px; justify-items: start; background: var(--navy); border-color: var(--navy); }
 .subject-card.more h3 { color: var(--white); font-size: 22px; margin: 6px 0 0; }
 .subject-card.more p { margin: 0 0 8px; max-width: 60ch; color: var(--on-navy-2); font-size: 15px; }
