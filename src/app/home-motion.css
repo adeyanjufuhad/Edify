@@ -111,7 +111,6 @@
   .how-num { transition: scale 0.3s var(--ease-spring); }
 
   /* ---- Subjects ---- */
-  .subject-card ol.is-in li svg { animation: pop-in 0.4s var(--ease-spring) calc(var(--i, 0) * var(--step) + 0.3s) backwards; }
   .more-mark { transition: rotate 0.45s var(--ease-spring); }
   .subject-symbol { transition: rotate 0.3s var(--ease-spring), scale 0.3s var(--ease-spring); }
 

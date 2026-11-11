@@ -23,9 +23,15 @@ const NAV = [
   { href: "#faq", label: "FAQ" },
 ];
 
-// On phones each subject card shows only its first weeks (the rest are one line: "+ 7 more weeks"), so the page does not
-// grow by a screen for every subject that is added. Keep in step with the `nth-child` rule in src/app/home.css.
-const PHONE_WEEKS = 4;
+// The landing page shows each subject as a short summary (what it covers, a few numbers and a taste of the topics),
+// not its whole scheme of work. A subject without a line here gets a general one, so new subjects still show up.
+const SUBJECT_PITCH: Record<string, string> = {
+  chemistry: "From lab apparatus to electronic configuration, with the calculations and reactions examiners love to ask.",
+  biology: "Living things, how life is organised, energy and nutrition, with the diagrams you’ll need to draw.",
+  physics: "Quantities and units, measurement, motion and density, with every calculation worked step by step.",
+  mathematics: "Number bases, indices, logarithms, sets and algebra, with every method shown line by line.",
+};
+const SAMPLE_TOPICS = 3;
 
 const LESSON_PARTS = [
   { title: "Quick exam notes", text: "The must-know points for the week on one screen, with memory aids and “Watch out” boxes for common traps.", icon: Bolt },
@@ -304,12 +310,29 @@ export default function Home() {
       <section className="shell subjects" id="subjects" aria-labelledby="subjects-title">
         <div className="section-head" data-reveal><span className="kicker">Subjects</span><h2 id="subjects-title">Follow the term, <span className="hl">week by week.</span></h2><p>Arranged the way you learn it at school: class, term, subject, then week.</p></div>
         <div className="subject-cards" data-stagger>
-          {catalog.map(({ term, subject, weeks, ready }) => (
-            <article className="subject-card" key={`${term.slug}/${subject.slug}`}>
-              <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}{notForLabel(subject) ? ` · ${notForLabel(subject)}` : ""}</small><h3>{subject.name}</h3></div><span className="status-pill ready">{ready} of {weeks.length} ready</span></header>
-              <ol data-stagger="fast">{weeks.map(({ week, lesson }) => <li key={week.slug} className={lesson ? "" : "soon"}><span>{week.label}</span><span>{week.topic}</span>{lesson ? <Check size={16} /> : <small>Soon</small>}</li>)}{weeks.length > PHONE_WEEKS && <li className="more-weeks">+ {plural(weeks.length - PHONE_WEEKS, "more week")}</li>}</ol>
-            </article>
-          ))}
+          {catalog.filter((entry) => entry.ready > 0).map(({ term, subject, weeks, ready }) => {
+            const lessons = weeks.flatMap(({ lesson }) => lesson ? [lesson] : []);
+            const questions = lessons.reduce((sum, lesson) => sum + lesson.questions.length, 0);
+            const likely = lessons.reduce((sum, lesson) => sum + (lesson.quick?.likely.length ?? 0), 0);
+            const topics = weeks.filter(({ lesson }) => lesson).map(({ week }) => week.topic);
+            const note = notForLabel(subject);
+            return (
+              <article className="subject-card" key={`${term.slug}/${subject.slug}`}>
+                <header><span className="subject-symbol" aria-hidden="true">{subject.name[0]}</span><div><small>SS1 · {term.name}</small><h3>{subject.name}</h3></div></header>
+                <p className="subject-pitch">{SUBJECT_PITCH[subject.slug] ?? `${plural(ready, "weekly lesson")} with quick notes, full notes and practice that marks itself.`}</p>
+                <dl className="subject-stats">
+                  <div><dt>Lessons</dt><dd>{ready}{ready < weeks.length && <small> of {weeks.length}</small>}</dd></div>
+                  <div><dt>Practice questions</dt><dd>{questions}</dd></div>
+                  {likely > 0 && <div><dt>Likely exam questions</dt><dd>{likely}</dd></div>}
+                </dl>
+                <ul className="subject-topics" aria-label={`Some ${subject.name} topics`}>
+                  {topics.slice(0, SAMPLE_TOPICS).map((topic) => <li key={topic}>{topic}</li>)}
+                  {topics.length > SAMPLE_TOPICS && <li className="more">+{topics.length - SAMPLE_TOPICS} more</li>}
+                </ul>
+                {note && <p className="subject-note">{note} department</p>}
+              </article>
+            );
+          })}
           <article className="subject-card more">
             <span className="more-mark" aria-hidden="true">+</span>
             <h3>More classes and subjects are on the way</h3>
