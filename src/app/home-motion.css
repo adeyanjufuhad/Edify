@@ -13,7 +13,6 @@
 @keyframes ha-pulse { 50% { scale: 1.06; } }
 @keyframes ha-write { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(5deg) translate(3px, -2px); } }
 @keyframes wave-drift { to { transform: translateX(-50%); } }
-@keyframes progress-grow { to { transform: scaleX(1); } }
 @keyframes toggle-on { 0%, 40% { background: var(--navy); color: var(--white); } 50%, 90% { background: var(--mist); color: var(--ink-2); } 100% { background: var(--navy); color: var(--white); } }
 @keyframes toggle-off { 0%, 40% { background: var(--mist); color: var(--ink-2); } 50%, 90% { background: var(--navy); color: var(--white); } 100% { background: var(--mist); color: var(--ink-2); } }
 @keyframes pick-in { from { background: var(--white); color: var(--ink); border-color: var(--line); scale: 0.94; } }
@@ -33,12 +32,8 @@
   .home-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; border-radius: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease-out); }
   .home-nav a:hover::after, .home-nav a.is-active::after { transform: scaleX(1); }
   .home-nav a.is-active { color: var(--ink); font-weight: 600; }
-  @supports (animation-timeline: scroll()) {
-    .scroll-progress { animation: progress-grow linear both; animation-timeline: scroll(root block); }
-  }
 
   /* ---- Hero: copy ---- */
-  .hero-copy > .kicker { animation: rise-in 0.7s var(--ease-out) 0.05s backwards; }
   .hero .hw { display: inline-block; animation: word-in 0.85s var(--ease-out) calc(0.12s + var(--w, 0) * 70ms) backwards; }
   /* The wavy underline is a background on .hl, so it fades in with its words and no longer shows before them. */
   .hero h1 .hl { animation: fade-in 0.5s var(--ease-out) 0.28s backwards; }

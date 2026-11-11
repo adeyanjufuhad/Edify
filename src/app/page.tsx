@@ -158,14 +158,12 @@ export default function Home() {
         <nav className="home-nav" aria-label="Main navigation" data-spy>{nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
         <div className="home-header-actions"><Link href="/login" className="pill-outline small home-login">Log in</Link><Link href="/signup" className="pill-button small">Sign up</Link><HomeMenu items={nav.map(({ href, label }) => ({ href, label }))} /></div>
       </div>
-      <span className="scroll-progress" aria-hidden="true" />
     </header>
 
     <main id="main" className="home">
       <section className="hero">
         <div className="shell hero-inner">
           <div className="hero-copy">
-            <span className="kicker kicker-fun"><Sparkle className="kicker-icon" color="#c1121f" /> For senior secondary school students in Nigeria</span>
             <h1><Words text="Study smarter," />{" "}<span className="hl"><Words text="one week" start={2} /></span>{" "}<Words text="at a time." start={4} /></h1>
             <p className="hero-intro">Clear weekly notes, quick exam summaries and self-marking practice for senior secondary students. Start with SS1 lessons today; SS2 and SS3 lessons are coming later.</p>
             <div className="hero-actions">
