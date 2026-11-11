@@ -11,19 +11,20 @@ import SignOutButton from "@/components/sign-out-button";
 import type { LearnerProfile } from "@/lib/profiles";
 
 const STUDY_LINKS = [
-  { href: "/study", label: "Dashboard", short: "Home", icon: Grid },
-  { href: "/study/subjects", label: "Subjects & lessons", short: "Subjects", icon: Layers },
-  { href: "/study/cbt", label: "CBT tests", short: "CBT", icon: Monitor },
-  { href: "/study/notes", label: "My notes", short: "Notes", icon: Note },
+  { href: "/study", label: "Dashboard", short: "Home", icon: Grid, tour: "dashboard" },
+  { href: "/study/subjects", label: "Subjects & lessons", short: "Subjects", icon: Layers, tour: "subjects" },
+  { href: "/study/cbt", label: "CBT tests", short: "CBT", icon: Monitor, tour: "cbt" },
+  { href: "/study/notes", label: "My notes", short: "Notes", icon: Note, tour: "notes" },
 ];
 
 const [HOME_LINK, SUBJECTS_LINK, CBT_LINK, NOTES_LINK] = STUDY_LINKS;
+// `tour` marks each button for the walkthrough (src/components/nav-tour.tsx), which spotlights it by data-tour.
 // The sidebar groups these under "Classmates"; on phones they live in the menu (Chats sits in the tab bar when it is on).
-const CHALLENGE_LINK = { href: "/study/challenges", label: "Challenges", short: "Challenges", icon: Target };
-const CHATS_LINK = { href: "/study/chats", label: "Chats", short: "Chats", icon: Message };
-const LEADERBOARD_LINK = { href: "/study/challenges/leaderboard", label: "Leaderboard", short: "Leaderboard", icon: Trophy };
+const CHALLENGE_LINK = { href: "/study/challenges", label: "Challenges", short: "Challenges", icon: Target, tour: "challenges" };
+const CHATS_LINK = { href: "/study/chats", label: "Chats", short: "Chats", icon: Message, tour: "chats" };
+const LEADERBOARD_LINK = { href: "/study/challenges/leaderboard", label: "Leaderboard", short: "Leaderboard", icon: Trophy, tour: "leaderboard" };
 
-type MenuItem = { href: string; label: string; icon: (props: { size?: number }) => React.ReactNode; active: boolean; plain?: boolean };
+type MenuItem = { href: string; label: string; icon: (props: { size?: number }) => React.ReactNode; active: boolean; plain?: boolean; tour: string };
 
 function isActive(pathname: string, href: string) {
   if (href === "/study") return pathname === "/study";
@@ -44,11 +45,11 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
   const barLinks = [HOME_LINK, SUBJECTS_LINK, CBT_LINK, showChat ? CHATS_LINK : NOTES_LINK];
   const onClassmates = pathname.startsWith("/study/classmates");
   const menuItems: MenuItem[] = [
-    ...(showChat ? [{ href: NOTES_LINK.href, label: NOTES_LINK.short, icon: NOTES_LINK.icon, active: isActive(pathname, NOTES_LINK.href) }] : []),
-    ...(challenges ? [CHALLENGE_LINK, LEADERBOARD_LINK].map(({ href, short, icon }) => ({ href, label: short, icon, active: isActive(pathname, href) })) : []),
-    { href: "/profiles", label: "Learners", icon: Users, active: false },
-    ...(challenges ? [{ href: `/study/classmates?learner=${learner.id}`, label: "Classmate settings", icon: Shield, active: onClassmates }] : []),
-    { href: "/leave", label: "Switch learner", icon: Swap, active: false, plain: true },
+    ...(showChat ? [{ href: NOTES_LINK.href, label: NOTES_LINK.short, icon: NOTES_LINK.icon, active: isActive(pathname, NOTES_LINK.href), tour: NOTES_LINK.tour }] : []),
+    ...(challenges ? [CHALLENGE_LINK, LEADERBOARD_LINK].map(({ href, short, icon, tour }) => ({ href, label: short, icon, active: isActive(pathname, href), tour })) : []),
+    { href: "/profiles", label: "Learners", icon: Users, active: false, tour: "learners" },
+    ...(challenges ? [{ href: `/study/classmates?learner=${learner.id}`, label: "Classmate settings", icon: Shield, active: onClassmates, tour: "classmate-settings" }] : []),
+    { href: "/leave", label: "Switch learner", icon: Swap, active: false, plain: true, tour: "switch" },
   ];
   const menuHasCurrent = menuItems.some((item) => item.active);
 
@@ -78,9 +79,9 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const barLink = ({ href, short, icon: Icon }: (typeof barLinks)[number]) => {
+  const barLink = ({ href, short, icon: Icon, tour }: (typeof barLinks)[number]) => {
     const active = isActive(pathname, href);
-    return <Link key={href} href={href} className={active ? "active" : ""} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)}><Icon size={22} /><span>{short}</span></Link>;
+    return <Link key={href} href={href} data-tour={tour} className={active ? "active" : ""} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)}><Icon size={22} /><span>{short}</span></Link>;
   };
 
   return (
@@ -89,21 +90,21 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
         <div className="sidebar-brand"><Brand href="/study" /></div>
         <nav className="sidebar-nav">
           <span className="sidebar-label">Study</span>
-          {STUDY_LINKS.map(({ href, label, icon: Icon }) => {
+          {STUDY_LINKS.map(({ href, label, icon: Icon, tour }) => {
             const active = isActive(pathname, href);
-            return <Link key={href} href={href} className={`sidebar-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}><Icon size={18} />{label}</Link>;
+            return <Link key={href} href={href} data-tour={tour} className={`sidebar-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}><Icon size={18} />{label}</Link>;
           })}
           {challenges && <>
             <span className="sidebar-label">Classmates</span>
-            {classmateLinks.map(({ href, label, icon: Icon }) => {
+            {classmateLinks.map(({ href, label, icon: Icon, tour }) => {
               const active = isActive(pathname, href);
-              return <Link key={href} href={href} className={`sidebar-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}><Icon size={18} />{label}</Link>;
+              return <Link key={href} href={href} data-tour={tour} className={`sidebar-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}><Icon size={18} />{label}</Link>;
             })}
           </>}
           <span className="sidebar-label">Family</span>
-          <Link href="/profiles" className="sidebar-link"><Users size={18} />Learners</Link>
-          {challenges && <Link href={`/study/classmates?learner=${learner.id}`} className={`sidebar-link ${pathname.startsWith("/study/classmates") ? "active" : ""}`} aria-current={pathname.startsWith("/study/classmates") ? "page" : undefined}><Shield size={18} />Classmate settings</Link>}
-          <a href="/leave" className="sidebar-link"><Swap size={18} />Switch learner</a>
+          <Link href="/profiles" data-tour="learners" className="sidebar-link"><Users size={18} />Learners</Link>
+          {challenges && <Link href={`/study/classmates?learner=${learner.id}`} data-tour="classmate-settings" className={`sidebar-link ${pathname.startsWith("/study/classmates") ? "active" : ""}`} aria-current={pathname.startsWith("/study/classmates") ? "page" : undefined}><Shield size={18} />Classmate settings</Link>}
+          <a href="/leave" data-tour="switch" className="sidebar-link"><Swap size={18} />Switch learner</a>
           <SignOutButton className="sidebar-link sidebar-button"><LogOut size={18} /></SignOutButton>
         </nav>
         <div className="sidebar-user">
@@ -119,7 +120,7 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
       <nav className="tab-bar" aria-label="Study navigation">
         {open && <div className="tab-scrim" aria-hidden="true" onClick={closeAndRefocus} />}
         {barLinks.slice(0, 2).map(barLink)}
-        <button ref={buttonRef} type="button" className={`tab-menu-button${open ? " is-open" : ""}`} aria-expanded={open} aria-controls="tab-menu" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen(!open)}>
+        <button ref={buttonRef} type="button" data-tour="menu" className={`tab-menu-button${open ? " is-open" : ""}`} aria-expanded={open} aria-controls="tab-menu" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen(!open)}>
           <span className="tab-menu-circle">
             {open ? <Close size={26} /> : <Menu size={26} />}
             {menuHasCurrent && !open && <span className="tab-menu-dot" />}
@@ -133,9 +134,9 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
             <SignOutButton className="pill-outline small tab-menu-signout" />
           </div>
           <ul className={`tab-menu-grid${menuItems.length <= 4 ? " is-two" : ""}`}>
-            {menuItems.map(({ href, label, icon: Icon, active, plain }) => {
+            {menuItems.map(({ href, label, icon: Icon, active, plain, tour }) => {
               const content = <><Icon size={24} /><span>{label}</span></>;
-              const props = { className: `tab-menu-tile${active ? " active" : ""}`, "aria-current": active ? ("page" as const) : undefined, onClick: () => setOpen(false) };
+              const props = { "data-tour": tour, className: `tab-menu-tile${active ? " active" : ""}`, "aria-current": active ? ("page" as const) : undefined, onClick: () => setOpen(false) };
               return <li key={label}>{plain ? <a href={href} {...props}>{content}</a> : <Link href={href} {...props}>{content}</Link>}</li>;
             })}
           </ul>

@@ -1,0 +1,30 @@
+/* Spotlight walkthrough of the study navigation (src/components/nav-tour.tsx). Flat: a navy-tint scrim with a hole
+   cut around the button (a solid, unblurred spread), and a white card with a 2px navy border beside it. */
+.nav-tour { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; overflow: hidden; }
+.nav-tour::backdrop { background: transparent; }
+.nav-tour-scrim { position: fixed; inset: 0; background: rgba(0, 48, 73, 0.62); }
+.nav-tour-scrim.has-hole { inset: auto; top: 0; left: 0; background: transparent; border-radius: 14px; box-shadow: 0 0 0 200vmax rgba(0, 48, 73, 0.62); outline: 3px solid var(--mist); outline-offset: 0; }
+
+.nav-tour-card { position: fixed; display: grid; gap: 8px; width: min(320px, 100vw - 32px); padding: 18px 18px 16px; background: var(--white); color: var(--ink); border: 2px solid var(--navy); border-radius: var(--r-lg); }
+.nav-tour-card.is-center { width: min(380px, 100vw - 32px); justify-items: center; text-align: center; padding: 22px 22px 18px; }
+.nav-tour-pointer { position: absolute; width: 16px; height: 16px; background: var(--white); border: 2px solid var(--navy); }
+.is-right .nav-tour-pointer { left: -9px; border-right: 0; border-top: 0; rotate: 45deg; }
+.is-above .nav-tour-pointer { bottom: -9px; border-left: 0; border-top: 0; rotate: 45deg; }
+.nav-tour-mascot { width: 72px; margin-bottom: 2px; }
+.nav-tour-mascot img { width: 100%; height: auto; }
+.nav-tour-count { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--red); }
+.nav-tour-card h2 { margin: 0; font-size: 21px; font-weight: 700; line-height: 1.2; }
+.nav-tour-card p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+.nav-tour-card ul { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.nav-tour-card li { padding: 3px 10px; border-radius: 999px; background: var(--mist); font-size: 14px; font-weight: 600; }
+.nav-tour-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 6px; justify-self: stretch; }
+.nav-tour-actions .pill-outline.small { padding: 0 12px; }
+.nav-tour-skip { margin-right: auto; min-height: 40px; padding: 0 4px; border: 0; background: none; color: var(--ink-2); font-size: 14px; font-weight: 600; cursor: pointer; }
+.nav-tour-skip:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+@media (pointer: coarse) { .nav-tour-skip { min-height: 44px; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-tour-scrim.has-hole { transition: transform 0.35s var(--ease-out, ease-out); }
+  .nav-tour-card { animation: rise-in 0.35s var(--ease-out, ease-out); }
+  .nav-tour[open] .nav-tour-scrim:not(.has-hole) { animation: fade-in 0.3s ease-out; }
+}

@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Grid, Layers, Monitor, Note, Shield, Spark, Swap, Target, Users, Bolt } from "@/components/icons";
+import { ArrowLeft, ArrowRight, Shield, Spark, Swap, Target, Users } from "@/components/icons";
 import Mascot from "@/components/mascot";
 import "./welcome-guide.css";
 
 // A short tour of Edify that opens by itself the first time someone arrives, and again from "Take the tour".
-// Parents see it on /profiles, learners on their dashboard. "Seen" is remembered per person in this browser
+// Parents see it on /profiles (learners have the spotlight tour in nav-tour.tsx). "Seen" is remembered per person in this browser
 // (localStorage), so a new phone shows it once more; nothing is stored on the server.
 
 type Pose = "wave" | "read" | "cheer" | "think";
@@ -25,27 +25,13 @@ function parentSteps(): Step[] {
   ];
 }
 
-function learnerSteps(name: string, challenges: boolean): Step[] {
-  const steps: Step[] = [
-    { title: `Hi ${name}, I’m Edi!`, text: "This is your own study space. Your progress and notes are saved to you, so nobody else in the family can tick off your lessons. Here’s a quick look around.", icon: Spark, pose: "wave" },
-    { title: "Your dashboard", text: "It shows your next lesson, how far through the term you are and your latest CBT scores. Tap Continue learning to pick up where you stopped.", icon: Grid, pose: "read" },
-    { title: "Subjects and lessons", text: "Every subject is laid out week by week, just like school. Open a week to read the quick exam notes or the full notes, check the exam traps, then tick the lesson off.", icon: Layers, pose: "read", link: { href: "/study/subjects", label: "Open subjects" } },
-    { title: "Practice that marks itself", text: "Each lesson ends with exam-style questions. Tap an answer to see straight away if you’re right, then get an A1 to F9 grade and retry only the ones you missed.", icon: Bolt, pose: "think" },
-    { title: "Timed CBT tests", text: "Practise like the real exam: one question at a time with a countdown. When you submit, every answer is explained.", icon: Monitor, pose: "think", link: { href: "/study/cbt", label: "Try a CBT test" } },
-    { title: "Your notes", text: "There’s a notes box at the end of every lesson. Whatever you write saves by itself, and My notes collects all of it on one page for revision.", icon: Note, pose: "read" },
-  ];
-  if (challenges) steps.push({ title: "Challenge your classmates", text: "Once a parent switches it on, you can challenge classmates from your own school and class to the same questions, and climb the class leaderboard.", icon: Target, pose: "cheer" });
-  steps.push({ title: "You’re all set!", text: "On a phone, the bar at the bottom takes you around, and the round Menu button has the rest. Switch learner hands the phone to someone else. Take this tour again from your dashboard any time.", icon: Swap, pose: "cheer" });
-  return steps;
-}
-
-export default function WelcomeGuide({ kind, id, name = "", challenges = false, trigger = true }: { kind: "parent" | "learner"; id: string; name?: string; challenges?: boolean; trigger?: boolean }) {
+export default function WelcomeGuide({ kind, id, autoOpen, trigger = true }: { kind: "parent"; id: string; autoOpen: boolean; trigger?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [step, setStep] = useState(0);
   const titleId = useId();
   const textId = useId();
   const key = `edify-guide-v${VERSION}:${kind}:${id}`;
-  const steps = kind === "parent" ? parentSteps() : learnerSteps(name, challenges);
+  const steps = parentSteps();
   const current = steps[Math.min(step, steps.length - 1)];
   const last = step >= steps.length - 1;
 
@@ -53,14 +39,15 @@ export default function WelcomeGuide({ kind, id, name = "", challenges = false, 
   const open = useCallback(() => { setStep(0); if (!dialog.current?.open) dialog.current?.showModal(); }, []);
   const close = useCallback(() => { remember(); dialog.current?.close(); }, [remember]);
 
-  // First visit: open by itself, a moment after the page has drawn so it does not flash in before the page.
+  // New sign-ups only (autoOpen): open by itself, a moment after the page has drawn so it does not flash in before the page.
   useEffect(() => {
+    if (!autoOpen) return;
     let seen = true;
     try { seen = !!localStorage.getItem(key); } catch {}
     if (seen) return;
     const timer = window.setTimeout(open, 450);
     return () => window.clearTimeout(timer);
-  }, [key, open]);
+  }, [autoOpen, key, open]);
 
   return <>
     {trigger && <button type="button" className="guide-trigger" onClick={open}><Spark size={16} />Take the tour</button>}
@@ -85,7 +72,7 @@ export default function WelcomeGuide({ kind, id, name = "", challenges = false, 
         <div className="guide-actions">
           {step > 0 ? <button type="button" className="pill-outline small" onClick={() => setStep(step - 1)}><ArrowLeft size={16} />Back</button> : <span />}
           {last
-            ? <button type="button" className="pill-button small" onClick={close} autoFocus>{kind === "parent" ? "Got it" : "Let’s study"}</button>
+            ? <button type="button" className="pill-button small" onClick={close} autoFocus>Got it</button>
             : <button type="button" className="pill-button small" onClick={() => setStep(step + 1)} autoFocus={step === 0}>Next<ArrowRight size={16} /></button>}
         </div>
       </div>

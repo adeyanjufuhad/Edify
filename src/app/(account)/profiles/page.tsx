@@ -81,7 +81,7 @@ export default async function ProfilesPage() {
           <h1>{onboarding ? <>Add your first <span className="hl">learner.</span></> : <>Who’s studying <span className="hl">today?</span></>}</h1>
           <p>{onboarding ? "Tell us their class and school, then choose a 4-digit PIN they’ll use to open their own progress and notes. You can add brothers and sisters next." : "Pick your name and enter your 4-digit PIN to open your study space."}</p>
         </div>
-        <div className="profiles-actions"><WelcomeGuide kind="parent" id={parent.id} /><SignOutButton /></div>
+        <div className="profiles-actions"><WelcomeGuide kind="parent" id={parent.id} autoOpen={onboarding} /><SignOutButton /></div>
       </div>
       {loadFailed && <p role="alert" className="form-error">Your learners could not be loaded. Refresh the page to try again.</p>}
       {profiles.length > 0 && <><p className="profiles-links"><Link href="/billing" className="pill-outline small">Plans and payments</Link></p><ProfilePicker profiles={profiles} manage={manage} overviews={overviews} classmates={challengesEnabled()} /></>}
