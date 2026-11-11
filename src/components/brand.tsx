@@ -20,9 +20,10 @@ export function BrandMark({ className }: { className?: string }) {
   );
 }
 
-export default function Brand() {
+// `href` is where the logo leads: the public landing page by default, the signed-in home inside the account and study pages.
+export default function Brand({ href = "/" }: { href?: string }) {
   return (
-    <Link href="/" className="brand" aria-label="Edify home">
+    <Link href={href} className="brand" aria-label="Edify home">
       <BrandMark className="brand-mark" />
       <span className="brand-word" aria-hidden="true">
         ed<span className="brand-i">ı<svg viewBox="0 0 24 24" className="brand-star"><path d="M12 1.5l3.1 6.6 7.2.9-5.3 5 1.3 7.1L12 17.6 5.7 21.1 7 14l-5.3-5 7.2-.9z" fill="#c1121f" /></svg></span>fy

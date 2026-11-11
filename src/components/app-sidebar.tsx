@@ -86,7 +86,7 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
   return (
     <>
       <aside className="sidebar" aria-label="Study navigation">
-        <div className="sidebar-brand"><Brand /></div>
+        <div className="sidebar-brand"><Brand href="/study" /></div>
         <nav className="sidebar-nav">
           <span className="sidebar-label">Study</span>
           {STUDY_LINKS.map(({ href, label, icon: Icon }) => {
@@ -113,7 +113,7 @@ export default function AppSidebar({ learner, challenges = false, chat = false }
       </aside>
 
       <header className="mobile-bar">
-        <Brand />
+        <Brand href="/study" />
         <a href="/leave" className="mobile-user" aria-label={`Switch learner (now ${learnerName})`}><span className="avatar small" aria-hidden="true">{learnerName[0]?.toUpperCase()}</span></a>
       </header>
       <nav className="tab-bar" aria-label="Study navigation">
