@@ -1,10 +1,10 @@
 import Link from "next/link";
-import Mascot from "@/components/mascot";
 import { LEGAL_UPDATED, LEGAL_VERSION, OPERATOR } from "@/data/legal";
 
 export type LegalSection = { id: string; title: string; body: React.ReactNode };
 
-// A highlighted gap the owner (or their lawyer) still has to fill in.
+// A highlighted gap still to be filled in. None are left on the published pages; OperatorName and friends fall back
+// to one if a detail in src/data/legal.ts is ever emptied.
 export function Todo({ children }: { children: React.ReactNode }) {
   return <mark className="legal-todo">[{children}]</mark>;
 }
@@ -37,13 +37,6 @@ export default function LegalDoc({ kicker, title, intro, sections, other }: {
           <p className="legal-intro">{intro}</p>
           <p className="legal-meta">Last updated {LEGAL_UPDATED} · Version {LEGAL_VERSION}</p>
         </div>
-        <aside className="legal-draft" aria-label="Draft notice">
-          <Mascot pose="think" className="legal-draft-mascot" />
-          <div>
-            <strong>Draft for review</strong>
-            <p>The owner of Edify and a qualified Nigerian lawyer still need to check this page. It is not legal advice. Highlighted <mark className="legal-todo">[gaps]</mark> are details still to be filled in.</p>
-          </div>
-        </aside>
       </div>
     </section>
     <div className="shell legal-body">

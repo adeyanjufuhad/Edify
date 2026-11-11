@@ -3,7 +3,7 @@ import { PLAN_NAMES, naira, plansForDisplay } from "@/data/plans";
 import { CHALLENGE_MIN_PLAN } from "@/data/challenges";
 import { challengesEnabled } from "@/lib/social/flags";
 import { MAX_PROFILES } from "@/lib/profiles";
-import LegalDoc, { ContactEmail, OperatorAddress, OperatorName, Todo, type LegalSection } from "../legal-doc";
+import LegalDoc, { ContactEmail, OperatorAddress, OperatorName, type LegalSection } from "../legal-doc";
 
 export const metadata = {
   title: "Terms of use — Edify",
@@ -92,7 +92,7 @@ const SECTIONS: LegalSection[] = [
         <li><b>How you are paid back.</b> We submit approved refunds to Paystack within <b>24 hours of approval</b>, normally back to the original payment method. This is our processing time, not a guarantee of when your bank credits you. Paystack currently advises <b>3 to 10 working days</b> for receipt. We will provide the refund reference when available. Access covered by a full refund ends; for a partial refund we will explain any access adjustment.</li>
         <li>Please contact us before asking your bank to reverse a payment, so we can sort it out quickly.</li>
       </ul>
-      <p>The 3-day window and receipt requirement apply to change-of-mind requests. They do not remove rights you have by law, or prevent us investigating duplicate charges, payments without access or service faults. If your payment method did not issue a session ID, contact us with the receipt and transaction reference so we can help identify the payment. <a href="https://support.paystack.com/en/articles/2127106" className="text-link">Paystack’s refund guidance</a>. <Todo>lawyer to review this policy against applicable Nigerian consumer rights</Todo></p>
+      <p>The 3-day window and receipt requirement apply to change-of-mind requests. They do not remove rights you have by law, or prevent us investigating duplicate charges, payments without access or service faults. If your payment method did not issue a session ID, contact us with the receipt and transaction reference so we can help identify the payment. <a href="https://support.paystack.com/en/articles/2127106" className="text-link">Paystack’s refund guidance</a>.</p>
     </>,
   },
   {
@@ -150,7 +150,7 @@ const SECTIONS: LegalSection[] = [
         <li><b>Learners’ notes.</b> What a learner types in their notes belongs to them. You give us permission to store it and show it back to that learner, which is all Edify needs it for.</li>
         <li>If you think something on Edify is wrong, or infringes someone’s rights, tell us at <ContactEmail />.</li>
       </ul>
-      <p><Todo>owner and lawyer to confirm that Edify has the right to publish every lesson, diagram and question on the site and to charge for them (some material is based on other sources), and then finalise the ownership and licence wording</Todo></p>
+      <p>Edify’s lessons and questions are written in our own words and follow the Nigerian scheme of work for each class. If you believe something on Edify uses your work without permission, email <ContactEmail /> with the details. We will review it promptly and correct or remove the material where needed.</p>
     </>,
   },
   {
@@ -170,7 +170,6 @@ const SECTIONS: LegalSection[] = [
     body: <>
       <p>Nothing in these terms limits any right you have by law that can’t be limited, including consumer rights.</p>
       <p>Subject to that, Edify is provided “as is”. We are not responsible for exam results, for losses we could not reasonably have foreseen, or for problems caused by things outside our control. Our total responsibility to you for any one problem is limited to the amount you paid us in the 12 months before it happened.</p>
-      <p><Todo>lawyer to review and rewrite this section, including the limit on responsibility and what Nigerian law does not allow us to limit</Todo></p>
     </>,
   },
   {

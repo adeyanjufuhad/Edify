@@ -4,15 +4,11 @@
 
 /* Hero */
 .legal-hero { padding-block: 56px 36px; }
-.legal-hero-inner { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+.legal-hero-inner { display: grid; grid-template-columns: minmax(0, 46rem); gap: 40px; align-items: end; }
 .legal-hero h1 { font-size: clamp(34px, 4.4vw, 52px); font-weight: 800; line-height: 1.06; letter-spacing: -0.03em; margin: 12px 0 16px; }
 .legal-hero .hl { color: var(--red); }
 .legal-intro { font-size: 18px; color: var(--ink-2); max-width: 58ch; margin: 0 0 14px; }
 .legal-meta { font-size: 14px; font-weight: 600; color: var(--ink-3); margin: 0; font-variant-numeric: tabular-nums; }
-.legal-draft { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; align-items: center; background: var(--white); border: 2px dashed var(--red); border-radius: var(--r-xl); padding: 16px 20px 16px 12px; }
-.legal-draft-mascot { width: 64px; justify-self: center; }
-.legal-draft strong { font-family: var(--display); font-size: 20px; font-weight: 700; color: var(--red); }
-.legal-draft p { margin: 4px 0 0; font-size: 15px; color: var(--ink-2); }
 
 /* A gap the owner or a Nigerian lawyer still has to fill in */
 .legal-todo { background: var(--tint-red); color: var(--red-deep); font-weight: 700; padding: 1px 6px; border-radius: 6px; border-bottom: 2px dashed var(--red); }

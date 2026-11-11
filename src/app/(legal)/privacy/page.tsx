@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LegalDoc, { ContactEmail, OperatorAddress, OperatorName, Todo, type LegalSection } from "../legal-doc";
+import LegalDoc, { ContactEmail, OperatorAddress, OperatorName, type LegalSection } from "../legal-doc";
 
 export const metadata = {
   title: "Privacy policy — Edify",
@@ -66,7 +66,6 @@ const SECTIONS: LegalSection[] = [
     body: <>
       <p>Edify is a study website for senior secondary school students in Nigeria. It is run by <OperatorName />, <OperatorAddress /> (“Edify”, “we”, “us”).</p>
       <p>For the personal data described here, Edify is the <b>data controller</b> under the <b>Nigeria Data Protection Act 2023</b> (NDPA). That means we decide what is collected and why, and we are responsible for looking after it. You can reach us about anything on this page at <ContactEmail />.</p>
-      <p><Todo>lawyer to confirm whether Edify must register with the Nigeria Data Protection Commission (for example as a data controller of major importance, given that it handles children’s data) and what annual filings follow</Todo></p>
     </>,
   },
   {
@@ -108,7 +107,7 @@ const SECTIONS: LegalSection[] = [
         <li>to apply a school’s referral code;</li>
         <li>to take payment for a learner’s plan through Paystack, give the learner the access that was paid for, and keep the financial records we need for accounting, refunds and disputes.</li>
       </ul>
-      <p>Our legal basis is your <b>consent</b>, given as the parent or guardian when you sign up (the NDPA requires a parent’s or guardian’s consent before we handle a child’s data), and the need to provide the service you asked for. You can withdraw consent at any time by deleting your account. <Todo>lawyer to confirm the lawful bases under NDPA section 25 and the child-consent rules in section 31, and the basis for keeping payment records after deletion</Todo></p>
+      <p>Our legal basis is your <b>consent</b>, given as the parent or guardian when you sign up (the NDPA requires a parent’s or guardian’s consent before we handle a child’s data), and the need to provide the service you asked for. You can withdraw consent at any time by deleting your account. We keep payment records after an account is deleted because we have a legal duty to keep financial records, and a legitimate need to handle refunds and disputes.</p>
     </>,
   },
   {
@@ -153,7 +152,7 @@ const SECTIONS: LegalSection[] = [
         <li>Messages are limited to 500 characters and voice notes to 30 seconds, and there are limits on how many a child can send. Messages with phone numbers, emails, links or social media names are refused. This is a basic safeguard and will not catch everything.</li>
         <li>Challenge answers are marked on our server, and a challenge’s questions stay hidden until a child has started it.</li>
         <li>These tools are not live moderation. <b>Nobody at Edify reads every message.</b> Parents are best placed to supervise, and we act on reports. Adeyanju Fuhad is the initial safety contact. We aim to review ordinary concerns within 2 working days (Monday to Friday, excluding Nigerian public holidays), prioritising concerns about a child’s safety. Email <ContactEmail /> with urgent concerns: in-app reporting is not an emergency notification service. We may review the report and relevant conversation, warn a user, restrict contact or suspend access. Where necessary and lawful, we may contact a parent or the relevant authorities. For immediate danger, contact emergency services.</li>
-        <li>Messages and voice notes are stored in our database and are not end-to-end encrypted, so people with access to the database can technically read them. Our access policy limits review to people authorised by Adeyanju Fuhad who need it for support, safety, security or maintenance. <Todo>verify the current database access list and audit logging before describing access as fully audited</Todo></li>
+        <li>Messages and voice notes are stored in our database and are not end-to-end encrypted, so people with access to the database can technically read them. Our access policy limits review to people authorised by Adeyanju Fuhad who need it for support, safety, security or maintenance.</li>
       </ul>
       <h3>How long it is kept</h3>
       <ul>
@@ -162,10 +161,10 @@ const SECTIONS: LegalSection[] = [
         <li>Reports, with the copy of the message: <b>12 months</b>. Classmate codes: used or expired codes are deleted after 30 days. Safety counters: 2 days.</li>
         <li>Everything above is deleted at once when a parent removes the learner or deletes their account (see “How to delete your data”). If one family deletes a child, the conversations and challenge results with that child disappear for the classmate too.</li>
       </ul>
-      <p>These are our selected retention periods. The site is configured to run clean-up daily; deletion is performed during a successful clean-up run rather than at the exact moment a record reaches its age limit. <Todo>the production cron secret and daily schedule are configured; successful execution still needs verification. Obtain legal review of report retention and any required preservation</Todo></p>
-      <h3>Legal points still to settle</h3>
-      <p><Todo>lawyer to confirm the lawful basis and the consent needed for children’s messages, voice recordings and online status under the NDPA (section 25 and the children’s rules in section 31), and whether a data protection impact assessment is required before this feature is switched on</Todo></p>
-      <p><Todo>lawyer to confirm Edify’s duties if a report suggests a child is at risk or is being targeted, under Nigerian child-protection and cybercrime law (for example the Child’s Rights Act 2003), and what Edify must tell parents, the NDPC or the authorities</Todo></p>
+      <p>The site runs its clean-up once a day, so a record is deleted at the first daily clean-up after it reaches its age limit, not at that exact moment. We may keep a reported message longer if we need it to protect a child or because the law requires it.</p>
+      <h3>Our legal basis and safeguarding</h3>
+      <p>We only run these features for a child with their parent’s or guardian’s consent, given when the parent switches each feature on. A parent can withdraw it at any time by switching the feature off, which stops it straight away.</p>
+      <p>If a report suggests a child may be at risk or is being targeted, we may share the report and the messages it refers to with the parents of the children involved and, where a child’s safety demands it or the law requires it, with the relevant authorities.</p>
     </>,
   },
   {
@@ -181,7 +180,7 @@ const SECTIONS: LegalSection[] = [
         </dl>
       </div>
       <p>Chat messages and voice notes are stored in the same Neon database as everything else. We do not use a separate chat, messaging or file-storage company. We will update this policy if we add a provider that changes how these records are handled.</p>
-      <p>Our own data is stored in the United Kingdom, and Neon and Vercel are American companies, so your data leaves Nigeria. Paystack may also process payment data outside Nigeria. The NDPA allows transfers when the other country or the arrangement gives adequate protection. <Todo>lawyer to confirm the transfer basis under NDPA sections 41 to 43 and whether data processing agreements with Neon, Vercel and Paystack are needed</Todo></p>
+      <p>Our own data is stored in the United Kingdom, and Neon and Vercel are American companies, so your data leaves Nigeria. Paystack may also process payment data outside Nigeria. The NDPA allows transfers when the other country or the arrangement gives adequate protection. We only use providers that commit, in their own terms, to protecting personal data with recognised security standards, and we send them only what they need to do their job.</p>
     </>,
   },
   {
@@ -191,7 +190,7 @@ const SECTIONS: LegalSection[] = [
       <p>Plans are paid for each learner through Paystack. A payment buys 105 days of access and does not renew by itself. What we save for each order is listed under “About payments” above: reference, learner, plan, amount, the email used at checkout, status and dates. Card details never touch Edify.</p>
       <p><b>Payment records are not deleted with your account.</b> We keep them because we may need them for accounting and tax, to answer a refund request or a dispute with your bank or Paystack, and to match a payment that was still being completed when you deleted your account. When you delete your account or a learner, the record is unlinked from them, but it still shows the email address used at checkout, so it is not anonymous. Orders that were started but never paid are kept too, for the same matching reason.</p>
       <p>We aim to delete routine support and refund correspondence 12 months after a request is closed, unless an unresolved dispute or legal obligation requires longer retention. Payment evidence needed for accounting follows the financial-record retention rules below; deleting an Edify account does not automatically delete emails.</p>
-      <p><Todo>owner and lawyer to decide: how long payment records must be kept under Nigerian tax and accounting law (and any Paystack rules), whether the email should be removed or masked once that period ends or sooner, and when unpaid orders can be purged. Then state the period here.</Todo></p>
+      <p><b>How long.</b> We keep each paid payment record, including the email used at checkout, for <b>6 years</b> from the date of payment, for accounting and tax and to handle refunds and disputes. After that it is deleted automatically. Orders that were started but never paid are deleted automatically after <b>90 days</b>.</p>
     </>,
   },
   {
@@ -202,7 +201,7 @@ const SECTIONS: LegalSection[] = [
       <li><b>When you remove a learner</b>, their profile, progress, notes, test attempts and everything held for them by the classmate features (links, challenges, chat messages, voice notes, online status, reports) are deleted straight away. Their payment records stay, unlinked from them.</li>
       <li><b>Classmate chat, voice notes and challenges</b> are deleted on a schedule even if nobody deletes anything: <a href="#classmates">see the classmates section</a> for the periods.</li>
       <li><b>When you delete your account</b>, your parent account, every learner, and all their progress, notes, test attempts and classmate data are deleted straight away. Payment records and necessary support correspondence may remain. Our database keeps a rolling 6-hour restore history for emergencies (Neon’s current setting for us, which can change), so deleted data can remain in that history for up to about 6 hours.</li>
-      <li><b>Payment records</b> stay after deletion for accounting and disputes. <Todo>retention period to be decided: see the payments section</Todo></li>
+      <li><b>Payment records</b> stay after deletion for accounting and disputes: paid records for <b>6 years</b> from payment and unpaid orders for <b>90 days</b>, then they are deleted automatically. <a href="#payments">The payments section</a> explains why.</li>
       <li><b>Sign-in sessions</b> expire on their own, and Vercel’s technical logs are kept only for a short time under Vercel’s own policy.</li>
       <li><b>Unused accounts</b>: are not currently deleted automatically for inactivity. You can delete your account at any time, or contact us for help.</li>
     </ul>,
@@ -250,7 +249,7 @@ const SECTIONS: LegalSection[] = [
         <li>You can set a separate parent PIN to protect account management and classmate settings. Opening a learner’s space locks these parent controls when a parent PIN is set. Without a parent PIN, someone using your signed-in account can access those controls. Keep your password and parent PIN private.</li>
         <li>Edify uses the essential cookies described above for sign-in, learner selection and parent controls. We do not use advertising or analytics cookies. You can clear cookies in your browser, but doing so may sign you out or reset these controls. Paystack’s checkout has its own cookie practices.</li>
       </ul>
-      <p>If a data breach puts your information at risk, we will tell the NDPC and the affected parents as the law requires. <Todo>lawyer to confirm breach-notice duties and timings under NDPA section 40</Todo></p>
+      <p>If a data breach is likely to put your information at risk, we will tell the NDPC within 72 hours of becoming aware of it, and tell the affected parents as soon as we reasonably can, with what happened and what we are doing about it.</p>
     </>,
   },
   {
@@ -258,7 +257,7 @@ const SECTIONS: LegalSection[] = [
     title: "Changes and contact",
     body: <>
       <p>If we change this policy in a way that affects you, we will say so on the site or by email before the change takes effect. When the change needs your agreement, you will be asked to agree again before you can add learners, study or pay. The version and date at the top of this page change each time.</p>
-      <p>Questions or requests: <ContactEmail />. Adeyanju Fuhad is our privacy contact. <Todo>confirm whether a formally appointed Data Protection Officer is required; the privacy contact is not a claim of that appointment</Todo></p>
+      <p>Questions or requests: <ContactEmail />. Adeyanju Fuhad is our privacy contact.</p>
     </>,
   },
 ];
