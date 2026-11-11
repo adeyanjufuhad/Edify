@@ -27,18 +27,6 @@ const NAV = [
 // grow by a screen for every subject that is added. Keep in step with the `nth-child` rule in src/app/home.css.
 const PHONE_WEEKS = 4;
 
-// A slow, endless strip of what Edify covers. Purely decorative, so the whole band is hidden from screen readers.
-const TICKER: { text: string; kind: "class" | "feature" }[] = [
-  { text: "Quick exam notes", kind: "feature" },
-  { text: "Self-marking practice", kind: "feature" },
-  { text: "Timed CBT tests", kind: "feature" },
-  { text: "SS1", kind: "class" }, { text: "A1–F9 grades", kind: "feature" },
-  { text: "SS2", kind: "class" }, { text: "Exam traps", kind: "feature" },
-  { text: "SS3", kind: "class" }, { text: "Your own notes", kind: "feature" },
-  { text: "Family accounts", kind: "feature" }, { text: "Works on any phone", kind: "feature" },
-];
-const SOCIAL_TICKER: typeof TICKER = [{ text: "Classmate challenges", kind: "feature" }, { text: "Class leaderboard", kind: "feature" }];
-
 const LESSON_PARTS = [
   { title: "Quick exam notes", text: "The must-know points for the week on one screen, with memory aids and “Watch out” boxes for common traps.", icon: Bolt },
   { title: "Full notes", text: "The whole topic explained in plain English, with worked examples and diagrams to draw.", icon: Layers },
@@ -160,7 +148,6 @@ export default function Home() {
   // The classmate features only appear on this page while the owner has them switched on (docs/challenges.md).
   const social = { on: challengesEnabled(), online: presenceEnabled(), chat: chatEnabled(), voice: voiceEnabled() };
   const nav = NAV.filter((item) => !("social" in item) || social.on);
-  const ticker = social.on ? [...TICKER, ...SOCIAL_TICKER] : TICKER;
   const faqs = social.on ? [...FAQS.slice(0, 3), SOCIAL_FAQ, ...FAQS.slice(3)] : FAQS;
   return <>
     <div className="top-sentinel" data-sentinel aria-hidden="true" />
@@ -211,16 +198,6 @@ export default function Home() {
           <div><strong>SS1–SS3</strong><span>one account for every class</span></div>
         </div>
       </section>
-
-      <div className="ticker" aria-hidden="true">
-        <div className="ticker-track">
-          {[0, 1].map((copy) => (
-            <ul className="ticker-group" key={copy}>
-              {ticker.map((item, index) => <li key={item.text} className={`ticker-${item.kind}`}>{item.text}<Star className="ticker-star" color={index % 2 ? "#669bbc" : "#c1121f"} /></li>)}
-            </ul>
-          ))}
-        </div>
-      </div>
 
       <section className="shell compare" aria-labelledby="compare-title">
         <div className="compare-copy" data-reveal="left">

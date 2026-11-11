@@ -12,7 +12,6 @@
 @keyframes ha-breathe { 50% { transform: scale(1.05); } }
 @keyframes ha-pulse { 50% { scale: 1.06; } }
 @keyframes ha-write { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(5deg) translate(3px, -2px); } }
-@keyframes ticker-scroll { to { transform: translateX(-50%); } }
 @keyframes wave-drift { to { transform: translateX(-50%); } }
 @keyframes progress-grow { to { transform: scaleX(1); } }
 @keyframes toggle-on { 0%, 40% { background: var(--navy); color: var(--white); } 50%, 90% { background: var(--mist); color: var(--ink-2); } 100% { background: var(--navy); color: var(--white); } }
@@ -81,14 +80,6 @@
 
   /* ---- Stat band ---- */
   .motion-ok .stat-band-inner.is-in > div { animation-name: pop-in; animation-timing-function: var(--ease-spring); animation-duration: 0.65s; }
-
-  /* ---- Ticker ---- */
-  .ticker-track { display: flex; width: max-content; animation: ticker-scroll 52s linear infinite; }
-  .ticker-group { flex: none; flex-wrap: nowrap; justify-content: flex-start; padding: 14px 0; }
-  .ticker-group + .ticker-group { display: flex; }
-  .ticker:hover .ticker-track { animation-play-state: paused; }
-  .ticker-star { animation: twinkle 4s ease-in-out infinite; }
-  .ticker-group li:nth-child(even) .ticker-star { animation-delay: -2s; }
 
   /* ---- Wave dividers drift sideways, one against the other ---- */
   .wave-wrap .wave { animation: wave-drift 30s linear infinite; }

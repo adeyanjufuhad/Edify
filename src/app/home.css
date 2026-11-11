@@ -409,20 +409,13 @@
 .wave-wrap .wave { width: 200%; max-width: none; }
 .demo-stack { display: grid; gap: 12px; }
 
-/* Ticker band: a wrapped row of chips when still, an endless strip when motion is allowed. */
-.ticker { background: var(--white); border-block: 2px solid rgba(0, 48, 73, 0.14); overflow: hidden; }
-.ticker-group { list-style: none; margin: 0; padding: 14px 24px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 0; }
-.ticker-group + .ticker-group { display: none; }
-.ticker-group li { display: inline-flex; align-items: center; gap: 20px; padding-right: 20px; font-family: var(--display); font-size: 20px; font-weight: 600; white-space: nowrap; color: var(--ink); }
-.ticker-class { color: var(--red); font-weight: 700; }
-.ticker-star { width: 15px; height: 15px; }
 
 /* Confetti behind the closing banner */
 .final-inner { position: relative; isolation: isolate; }
 .confetti { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .confetti i { position: absolute; display: block; border-radius: 3px; rotate: var(--rot, 0deg); }
 /* Phones: the text fills the banner, so the confetti moves up into the band beside Edi and stays clear of the words. */
-@media (max-width: 680px) { .confetti { inset: -92px 0 auto; height: 104px; } .confetti i:nth-child(n + 9) { display: none; } .ticker-group li { font-size: 18px; } }
+@media (max-width: 680px) { .confetti { inset: -92px 0 auto; height: 104px; } .confetti i:nth-child(n + 9) { display: none; } }
 
 /* Touch screens: every footer link gets a 44px tap area (they were 24px tall). */
 @media (pointer: coarse) {
